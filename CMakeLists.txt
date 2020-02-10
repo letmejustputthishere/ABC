@@ -71,7 +71,8 @@ set(SOURCE_FILES
         ${ast_optimizer_SOURCE_DIR}/include/utilities/Datatypes.h
         ${ast_optimizer_SOURCE_DIR}/src/visitor/MultDepthVisitor.cpp
         ${ast_optimizer_SOURCE_DIR}/include/visitor/MultDepthVisitor.h
-        ${ast_optimizer_SOURCE_DIR}/src/optimizer/ConeRewriter.cpp)
+        ${ast_optimizer_SOURCE_DIR}/src/optimizer/ConeRewriter.cpp
+        ${ast_optimizer_SOURCE_DIR}/src/optimizer/CKKSRewriter.cpp)
 
 add_executable(ast_demo
         ${ast_optimizer_SOURCE_DIR}/main.cpp

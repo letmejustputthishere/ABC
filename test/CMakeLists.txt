@@ -35,7 +35,8 @@ set(TEST_FILES
         MultDepthVisitorTest.cpp
         ChildParentTest.cpp
         AstClassTest.cpp
-        DotPrinterTest.cpp)
+        DotPrinterTest.cpp
+        CKKSRewriterTest.cpp)
 
 add_executable(testing-all
         ${TEST_FILES})
