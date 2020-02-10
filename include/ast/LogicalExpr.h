@@ -1,5 +1,5 @@
-#ifndef MASTER_THESIS_CODE_LOGICALEXPR_H
-#define MASTER_THESIS_CODE_LOGICALEXPR_H
+#ifndef AST_OPTIMIZER_LOGICALEXPR_H
+#define AST_OPTIMIZER_LOGICALEXPR_H
 
 #include "Operator.h"
 #include "AbstractExpr.h"
@@ -50,4 +50,4 @@ class LogicalExpr : public AbstractExpr {
   bool supportsCircuitMode() override;
 };
 
-#endif //MASTER_THESIS_CODE_LOGICALEXPR_H
+#endif //AST_OPTIMIZER_LOGICALEXPR_H

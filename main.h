@@ -1,6 +1,6 @@
 
-#ifndef MASTER_THESIS_CODE_MAIN_H
-#define MASTER_THESIS_CODE_MAIN_H
+#ifndef AST_OPTIMIZER_MAIN_H
+#define AST_OPTIMIZER_MAIN_H
 
 #include <iostream>
 #include "../include/ast/Ast.h"
@@ -14,4 +14,4 @@
 /// Program's entry point.
 int main();
 
-#endif //MASTER_THESIS_CODE_MAIN_H
+#endif //AST_OPTIMIZER_MAIN_H

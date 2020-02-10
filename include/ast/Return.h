@@ -1,5 +1,5 @@
-#ifndef MASTER_THESIS_CODE_RETURN_H
-#define MASTER_THESIS_CODE_RETURN_H
+#ifndef AST_OPTIMIZER_RETURN_H
+#define AST_OPTIMIZER_RETURN_H
 
 #include <string>
 #include "AbstractStatement.h"
@@ -30,4 +30,4 @@ class Return : public AbstractStatement {
   bool supportsCircuitMode() override;
 };
 
-#endif //MASTER_THESIS_CODE_RETURN_H
+#endif //AST_OPTIMIZER_RETURN_H

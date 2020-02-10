@@ -1,5 +1,5 @@
-#ifndef MASTER_THESIS_CODE_UNARYEXPR_H
-#define MASTER_THESIS_CODE_UNARYEXPR_H
+#ifndef AST_OPTIMIZER_UNARYEXPR_H
+#define AST_OPTIMIZER_UNARYEXPR_H
 
 #include <string>
 #include "AbstractExpr.h"
@@ -32,4 +32,4 @@ class UnaryExpr : public AbstractExpr {
   void setAttributes(OpSymb::UnaryOp op, AbstractExpr* expr);
 };
 
-#endif //MASTER_THESIS_CODE_UNARYEXPR_H
+#endif //AST_OPTIMIZER_UNARYEXPR_H

@@ -1,5 +1,5 @@
-#ifndef MASTER_THESIS_CODE_GENASTDEMO_H
-#define MASTER_THESIS_CODE_GENASTDEMO_H
+#ifndef AST_OPTIMIZER_GENASTDEMO_H
+#define AST_OPTIMIZER_GENASTDEMO_H
 
 #include <Ast.h>
 
@@ -86,4 +86,4 @@ void generateDemoSix(Ast &ast);
 
 void generateDemoSeven(Ast &ast);
 
-#endif //MASTER_THESIS_CODE_GENASTDEMO_H
+#endif //AST_OPTIMIZER_GENASTDEMO_H

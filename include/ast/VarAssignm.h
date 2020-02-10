@@ -1,5 +1,5 @@
-#ifndef MASTER_THESIS_CODE_VARASSIGNM_H
-#define MASTER_THESIS_CODE_VARASSIGNM_H
+#ifndef AST_OPTIMIZER_VARASSIGNM_H
+#define AST_OPTIMIZER_VARASSIGNM_H
 
 #include <string>
 #include "AbstractStatement.h"
@@ -39,4 +39,4 @@ class VarAssignm : public AbstractStatement {
   void setAttribute(AbstractExpr* assignmentValue);
 };
 
-#endif //MASTER_THESIS_CODE_VARASSIGNM_H
+#endif //AST_OPTIMIZER_VARASSIGNM_H

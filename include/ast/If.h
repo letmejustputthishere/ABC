@@ -1,5 +1,5 @@
-#ifndef MASTER_THESIS_CODE_IF_H
-#define MASTER_THESIS_CODE_IF_H
+#ifndef AST_OPTIMIZER_IF_H
+#define AST_OPTIMIZER_IF_H
 
 #include "AbstractStatement.h"
 #include "AbstractExpr.h"
@@ -34,4 +34,4 @@ class If : public AbstractStatement {
   void updateTree();
 };
 
-#endif //MASTER_THESIS_CODE_IF_H
+#endif //AST_OPTIMIZER_IF_H

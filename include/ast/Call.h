@@ -1,5 +1,5 @@
-#ifndef MASTER_THESIS_CODE_CALL_H
-#define MASTER_THESIS_CODE_CALL_H
+#ifndef AST_OPTIMIZER_CALL_H
+#define AST_OPTIMIZER_CALL_H
 
 #include <string>
 #include <vector>
@@ -32,4 +32,4 @@ class Call : public AbstractExpr, public AbstractStatement {
   Literal* evaluate(Ast &ast) override;
 };
 
-#endif //MASTER_THESIS_CODE_CALL_H
+#endif //AST_OPTIMIZER_CALL_H

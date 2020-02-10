@@ -1,5 +1,5 @@
-#ifndef MASTER_THESIS_CODE_LITERALSTRING_H
-#define MASTER_THESIS_CODE_LITERALSTRING_H
+#ifndef AST_OPTIMIZER_LITERALSTRING_H
+#define AST_OPTIMIZER_LITERALSTRING_H
 
 #include <string>
 #include "Literal.h"
@@ -39,4 +39,4 @@ class LiteralString : public Literal {
   bool supportsCircuitMode() override;
 };
 
-#endif //MASTER_THESIS_CODE_LITERALSTRING_H
+#endif //AST_OPTIMIZER_LITERALSTRING_H

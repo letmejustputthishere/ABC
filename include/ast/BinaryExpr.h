@@ -1,5 +1,5 @@
-#ifndef MASTER_THESIS_CODE_BINARYEXPR_H
-#define MASTER_THESIS_CODE_BINARYEXPR_H
+#ifndef AST_OPTIMIZER_BINARYEXPR_H
+#define AST_OPTIMIZER_BINARYEXPR_H
 
 #include "Operator.h"
 #include "AbstractExpr.h"
@@ -59,4 +59,4 @@ class BinaryExpr : public AbstractExpr {
   bool supportsCircuitMode() override;
 };
 
-#endif //MASTER_THESIS_CODE_BINARYEXPR_H
+#endif //AST_OPTIMIZER_BINARYEXPR_H

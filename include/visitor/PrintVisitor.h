@@ -1,5 +1,5 @@
-#ifndef MASTER_THESIS_CODE_PRINTVISITOR_H
-#define MASTER_THESIS_CODE_PRINTVISITOR_H
+#ifndef AST_OPTIMIZER_PRINTVISITOR_H
+#define AST_OPTIMIZER_PRINTVISITOR_H
 
 #include "Visitor.h"
 #include <list>
@@ -84,4 +84,4 @@ class PrintVisitor : public Visitor {
   void resetVisitor();
 };
 
-#endif //MASTER_THESIS_CODE_PRINTVISITOR_H
+#endif //AST_OPTIMIZER_PRINTVISITOR_H
