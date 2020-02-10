@@ -2,9 +2,9 @@
 #define AST_OPTIMIZER_NODE_H
 
 #include <vector>
-#include <nlohmann/json.hpp>
 #include <sstream>
-#include "../include/visitor/Visitor.h"
+#include "nlohmann/json.hpp"
+#include "Visitor.h"
 
 using json = nlohmann::json;
 

@@ -34,6 +34,7 @@ include_directories(
         ${ast_optimizer_SOURCE_DIR}/include/ast
         ${ast_optimizer_SOURCE_DIR}/include/utilities
         ${ast_optimizer_SOURCE_DIR}/include/optimizer
+        ${ast_optimizer_SOURCE_DIR}/include/visitor
         ${ast_optimizer_SOURCE_DIR}/examples
         ${ast_optimizer_SOURCE_DIR}/test)
 
