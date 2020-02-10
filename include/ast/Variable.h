@@ -14,6 +14,7 @@ class Variable : public AbstractExpr {
   explicit Variable(std::string identifier);
 
   [[nodiscard]] json toJson() const override;
+  virtual ~Variable();
 
   void accept(Visitor &v) override;
 
@@ -23,17 +24,18 @@ class Variable : public AbstractExpr {
 
   bool operator==(const Variable &rhs) const;
 
-    bool operator!=(const Variable &rhs) const;
+  bool operator!=(const Variable &rhs) const;
 
-    bool contains(Variable *var) override;
+  bool contains(Variable* var) override;
 
-    bool isEqual(AbstractExpr *other) override;
+  bool isEqual(AbstractExpr* other) override;
 
-    Literal *evaluate(Ast &ast) override;
+  Literal* evaluate(Ast &ast) override;
 
-    std::vector<std::string> getVariableIdentifiers() override;
+  std::vector<std::string> getVariableIdentifiers() override;
 
-    std::string toString() const override;
+  [[nodiscard]] std::string toString() const override;
+  bool supportsCircuitMode() override;
 };
 
 #endif //MASTER_THESIS_CODE_VARIABLE_H

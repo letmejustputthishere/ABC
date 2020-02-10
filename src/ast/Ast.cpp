@@ -1,28 +1,28 @@
 #include "Ast.h"
 
-#include <utility>
 #include <variant>
 #include <iostream>
-#include <deque>
-#include <sstream>
+#include <set>
+#include <queue>
 #include "Literal.h"
 #include "Variable.h"
 #include "Function.h"
 #include "Return.h"
+#include "LogicalExpr.h"
 
-Ast::Ast(Node *rootNode) : rootNode(rootNode) {}
+Ast::Ast(Node* rootNode) : rootNode(rootNode) {}
 
 Ast::Ast() {
-    rootNode = nullptr;
+  rootNode = nullptr;
 }
 
-Node *Ast::setRootNode(Node *node) {
-    this->rootNode = node;
-    return node;
+Node* Ast::setRootNode(Node* node) {
+  this->rootNode = node;
+  return node;
 }
 
-Node *Ast::getRootNode() const {
-    return rootNode;
+Node* Ast::getRootNode() const {
+  return rootNode;
 }
 
 void Ast::accept(Visitor &v) {
@@ -35,9 +35,9 @@ Ast::~Ast() {
 
 Literal* Ast::evaluate(std::map<std::string, Literal*> &paramValues, bool printResult = false) {
   // store param values into a temporary map
-  variablesValues.clear();
+  variableValuesForEvaluation.clear();
   for (const auto &[k, v] : paramValues) {
-    variablesValues.emplace(std::pair(k, v));
+    variableValuesForEvaluation.emplace(std::pair(k, v));
   }
 
   // ensure that the root node is a Function
@@ -50,23 +50,19 @@ Literal* Ast::evaluate(std::map<std::string, Literal*> &paramValues, bool printR
 
   // make sure that all parameters specified by the function have a defined value
   for (const auto &fp : func->getParams()) {
-    if (auto var = dynamic_cast<Variable*>(fp.getValue())) {
-      if (!hasVarValue(var)) {
-        throw std::invalid_argument("AST evaluation requires parameter value for parameter " + var->getIdentifier());
-      }
+    auto var = dynamic_cast<Variable*>(fp.getValue());
+    if (var != nullptr && !hasVarValue(var)) {
+      throw std::invalid_argument(
+          "AST evaluation requires parameter value for parameter " + var->getIdentifier());
     }
   }
 
+  // perform evaluation recursively, starting at the root node
   auto result = getRootNode()->evaluate(*this);
 
-  // print result
-  if (printResult) {
-    if (result == nullptr) {
-      std::cout << "void" << std::endl;
-    } else {
-      std::cout << *result << std::endl;
-    }
-  }
+  // print result if flag is set
+  if (printResult)
+    std::cout << (result == nullptr ? "void" : result->toString()) << std::endl;
 
   return result;
 }
@@ -76,43 +72,81 @@ bool Ast::hasVarValue(Variable* var) {
 }
 
 Literal* Ast::getVarValue(const std::string &variableIdentifier) {
-    auto it = variablesValues.find(variableIdentifier);
-    if (it == variablesValues.end())
-        throw std::logic_error("Trying to retrieve value for variable not declared yet: " + variableIdentifier);
-    return it->second;
+  auto it = variableValuesForEvaluation.find(variableIdentifier);
+  if (it == variableValuesForEvaluation.end())
+    throw std::logic_error("Trying to retrieve value for variable not declared yet: " + variableIdentifier);
+  return it->second;
 }
 
-void Ast::updateVarValue(const std::string &variableIdentifier, Literal *newValue) {
-    variablesValues[variableIdentifier] = newValue;
-}
-
-void Ast::toggleIsReversed() {
-    reversedEdges = !reversedEdges;
+void Ast::updateVarValue(const std::string &variableIdentifier, Literal* newValue) {
+  variableValuesForEvaluation[variableIdentifier] = newValue;
 }
 
 bool Ast::isReversed() const {
-    return reversedEdges;
+  auto allNodes = getAllNodes();
+  return std::all_of(allNodes.begin(), allNodes.end(), [](Node* n) { return n->isReversed; });
 }
 
-void Ast::printGraphviz() {
-    std::stringstream ss;
-    ss << "digraph D {" << std::endl;
+Ast::Ast(const Ast &otherAst) {
+  std::cout << "Copy constructor called!" << std::endl;
+  Ast* clonedAst = new Ast;
+  clonedAst->setRootNode(otherAst.getRootNode()->cloneRecursiveDeep());
+  throw std::logic_error("Copy constructor for AST not implemented yet!");
+}
 
-    std::deque<std::pair<Node *, int>> q;
-    q.emplace_back(getRootNode(), 1);
-    while (!q.empty()) {
-        auto curNode = q.front().first;
-        auto il = q.front().second;
-        q.pop_front();
-        std::string outStr;
-        ss << curNode->getDotFormattedString(isReversed(), "\t", true);
-        auto nodes = (isReversed()) ? curNode->getParents() : curNode->getChildren();
-        for_each(nodes.rbegin(), nodes.rend(), [&q, il](Node *n) {
-            q.emplace_front(n, il + 1);
-        });
+bool Ast::isValidCircuit() {
+  std::set<Node*> allAstNodes = getAllNodes();
+  auto supportCircuitMode = [](Node* n) { return n->supportsCircuitMode(); };
+  return std::all_of(allAstNodes.begin(), allAstNodes.end(), supportCircuitMode);
+}
+
+void Ast::reverseEdges() {
+  std::queue<Node*> nodesToCheck;
+  nodesToCheck.push(getRootNode());
+  while (!nodesToCheck.empty()) {
+    auto curNode = nodesToCheck.front();
+    nodesToCheck.pop();
+    auto nextNodesToAdd = curNode->isReversed ? curNode->getParents() : curNode->getChildren();
+    // enqueue nodes to be processed next
+    for (auto &n : nextNodesToAdd) nodesToCheck.push(n);
+    curNode->swapChildrenParents();
+  }
+}
+
+std::set<Node*> Ast::getAllNodes() const {
+  std::set<Node*> allNodes{getRootNode()};
+  std::queue<Node*> nodesToCheck{{getRootNode()}};
+  while (!nodesToCheck.empty()) {
+    auto curNode = nodesToCheck.front();
+    nodesToCheck.pop();
+    if (curNode == nullptr) continue;
+    allNodes.insert(curNode);
+    auto nextNodesToConsider = curNode->isReversed ? curNode->getParentsNonNull() : curNode->getChildrenNonNull();
+    for (auto &c : nextNodesToConsider) nodesToCheck.push(c);
+  }
+  return allNodes;
+}
+
+void Ast::deleteNode(Node** node, bool deleteSubtreeRecursively) {
+  Node* nodePtr = *node;
+  nodePtr->getUniqueNodeId();
+  // if deleteSubtreeRecursively is set, we need to delete all children first
+  if (deleteSubtreeRecursively) {
+    for (auto &c : nodePtr->getChildrenNonNull()) {
+      c->getUniqueNodeId();
+      deleteNode(&c, true);
     }
-
-    ss << "}" << std::endl;
-    std::cout << ss.str();
+  }
+    // if deleteSubtreesRecursively is not set but there are children, we cannot continue.
+    // probably the user by mistake deleted the whole subtree.
+  else if (!nodePtr->getChildrenNonNull().empty()) {
+    throw std::logic_error("Cannot remove node (" + nodePtr->getUniqueNodeId()
+                               + ") because node has children but deleteSubtreeRecursively is not set (false).");
+  }
+  // first isolate the node from its parents, then deallocate the heap memory
+  nodePtr->isolateNode();
+  delete nodePtr;
+  // "clear" the pointer to avoid the further use of this deleted node
+  *node = nullptr;
 }
 

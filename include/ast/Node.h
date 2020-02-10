@@ -1,7 +1,6 @@
 #ifndef MASTER_THESIS_CODE_NODE_H
 #define MASTER_THESIS_CODE_NODE_H
 
-#include <string>
 #include <vector>
 #include <nlohmann/json.hpp>
 #include "../include/visitor/Visitor.h"
@@ -13,85 +12,130 @@ class Literal;
 class Ast;
 
 class Node {
-private:
-    std::vector<Node *> children{};
+ protected:
+  std::vector<Node*> children{};
 
-    std::vector<Node *> parents{};
+  std::vector<Node*> parents{};
 
-    static int nodeIdCounter;
+  static int nodeIdCounter;
 
-    std::string uniqueNodeId;
+  /// An identifier that is unique among all nodes during runtime.
+  std::string uniqueNodeId;
 
-    /// This attributes is used to link back to the original Node in an overlay circuit.
-    Node *underlyingNode;
+  /// This attributes is used to link back to the original Node in an overlay circuit.
+  Node* underlyingNode{};
 
-private:
+  /// Generates a new node ID in the form "<NodeTypeName>_nodeIdCounter++" where <NodeTypeName> is the value obtained by
+  /// getNodeName() and nodeIdCounter an ongoing counter of created Node objects.
+  /// \return An unique node ID to be used as uniqueNodeId for the current node.
+  std::string genUniqueNodeId();
 
-    std::string genUniqueNodeId();
+  static int getAndIncrementNodeId();
 
-    static int getAndIncrementNodeId();
+  /// This special variant of getChildAtIndex returns the n-th parent instead of n-th child if isEdgeDirectionAware is
+  /// passed and is true, and the current node has the property isReversed set to True.
+  /// \param idx The position of the child to be retrieved.
+  /// \param isEdgeDirectionAware If the node's status of isReversed should be considered.
+  /// \return A reference to the node at the specified index in the children or parent vector.
+  [[nodiscard]] Node* getChildAtIndex(int idx, bool isEdgeDirectionAware) const;
 
-    static int getNodeIdCounter();
+ public:
+  Node();
 
-public:
+  [[nodiscard]] Node* getUnderlyingNode() const;
+  void setUnderlyingNode(Node* uNode);
 
-    Node();
+  [[nodiscard]] virtual std::string getNodeName() const;
 
-    Node *getUnderlyingNode() const;
+  std::string getUniqueNodeId();
 
-    void setUnderlyingNode(Node *uNode);
+  static void resetNodeIdCounter();
 
-    [[nodiscard]] virtual std::string getNodeName() const;
+  [[nodiscard]] const std::vector<Node*> &getParents() const;
 
-    std::string getUniqueNodeId();
+  [[nodiscard]] const std::vector<Node*> &getChildren() const;
 
-    static void resetNodeIdCounter();
+  /// Returns all the ancestor nodes of the current node.
+  /// \return A list of ancestor nodes.
+  std::vector<Node*> getAnc();
 
-    [[nodiscard]] const std::vector<Node *> &getChildren() const;
+  // Functions for handling children
+  void addChild(Node* child, bool addBackReference = false);
+  void addChildBilateral(Node* child);
+  void addChildren(const std::vector<Node*> &childrenToAdd, bool addBackReference = false);
+  void setChild(std::__wrap_iter<Node* const*> position, Node* value);
+  void removeChild(Node* child);
+  void removeChildren();
+  [[nodiscard]] int countChildrenNonNull() const;
 
-    void addChild(Node *child);
+  /// Returns the child at the given index.
+  /// \param idx The position of the children in the Node::children vector.
+  /// \return The child at the given index of the children vector, or a nullptr if there is no child at this position.
+  [[nodiscard]] Node* getChildAtIndex(int idx) const;
 
-    [[nodiscard]] const std::vector<Node *> &getParents() const;
+  // Functions for handling parents
+  void addParent(Node* n);
+  void removeParent(Node* node);
+  void removeParents();
+  bool hasParent(Node* n);
 
-    [[nodiscard]] const std::vector<Node *> &getPred() const;
+  static void addParentTo(Node* parentNode, std::vector<Node*> nodesToAddParentTo);
 
-    [[nodiscard]] const std::vector<Node *> &getSucc() const;
+  void swapChildrenParents();
 
-    void removeChild(Node *child);
+  virtual Literal* evaluate(Ast &ast);
 
-    void removeChildren();
+  virtual void accept(Visitor &v);
 
-    void removeParent(Node *node);
+  [[nodiscard]] virtual json toJson() const;
 
-    void removeParents();
+  [[nodiscard]] virtual std::string toString() const;
 
-    void addChildren(std::vector<Node *> c);
+  friend std::ostream &operator<<(std::ostream &os, const std::vector<Node*> &v);
 
-    static void addParent(Node *parentNode, std::vector<Node *> nodesToAddParentTo);
+  [[nodiscard]] virtual Node* clone();
 
-    void addParent(Node *n);
+  [[nodiscard]] virtual Node* cloneRecursiveDeep();
 
-    void swapChildrenParents();
+  void setUniqueNodeId(const std::string &unique_node_id);
 
-    virtual Literal *evaluate(Ast &ast);
+  /// Determine the value of this node for computing the multiplicative depth and reverse multiplicative depth,
+  /// getMultDepthL() and getReverseMultDepthR(), respectively.
+  /// \return Returns 1 iff this node is a LogicalExpr containing an AND operator, otherwise 0.
+  int depthValue();
 
-    virtual void accept(Visitor &v);
+  /// Calculates the multiplicative depth based on the definition given in
+  /// [Aubry, P. et al.: Faster Homomorphic Encryption Is Not Enough: Improved Heuristic for Multiplicative Depth
+  ///  Minimization of Boolean Circuits. (2019)].
+  /// \return The multiplicative depth of the current node.
+  int getMultDepthL(std::map<std::string, int>* storedDepthsMap = nullptr);
 
-    [[nodiscard]] virtual json toJson() const;
+  /// Calculates the reverse multiplicative depth based on the definition given in
+  /// [Aubry, P. et al.: Faster Homomorphic Encryption Is Not Enough: Improved Heuristic for Multiplicative Depth
+  ///  Minimization of Boolean Circuits. (2019)].
+  /// \return The reverse multiplicative depth of the current node.
+  int getReverseMultDepthR(std::map<std::string, int>* storedDepthsMap = nullptr);
 
-    [[nodiscard]] virtual std::string toString() const;
+  /// This method returns True iff the class derived from the Node class properly makes use of the child/parent fields
+  /// as it would be expected in a circuit.
+  virtual bool supportsCircuitMode();
 
-    friend std::ostream &operator<<(std::ostream &os, const std::vector<Node *> &v);
+  /// Indicates the number of children that are allowed for a specific node.
+  /// For example, a binary expression accepts exactly three attributes and hence also exactly three children:
+  /// left operand, right operand, and operator.
+  /// If the node does not implement support for child/parent relationships, getMaxNumberChildren() return 0.
+  /// \return An integer indicating the number of allowed children for a specific node.
+  virtual int getMaxNumberChildren();
 
-    std::string getDotFormattedString(bool isReversed, const std::string &indentation, bool showMultDepth);
+  /// Indicates whether the edges of this node are reversed compared to its initial state.
+  bool isReversed{false};
+  std::vector<Node*> getChildrenNonNull() const;
+  std::vector<Node*> getParentsNonNull() const;
+  void isolateNode();
+  void removeChildBilateral(Node* child);
+  virtual ~Node();
 
-    [[nodiscard]] virtual Node *clone();
-
-    void setUniqueNodeId(const std::string &unique_node_id);
-
-    void printAncestorsDescendants(std::vector<Node *> nodes);
-
-    void printAncestorsDescendants(Node *n);
+  bool hasReversedEdges() const;
 };
 
 #endif //MASTER_THESIS_CODE_NODE_H

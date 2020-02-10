@@ -32,7 +32,10 @@ set(TEST_FILES
         AstTestingGenerator.cpp
         AstTestingGenerator.h AstEvaluationTest.cpp
         ${ast_optimizer_SOURCE_DIR}/include/utilities/TestUtils.h
-        MultDepthVisitorTest.cpp)
+        MultDepthVisitorTest.cpp
+        ChildParentTest.cpp
+        AstClassTest.cpp
+        DotPrinterTest.cpp)
 
 add_executable(testing-all
         ${TEST_FILES})
