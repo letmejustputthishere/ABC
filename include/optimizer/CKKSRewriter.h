@@ -2,6 +2,7 @@
 #define AST_OPTIMIZER_CKKSREWRITER_H
 
 #include "Ast.h"
+#include "MultiplicativeDepthCalculator.h"
 
 /// Introduces the ciphertext maintenance operations (rescale, relinearize, modulus switching, etc)
 /// required in the CKKS Scheme (CKKS 2017) into an AST, i.e. decides when during the computation to apply them.
@@ -17,12 +18,20 @@
 ///
 class CKKSRewriter {
 public:
+    /// Initializes the CKKSRewriter with an Ast to modify
+    /// The Ast must be a circuit for CKKSRewriting to be successful
+    /// \param ast
     explicit CKKSRewriter(Ast &ast);
 
     /// Add ciphertext maintenance operations required for CKKS to the AST
     /// This modifies the AST that was passed when the object was created
     /// \return Reference to the rewritten AST
+    /// \throws std::invalid_argument If the Ast in the CKKSRewriter instance is not a valid circuit
     Ast &applyCKKSRewriting();
+
+private:
+    Ast & ast;
+    MultiplicativeDepthCalculator multiplicativeDepthCalculator;
 
 };
 
