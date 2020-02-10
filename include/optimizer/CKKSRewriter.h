@@ -1,6 +1,8 @@
 #ifndef AST_OPTIMIZER_CKKSREWRITER_H
 #define AST_OPTIMIZER_CKKSREWRITER_H
 
+#include <string>
+#include <unordered_map>
 #include "Ast.h"
 #include "MultiplicativeDepthCalculator.h"
 
@@ -29,9 +31,24 @@ public:
     /// \throws std::invalid_argument If the Ast in the CKKSRewriter instance is not a valid circuit
     Ast &applyCKKSRewriting();
 
+    /// Chain of moduli, where the i-th element represents the number of bits of the i-th prime in the chain
+    typedef std::vector<size_t> Modulus;
+
 private:
+    /// Current AST to be rewritten
     Ast & ast;
+
+    /// Helper to compute and keep track of each node's multiplicative depth
     MultiplicativeDepthCalculator multiplicativeDepthCalculator;
+
+    /// Dictionary to keep track of the modulus chain
+    std::unordered_map<std::string, Modulus> moduli;
+
+    /// Dictionary to keep track of the logarithm of the scale
+    std::unordered_map<std::string, int> scales;
+
+    /// Dictionary to keep track of the size (number of elements) of the ciphertexts
+    std::unordered_map<std::string, uint> sizes;
 
 };
 
