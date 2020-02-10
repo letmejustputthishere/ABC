@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include "Ast.h"
 #include "MultiplicativeDepthCalculator.h"
+#include "Visitor.h"
 
 /// Introduces the ciphertext maintenance operations (rescale, relinearize, modulus switching, etc)
 /// required in the CKKS Scheme (CKKS 2017) into an AST, i.e. decides when during the computation to apply them.
@@ -36,7 +37,7 @@ public:
 
 private:
     /// Current AST to be rewritten
-    Ast & ast;
+    Ast &ast;
 
     /// Helper to compute and keep track of each node's multiplicative depth
     MultiplicativeDepthCalculator multiplicativeDepthCalculator;
@@ -50,6 +51,28 @@ private:
     /// Dictionary to keep track of the size (number of elements) of the ciphertexts
     std::unordered_map<std::string, uint> sizes;
 
+    /// Sets the scale of input variables
+    void setInputScales();
+
+    /// Compute the "waterline" scale, i.e. the maximum scale of any input into the circuit
+    uint waterline();
+};
+
+/// Helper Class to Set Input Scales
+class InputScaleSetter : public Visitor {
+private:
+    std::unordered_map<std::string, int> &scales;
+
+public:
+    explicit InputScaleSetter(std::unordered_map<std::string, int> &scales);
+
+    using Visitor::visit;
+
+    void visit(LiteralInt &elem) override;
+
+    void visit(LiteralFloat &elem) override;
+
+    void visit(LiteralBool &elem) override;
 };
 
 
