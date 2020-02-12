@@ -36,6 +36,8 @@ set(TEST_FILES
         ChildParentTest.cpp
         AstClassTest.cpp
         DotPrinterTest.cpp
+        ConeRewriterTest.cpp
+        LiteralTest.cpp
         CKKSRewriterTest.cpp)
 
 add_executable(testing-all
