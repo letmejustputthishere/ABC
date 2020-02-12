@@ -12,7 +12,7 @@ json LiteralString::toJson() const {
   return j;
 }
 
-void LiteralString::accept(Visitor &v) {
+void LiteralString::accept(IVisitor &v) {
   v.visit(*this);
 }
 

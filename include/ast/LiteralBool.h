@@ -16,7 +16,7 @@ class LiteralBool : public Literal {
 
   [[nodiscard]] json toJson() const override;
 
-  void accept(Visitor &v) override;
+  void accept(IVisitor &v) override;
 
   [[nodiscard]] bool getValue() const;
 

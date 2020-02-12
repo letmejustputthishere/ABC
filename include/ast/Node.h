@@ -4,7 +4,7 @@
 #include <vector>
 #include <sstream>
 #include "nlohmann/json.hpp"
-#include "Visitor.h"
+#include "IVisitor.h"
 
 using json = nlohmann::json;
 
@@ -98,7 +98,7 @@ class Node {
 
   virtual Literal* evaluate(Ast &ast);
 
-  virtual void accept(Visitor &v);
+  virtual void accept(IVisitor &v);
 
   [[nodiscard]] virtual json toJson() const;
 

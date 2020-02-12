@@ -4,7 +4,7 @@
 #include <variant>
 #include <string>
 #include <iostream>
-#include "../visitor/Visitor.h"
+#include "IVisitor.h"
 #include "Node.h"
 #include "LiteralString.h"
 #include "LiteralBool.h"
@@ -74,7 +74,7 @@ class Operator : public Node {
 
   [[nodiscard]] const std::variant<OpSymb::BinaryOp, OpSymb::LogCompOp, OpSymb::UnaryOp> &getOperatorSymbol() const;
 
-  void accept(Visitor &v) override;
+  void accept(IVisitor &v) override;
 
   [[nodiscard]] std::string getNodeName() const override;
 

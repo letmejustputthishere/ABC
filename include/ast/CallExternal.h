@@ -17,7 +17,7 @@ class CallExternal : public AbstractExpr, public AbstractStatement {
 
   [[nodiscard]] json toJson() const override;
 
-  void accept(Visitor &v) override;
+  void accept(IVisitor &v) override;
 
   [[nodiscard]] const std::string &getFunctionName() const;
 

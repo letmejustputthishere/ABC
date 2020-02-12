@@ -10,7 +10,7 @@ json LogicalExpr::toJson() const {
   return j;
 }
 
-void LogicalExpr::accept(Visitor &v) {
+void LogicalExpr::accept(IVisitor &v) {
   v.visit(*this);
 }
 

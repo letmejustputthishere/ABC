@@ -12,7 +12,7 @@ json AbstractStatement::toJson() const {
   return json({"type", "AbstractStatement"});
 }
 
-void AbstractStatement::accept(Visitor &v) {
+void AbstractStatement::accept(IVisitor &v) {
   std::cout << "This shouldn't be executed!" << std::endl;
 }
 

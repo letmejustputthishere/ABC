@@ -8,7 +8,7 @@ json Group::toJson() const {
   return j;
 }
 
-void Group::accept(Visitor &v) {
+void Group::accept(IVisitor &v) {
   v.visit(*this);
 }
 

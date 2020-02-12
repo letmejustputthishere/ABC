@@ -35,7 +35,7 @@ class BinaryExpr : public AbstractExpr {
 
   [[nodiscard]] AbstractExpr* getRight() const;
 
-  void accept(Visitor &v) override;
+  void accept(IVisitor &v) override;
 
   [[nodiscard]] std::string getNodeName() const override;
 

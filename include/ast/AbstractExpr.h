@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <nlohmann/json.hpp>
-#include "../visitor/Visitor.h"
+#include "IVisitor.h"
 #include "Ast.h"
 #include "Node.h"
 
@@ -29,7 +29,7 @@ class AbstractExpr : public Node {
 
   [[nodiscard]] json toJson() const override;
 
-  void accept(Visitor &v) override;
+  void accept(IVisitor &v) override;
 
   virtual BinaryExpr* contains(BinaryExpr* bexpTemplate, AbstractExpr* excludedSubtree);
 

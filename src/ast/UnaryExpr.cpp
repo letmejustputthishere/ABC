@@ -12,7 +12,7 @@ UnaryExpr::UnaryExpr(OpSymb::UnaryOp op, AbstractExpr* right) {
   setAttributes(op, right);
 }
 
-void UnaryExpr::accept(Visitor &v) {
+void UnaryExpr::accept(IVisitor &v) {
   v.visit(*this);
 }
 

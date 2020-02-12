@@ -15,7 +15,7 @@ json AbstractExpr::toJson() const {
   return json({"type", "AbstractExpr"});
 }
 
-void AbstractExpr::accept(Visitor &v) {
+void AbstractExpr::accept(IVisitor &v) {
   std::cout << "This shouldn't be executed!" << std::endl;
 }
 

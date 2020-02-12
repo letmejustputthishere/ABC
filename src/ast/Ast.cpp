@@ -25,7 +25,7 @@ Node* Ast::getRootNode() const {
   return rootNode;
 }
 
-void Ast::accept(Visitor &v) {
+void Ast::accept(IVisitor &v) {
   v.visit(*this);
 }
 

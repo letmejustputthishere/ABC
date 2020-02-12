@@ -28,7 +28,7 @@ Block::Block(std::vector<AbstractStatement*>* statements) {
   this->statements = statements;
 }
 
-void Block::accept(Visitor &v) {
+void Block::accept(IVisitor &v) {
   v.visit(*this);
 }
 

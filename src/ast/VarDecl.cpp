@@ -50,7 +50,7 @@ void VarDecl::setAttributes(std::string varIdentifier, Datatype* varDatatype, Ab
   Node::addParentTo(this, {varDatatype, varValue});
 }
 
-void VarDecl::accept(Visitor &v) {
+void VarDecl::accept(IVisitor &v) {
   v.visit(*this);
 }
 

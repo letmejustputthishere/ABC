@@ -1,113 +1,57 @@
 #ifndef AST_OPTIMIZER_VISITOR_H
 #define AST_OPTIMIZER_VISITOR_H
+#include "IVisitor.h"
 
-#include <string>
 
-class AbstractExpr;
+class Visitor : public IVisitor {
+public:
+    void visit(BinaryExpr &elem) override;
 
-class AbstractStatement;
+    void visit(Block &elem) override;
 
-class Ast;
+    void visit(Call &elem) override;
 
-class BinaryExpr;
+    void visit(CallExternal &elem) override;
 
-class Block;
+    void visit(Function &elem) override;
 
-class Call;
+    void visit(FunctionParameter &elem) override;
 
-class CallExternal;
+    void visit(Group &elem) override;
 
-class Class;
+    void visit(If &elem) override;
 
-class Function;
+    void visit(LiteralBool &elem) override;
 
-class FunctionParameter;
+    void visit(LiteralInt &elem) override;
 
-class Group;
+    void visit(LiteralString &elem) override;
 
-class If;
+    void visit(LiteralFloat &elem) override;
 
-class Literal;
+    void visit(LogicalExpr &elem) override;
 
-class LiteralBool;
+    void visit(Operator &elem) override;
 
-class LiteralInt;
+    void visit(Return &elem) override;
 
-class LiteralString;
+    void visit(UnaryExpr &elem) override;
 
-class LiteralFloat;
+    void visit(VarAssignm &elem) override;
 
-class LogicalExpr;
+    void visit(VarDecl &elem) override;
 
-class Operator;
+    void visit(Variable &elem) override;
 
-class Return;
+    void visit(While &elem) override;
 
-class UnaryExpr;
+    void visit(Ast &elem) override;
 
-class VarAssignm;
+    Scope* curScope;
 
-class VarDecl;
+    void changeToOuterScope();
 
-class Variable;
-
-class While;
-
-class Scope;
-
-class Visitor {
- public:
-  virtual void visit(BinaryExpr &elem);
-
-  virtual void visit(Block &elem);
-
-  virtual void visit(Call &elem);
-
-  virtual void visit(CallExternal &elem);
-
-  virtual void visit(Function &elem);
-
-  virtual void visit(FunctionParameter &elem);
-
-  virtual void visit(Group &elem);
-
-  virtual void visit(If &elem);
-
-  virtual void visit(LiteralBool &elem);
-
-  virtual void visit(LiteralInt &elem);
-
-  virtual void visit(LiteralString &elem);
-
-  virtual void visit(LiteralFloat &elem);
-
-  virtual void visit(LogicalExpr &elem);
-
-  virtual void visit(Operator &elem);
-
-  virtual void visit(Return &elem);
-
-  virtual void visit(UnaryExpr &elem);
-
-  virtual void visit(VarAssignm &elem);
-
-  virtual void visit(VarDecl &elem);
-
-  virtual void visit(Variable &elem);
-
-  virtual void visit(While &elem);
-
-  Scope* curScope;
-
-  void changeToOuterScope();
-
-  void changeToInnerScope(const std::string &nodeId);
-
-  Visitor();
-
-  /// This and only this method should be used to traverse an AST.
-  /// \param elem A reference to the Abstract Syntax Tree (AST).
-  virtual void visit(Ast &elem);
+    void changeToInnerScope(const std::string &nodeId);
 };
 
 #endif //AST_OPTIMIZER_VISITOR_H

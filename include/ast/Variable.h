@@ -16,7 +16,7 @@ class Variable : public AbstractExpr {
   [[nodiscard]] json toJson() const override;
   virtual ~Variable();
 
-  void accept(Visitor &v) override;
+  void accept(IVisitor &v) override;
 
   [[nodiscard]] std::string getNodeName() const override;
 

@@ -11,7 +11,7 @@ json While::toJson() const {
   return j;
 }
 
-void While::accept(Visitor &v) {
+void While::accept(IVisitor &v) {
   v.visit(*this);
 }
 

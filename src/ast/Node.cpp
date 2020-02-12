@@ -182,7 +182,7 @@ Literal* Node::evaluate(Ast &ast) {
   return nullptr;
 }
 
-void Node::accept(Visitor &v) {
+void Node::accept(IVisitor &v) {
   std::cout << "This shouldn't be executed!" << std::endl;
 }
 

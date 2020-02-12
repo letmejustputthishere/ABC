@@ -11,7 +11,7 @@ Return::Return(AbstractExpr* value) {
   setAttributes(value);
 }
 
-void Return::accept(Visitor &v) {
+void Return::accept(IVisitor &v) {
   v.visit(*this);
 }
 

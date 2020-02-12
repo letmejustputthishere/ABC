@@ -15,7 +15,7 @@ VarAssignm::VarAssignm(std::string identifier, AbstractExpr* value) : identifier
   setAttribute(value);
 }
 
-void VarAssignm::accept(Visitor &v) {
+void VarAssignm::accept(IVisitor &v) {
   v.visit(*this);
 }
 

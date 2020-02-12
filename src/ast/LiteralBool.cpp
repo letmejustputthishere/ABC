@@ -10,7 +10,7 @@ json LiteralBool::toJson() const {
   return j;
 }
 
-void LiteralBool::accept(Visitor &v) {
+void LiteralBool::accept(IVisitor &v) {
   v.visit(*this);
 }
 

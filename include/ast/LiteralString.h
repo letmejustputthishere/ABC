@@ -21,7 +21,7 @@ class LiteralString : public Literal {
 
   [[nodiscard]] const std::string &getValue() const;
 
-  void accept(Visitor &v) override;
+  void accept(IVisitor &v) override;
 
   [[nodiscard]] std::string getNodeName() const override;
 

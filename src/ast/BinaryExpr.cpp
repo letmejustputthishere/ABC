@@ -35,7 +35,7 @@ AbstractExpr* BinaryExpr::getRight() const {
   return reinterpret_cast<AbstractExpr* >(getChildAtIndex(2, true));
 }
 
-void BinaryExpr::accept(Visitor &v) {
+void BinaryExpr::accept(IVisitor &v) {
   v.visit(*this);
 }
 

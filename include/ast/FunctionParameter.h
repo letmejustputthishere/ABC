@@ -22,7 +22,7 @@ class FunctionParameter : public AbstractExpr {
 
   [[nodiscard]] AbstractExpr* getValue() const;
 
-  void accept(Visitor &v) override;
+  void accept(IVisitor &v) override;
 
  private:
   Datatype* datatype;

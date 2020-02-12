@@ -18,7 +18,7 @@ int LiteralInt::getValue() const {
   return value;
 }
 
-void LiteralInt::accept(Visitor &v) {
+void LiteralInt::accept(IVisitor &v) {
   v.visit(*this);
 }
 

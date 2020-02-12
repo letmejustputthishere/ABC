@@ -7,7 +7,7 @@
 #include "LiteralBool.h"
 #include "LiteralFloat.h"
 
-void Operator::accept(Visitor &v) {
+void Operator::accept(IVisitor &v) {
   v.visit(*this);
 }
 

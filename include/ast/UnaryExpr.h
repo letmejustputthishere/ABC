@@ -15,7 +15,7 @@ class UnaryExpr : public AbstractExpr {
 
   [[nodiscard]] json toJson() const override;
 
-  void accept(Visitor &v) override;
+  void accept(IVisitor &v) override;
 
   [[nodiscard]] Operator* getOp() const;
 

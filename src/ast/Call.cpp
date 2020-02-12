@@ -17,7 +17,7 @@ json Call::toJson() const {
   return j;
 }
 
-void Call::accept(Visitor &v) {
+void Call::accept(IVisitor &v) {
   v.visit(*this);
 }
 

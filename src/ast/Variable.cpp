@@ -13,7 +13,7 @@ json Variable::toJson() const {
   return j;
 }
 
-void Variable::accept(Visitor &v) {
+void Variable::accept(IVisitor &v) {
   v.visit(*this);
 }
 

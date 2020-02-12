@@ -23,7 +23,7 @@ CallExternal::CallExternal(std::string functionName) : functionName(std::move(st
   this->arguments = nullptr;
 }
 
-void CallExternal::accept(Visitor &v) {
+void CallExternal::accept(IVisitor &v) {
   v.visit(*this);
 }
 

@@ -20,7 +20,7 @@ class If : public AbstractStatement {
 
   [[nodiscard]] json toJson() const override;
 
-  void accept(Visitor &v) override;
+  void accept(IVisitor &v) override;
 
   [[nodiscard]] std::string getNodeName() const override;
 

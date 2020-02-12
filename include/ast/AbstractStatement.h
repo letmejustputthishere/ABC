@@ -3,7 +3,7 @@
 
 #include <string>
 #include <nlohmann/json.hpp>
-#include "../visitor/Visitor.h"
+#include "IVisitor.h"
 #include "Node.h"
 
 using json = nlohmann::json;
@@ -14,7 +14,7 @@ class AbstractStatement : public Node {
 
   [[nodiscard]] json toJson() const override;
 
-  void accept(Visitor &v) override;
+  void accept(IVisitor &v) override;
 
   virtual BinaryExpr* contains(BinaryExpr* bexpTemplate, BinaryExpr* excludedSubtree);
 

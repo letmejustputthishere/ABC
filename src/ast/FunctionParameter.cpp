@@ -27,7 +27,7 @@ json FunctionParameter::toJson() const {
   return j;
 }
 
-void FunctionParameter::accept(Visitor &v) {
+void FunctionParameter::accept(IVisitor &v) {
   v.visit(*this);
 }
 

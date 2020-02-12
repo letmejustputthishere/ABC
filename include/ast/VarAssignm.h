@@ -16,7 +16,7 @@ class VarAssignm : public AbstractStatement {
 
   [[nodiscard]] json toJson() const override;
 
-  void accept(Visitor &v) override;
+  void accept(IVisitor &v) override;
 
   [[nodiscard]] const std::string &getIdentifier() const;
 

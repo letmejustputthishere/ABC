@@ -17,7 +17,7 @@ If::If(AbstractExpr* condition, AbstractStatement* thenBranch) : condition(condi
   elseBranch = nullptr;
 }
 
-void If::accept(Visitor &v) {
+void If::accept(IVisitor &v) {
   v.visit(*this);
 }
 

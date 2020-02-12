@@ -193,8 +193,3 @@ void Visitor::changeToInnerScope(const std::string &nodeId) {
   auto temp = curScope->getOrCreateInnerScope(nodeId);
   this->curScope = temp;
 }
-
-Visitor::Visitor() {
-  curScope = nullptr;
-}
-

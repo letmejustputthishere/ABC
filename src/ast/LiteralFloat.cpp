@@ -1,7 +1,7 @@
 #include <iostream>
 #include <AbstractExpr.h>
 #include "../../include/ast/LiteralFloat.h"
-#include "../../include/visitor/Visitor.h"
+#include "IVisitor.h"
 #include "../utilities/RandNumGen.h"
 
 LiteralFloat::LiteralFloat(float value) : value(value) {}
@@ -17,7 +17,7 @@ float LiteralFloat::getValue() const {
   return value;
 }
 
-void LiteralFloat::accept(Visitor &v) {
+void LiteralFloat::accept(IVisitor &v) {
   v.visit(*this);
 }
 

@@ -43,7 +43,7 @@ const std::vector<FunctionParameter> &Function::getParams() const {
   return params;
 }
 
-void Function::accept(Visitor &v) {
+void Function::accept(IVisitor &v) {
   v.visit(*this);
 }
 

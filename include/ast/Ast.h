@@ -5,7 +5,7 @@
 #include <string>
 #include <set>
 #include "../include/ast/Node.h"
-#include "../visitor/Visitor.h"
+#include "IVisitor.h"
 
 class Ast {
  private:
@@ -33,7 +33,7 @@ class Ast {
 
   [[nodiscard]] Node* getRootNode() const;
 
-  virtual void accept(Visitor &v);
+  virtual void accept(IVisitor &v);
 
   bool hasVarValue(Variable* var);
 
