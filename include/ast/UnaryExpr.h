@@ -1,35 +1,37 @@
-#ifndef AST_OPTIMIZER_UNARYEXPR_H
-#define AST_OPTIMIZER_UNARYEXPR_H
+#ifndef AST_OPTIMIZER_INCLUDE_UNARYEXPR_H
+#define AST_OPTIMIZER_INCLUDE_UNARYEXPR_H
 
 #include <string>
 #include "AbstractExpr.h"
 #include "Operator.h"
 
 class UnaryExpr : public AbstractExpr {
- private:
-//  Operator* op;
-//  AbstractExpr* right;
+public:
+    UnaryExpr(OpSymb::UnaryOp op, AbstractExpr *right);
 
- public:
-  UnaryExpr(OpSymb::UnaryOp op, AbstractExpr* right);
+    [[nodiscard]] json toJson() const override;
 
-  [[nodiscard]] json toJson() const override;
+    void accept(Visitor &v) override;
 
-  void accept(IVisitor &v) override;
+    [[nodiscard]] Operator *getOp() const;
 
-  [[nodiscard]] Operator* getOp() const;
+    [[nodiscard]] AbstractExpr *getRight() const;
 
-  [[nodiscard]] AbstractExpr* getRight() const;
+    [[nodiscard]] std::string getNodeName() const override;
 
-  [[nodiscard]] std::string getNodeName() const override;
+    ~UnaryExpr() override;
 
-  ~UnaryExpr() override;
+    std::vector<Literal *> evaluate(Ast &ast) override;
 
-  Literal* evaluate(Ast &ast) override;
- protected:
-  bool supportsCircuitMode() override;
-  int getMaxNumberChildren() override;
-  void setAttributes(OpSymb::UnaryOp op, AbstractExpr* expr);
+    void setAttributes(OpSymb::UnaryOp op, AbstractExpr *expr);
+
+protected:
+    bool supportsCircuitMode() override;
+
+    int getMaxNumberChildren() override;
+
+private:
+    Node *createClonedNode(bool keepOriginalUniqueNodeId) override;
 };
 
-#endif //AST_OPTIMIZER_UNARYEXPR_H
+#endif //AST_OPTIMIZER_INCLUDE_UNARYEXPR_H

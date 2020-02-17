@@ -1,5 +1,4 @@
 #include <utility>
-#include <iostream>
 
 #include "../../include/ast/Variable.h"
 #include "Ast.h"
@@ -13,7 +12,7 @@ json Variable::toJson() const {
   return j;
 }
 
-void Variable::accept(IVisitor &v) {
+void Variable::accept(Visitor &v) {
   v.visit(*this);
 }
 
@@ -25,7 +24,7 @@ const std::string &Variable::getIdentifier() const {
   return identifier;
 }
 
-bool Variable::contains(Variable* var) {
+bool Variable::contains(Variable *var) {
   return *this == *var;
 }
 
@@ -37,15 +36,15 @@ bool Variable::operator!=(const Variable &rhs) const {
   return !(rhs == *this);
 }
 
-bool Variable::isEqual(AbstractExpr* other) {
-  if (auto otherVar = dynamic_cast<Variable*>(other)) {
+bool Variable::isEqual(AbstractExpr *other) {
+  if (auto otherVar = dynamic_cast<Variable *>(other)) {
     return this->getIdentifier() == otherVar->getIdentifier();
   }
   return false;
 }
 
-Literal* Variable::evaluate(Ast &ast) {
-  return ast.getVarValue(this->getIdentifier());
+std::vector<Literal *> Variable::evaluate(Ast &ast) {
+  return std::vector<Literal *>({ast.getVarValue(this->getIdentifier())});
 }
 
 std::vector<std::string> Variable::getVariableIdentifiers() {
@@ -62,10 +61,6 @@ bool Variable::supportsCircuitMode() {
 
 Variable::~Variable() = default;
 
-Node* Variable::cloneRecursiveDeep(bool keepOriginalUniqueNodeId) {
-  auto clonedVariable = new Variable(this->identifier);
-  if (keepOriginalUniqueNodeId) {
-    clonedVariable->setUniqueNodeId(this->getUniqueNodeId());
-  }
-  return clonedVariable;
+Node *Variable::createClonedNode(bool) {
+  return new Variable(this->identifier);
 }

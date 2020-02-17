@@ -1,8 +1,7 @@
 #include <utility>
-#include <Datatypes.h>
-
-#include "../../include/ast/LiteralString.h"
-#include "../utilities/RandNumGen.h"
+#include "Datatypes.h"
+#include "LiteralString.h"
+#include "RandNumGen.h"
 
 LiteralString::LiteralString(std::string value) : value(std::move(value)) {}
 
@@ -13,7 +12,7 @@ json LiteralString::toJson() const {
   return j;
 }
 
-void LiteralString::accept(IVisitor &v) {
+void LiteralString::accept(Visitor &v) {
   v.visit(*this);
 }
 
@@ -27,8 +26,8 @@ std::string LiteralString::getNodeName() const {
 
 LiteralString::~LiteralString() = default;
 
-Literal* LiteralString::evaluate(Ast &ast) {
-  return this;
+std::vector<Literal *> LiteralString::evaluate(Ast &ast) {
+  return std::vector<Literal *>({this});
 }
 
 void LiteralString::print(std::ostream &str) const {
@@ -43,7 +42,7 @@ bool LiteralString::operator!=(const LiteralString &rhs) const {
   return !(rhs == *this);
 }
 
-void LiteralString::addLiteralValue(std::string identifier, std::map<std::string, Literal*> &paramsMap) {
+void LiteralString::addLiteralValue(std::string identifier, std::unordered_map<std::string, Literal *> &paramsMap) {
   paramsMap.emplace(identifier, this);
 }
 
@@ -65,4 +64,8 @@ bool LiteralString::supportsCircuitMode() {
 
 bool LiteralString::supportsDatatype(Datatype &datatype) {
   return datatype.getType() == TYPES::STRING;
+}
+
+Node *LiteralString::createClonedNode(bool) {
+  return new LiteralString(this->getValue());
 }

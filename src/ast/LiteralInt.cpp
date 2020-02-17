@@ -1,6 +1,7 @@
-#include "../../include/ast/LiteralInt.h"
-#include <AbstractExpr.h>
-#include "../utilities/RandNumGen.h"
+#include <iostream>
+#include "LiteralInt.h"
+#include "RandNumGen.h"
+#include "AbstractExpr.h"
 
 bool LiteralInt::supportsDatatype(Datatype &datatype) {
   return datatype.getType() == TYPES::INT;
@@ -19,7 +20,7 @@ int LiteralInt::getValue() const {
   return value;
 }
 
-void LiteralInt::accept(IVisitor &v) {
+void LiteralInt::accept(Visitor &v) {
   v.visit(*this);
 }
 
@@ -29,8 +30,8 @@ std::string LiteralInt::getNodeName() const {
 
 LiteralInt::~LiteralInt() = default;
 
-Literal* LiteralInt::evaluate(Ast &ast) {
-  return this;
+std::vector<Literal *> LiteralInt::evaluate(Ast &ast) {
+  return std::vector<Literal *>({this});
 }
 
 LiteralInt LiteralInt::operator+(LiteralInt const &lint) {
@@ -54,7 +55,7 @@ bool LiteralInt::operator!=(const LiteralInt &rhs) const {
   return !(rhs == *this);
 }
 
-void LiteralInt::addLiteralValue(std::string identifier, std::map<std::string, Literal*> &paramsMap) {
+void LiteralInt::addLiteralValue(std::string identifier, std::unordered_map<std::string, Literal *> &paramsMap) {
   paramsMap.emplace(identifier, this);
 }
 
@@ -72,6 +73,10 @@ std::string LiteralInt::toString() const {
 
 bool LiteralInt::supportsCircuitMode() {
   return true;
+}
+
+Node *LiteralInt::createClonedNode(bool) {
+  return new LiteralInt(this->getValue());
 }
 
 

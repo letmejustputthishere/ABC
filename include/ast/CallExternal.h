@@ -1,31 +1,33 @@
-#ifndef AST_OPTIMIZER_CALLEXTERNAL_H
-#define AST_OPTIMIZER_CALLEXTERNAL_H
+#ifndef AST_OPTIMIZER_INCLUDE_CALLEXTERNAL_H
+#define AST_OPTIMIZER_INCLUDE_CALLEXTERNAL_H
 
 #include "AbstractStatement.h"
 #include <vector>
 #include <string>
 
 class CallExternal : public AbstractExpr, public AbstractStatement {
- private:
-  std::string functionName;
-  std::vector<FunctionParameter>* arguments;
+private:
+    std::string functionName;
+    std::vector<FunctionParameter *> arguments;
 
- public:
-  explicit CallExternal(std::string functionName);
+    Node *createClonedNode(bool keepOriginalUniqueNodeId) override;
 
-  CallExternal(std::string functionName, std::vector<FunctionParameter>* arguments);
+public:
+    explicit CallExternal(std::string functionName);
 
-  [[nodiscard]] json toJson() const override;
+    CallExternal(std::string functionName, std::vector<FunctionParameter *> arguments);
 
-  void accept(IVisitor &v) override;
+    [[nodiscard]] json toJson() const override;
 
-  [[nodiscard]] const std::string &getFunctionName() const;
+    void accept(Visitor &v) override;
 
-  [[nodiscard]] std::vector<FunctionParameter>* getArguments() const;
+    [[nodiscard]] const std::string &getFunctionName() const;
 
-  [[nodiscard]] std::string getNodeName() const override;
+    [[nodiscard]] const std::vector<FunctionParameter *> &getArguments() const;
 
-  Literal* evaluate(Ast &ast) override;
+    [[nodiscard]] std::string getNodeName() const override;
+
+    std::vector<Literal *> evaluate(Ast &ast) override;
 };
 
-#endif //AST_OPTIMIZER_CALLEXTERNAL_H
+#endif //AST_OPTIMIZER_INCLUDE_CALLEXTERNAL_H

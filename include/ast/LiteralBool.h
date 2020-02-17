@@ -1,46 +1,50 @@
-#ifndef AST_OPTIMIZER_LITERALBOOL_H
-#define AST_OPTIMIZER_LITERALBOOL_H
+#ifndef AST_OPTIMIZER_INCLUDE_LITERALBOOL_H
+#define AST_OPTIMIZER_INCLUDE_LITERALBOOL_H
 
 #include "Literal.h"
 #include <string>
 #include <map>
 
 class LiteralBool : public Literal {
- private:
-  bool value;
+private:
+    bool value;
 
- public:
-  explicit LiteralBool(bool value);
+    Node *createClonedNode(bool keepOriginalUniqueNodeId) override;
 
-  ~LiteralBool() override;
+public:
+    explicit LiteralBool(bool value);
 
-  [[nodiscard]] json toJson() const override;
+    ~LiteralBool() override;
 
-  void accept(IVisitor &v) override;
+    [[nodiscard]] json toJson() const override;
 
-  [[nodiscard]] bool getValue() const;
+    void accept(Visitor &v) override;
 
-  [[nodiscard]] std::string getTextValue() const;
+    [[nodiscard]] bool getValue() const;
 
-  [[nodiscard]] std::string getNodeName() const override;
+    [[nodiscard]] std::string getTextValue() const;
 
-  Literal* evaluate(Ast &ast) override;
+    [[nodiscard]] std::string getNodeName() const override;
 
-  bool operator==(const LiteralBool &rhs) const;
+    std::vector<Literal *> evaluate(Ast &ast) override;
 
-  bool operator!=(const LiteralBool &rhs) const;
+    bool operator==(const LiteralBool &rhs) const;
 
-  void addLiteralValue(std::string identifier, std::map<std::string, Literal*> &paramsMap) override;
+    bool operator!=(const LiteralBool &rhs) const;
 
-  void setRandomValue(RandLiteralGen &rlg) override;
-  void setValue(bool newValue);
+    void addLiteralValue(std::string identifier, std::unordered_map<std::string, Literal *> &paramsMap) override;
 
-  std::string toString() const override;
-  bool supportsDatatype(Datatype &datatype) override;
+    void setRandomValue(RandLiteralGen &rlg) override;
 
- protected:
-  void print(std::ostream &str) const override;
-  bool supportsCircuitMode() override;
+    void setValue(bool newValue);
+
+    [[nodiscard]] std::string toString() const override;
+
+    bool supportsDatatype(Datatype &datatype) override;
+
+    void print(std::ostream &str) const override;
+
+    bool supportsCircuitMode() override;
 };
 
-#endif //AST_OPTIMIZER_LITERALBOOL_H
+#endif //AST_OPTIMIZER_INCLUDE_LITERALBOOL_H

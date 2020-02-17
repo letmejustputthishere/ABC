@@ -1,42 +1,44 @@
-#ifndef AST_OPTIMIZER_VARASSIGNM_H
-#define AST_OPTIMIZER_VARASSIGNM_H
+#ifndef AST_OPTIMIZER_INCLUDE_VARASSIGNM_H
+#define AST_OPTIMIZER_INCLUDE_VARASSIGNM_H
 
 #include <string>
 #include "AbstractStatement.h"
 #include "AbstractExpr.h"
 
 class VarAssignm : public AbstractStatement {
- private:
-  std::string identifier;
+private:
+    std::string identifier;
 
- public:
-  VarAssignm(std::string identifier, AbstractExpr* value);
+    Node *createClonedNode(bool keepOriginalUniqueNodeId) override;
 
-  ~VarAssignm() override;
+public:
+    VarAssignm(std::string identifier, AbstractExpr *value);
 
-  [[nodiscard]] json toJson() const override;
+    ~VarAssignm() override;
 
-  void accept(IVisitor &v) override;
+    [[nodiscard]] json toJson() const override;
 
-  [[nodiscard]] const std::string &getIdentifier() const;
+    void accept(Visitor &v) override;
 
-  [[nodiscard]] AbstractExpr* getValue() const;
+    [[nodiscard]] const std::string &getIdentifier() const;
 
-  [[nodiscard]] std::string getNodeName() const override;
+    [[nodiscard]] AbstractExpr *getValue() const;
 
-  BinaryExpr* contains(BinaryExpr* bexpTemplate, BinaryExpr* excludedSubtree) override;
+    [[nodiscard]] std::string getNodeName() const override;
 
-  std::string getVarTargetIdentifier() override;
+    BinaryExpr *contains(BinaryExpr *bexpTemplate, BinaryExpr *excludedSubtree) override;
 
-  bool isEqual(AbstractStatement* as) override;
+    std::string getVarTargetIdentifier() override;
 
-  Literal* evaluate(Ast &ast) override;
+    bool isEqual(AbstractStatement *as) override;
 
-  bool supportsCircuitMode() override;
+    std::vector<Literal *> evaluate(Ast &ast) override;
 
-  int getMaxNumberChildren() override;
+    bool supportsCircuitMode() override;
 
-  void setAttribute(AbstractExpr* assignmentValue);
+    int getMaxNumberChildren() override;
+
+    void setAttribute(AbstractExpr *assignmentValue);
 };
 
-#endif //AST_OPTIMIZER_VARASSIGNM_H
+#endif //AST_OPTIMIZER_INCLUDE_VARASSIGNM_H

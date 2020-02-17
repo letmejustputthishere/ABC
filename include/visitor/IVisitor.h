@@ -23,8 +23,6 @@ class Function;
 
 class FunctionParameter;
 
-class Group;
-
 class If;
 
 class Literal;
@@ -68,8 +66,6 @@ class IVisitor {
   virtual void visit(Function &elem) = 0;
 
   virtual void visit(FunctionParameter &elem) = 0;
-
-  virtual void visit(Group &elem) = 0;
 
   virtual void visit(If &elem) = 0;
 

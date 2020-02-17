@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
-#include <Ast.h>
-#include <include/visitor/MultRewriteVisitor.h>
-#include <include/visitor/PrintVisitor.h>
-#include <Operator.h>
-#include <include/utilities/TestUtils.h>
+#include "Ast.h"
+#include "MultRewriteVisitor.h"
+#include "PrintVisitor.h"
+#include "Operator.h"
+#include "TestUtils.h"
 #include "AstTestingGenerator.h"
 #include "Function.h"
 #include "BinaryExpr.h"
@@ -11,7 +11,7 @@
 
 /// Check to ensure that the AST testing generator works as expected.
 TEST(MultRewriteTest, astTestingGeneratorTest) { /* NOLINT */
-  const int HIGHEST_CASE_NUM = AstTestingGenerator::getLargestId();
+  const size_t HIGHEST_CASE_NUM = AstTestingGenerator::getLargestId();
   int i = 1;
   for (; i < HIGHEST_CASE_NUM; i++) {
     Ast ast;
@@ -179,9 +179,9 @@ TEST(MultRewriteTest, rewriteSuccessfulSingleStatementMultiplication_EquivTest) 
   MultRewriteVisitor().visit(rewrittenAst);
 
   // create params for eval
-  std::map<std::string, Literal*> params = {{"inputA", new LiteralInt(12)},
-                                            {"inputB", new LiteralInt(25)},
-                                            {"inputC", new LiteralInt(37)}
+  std::unordered_map<std::string, Literal *> params = {{"inputA", new LiteralInt(12)},
+                                                       {"inputB", new LiteralInt(25)},
+                                                       {"inputC", new LiteralInt(37)}
   };
 
   // run tests
@@ -197,9 +197,9 @@ TEST(MultRewriteTest, noRewriteIfStatementInBetween_EquivTest) { /* NOLINT */
   MultRewriteVisitor().visit(rewrittenAst);
 
   // create params for eval
-  std::map<std::string, Literal*> params = {{"inputA", new LiteralInt(12)},
-                                            {"inputB", new LiteralInt(25)},
-                                            {"inputC", new LiteralInt(37)}
+  std::unordered_map<std::string, Literal *> params = {{"inputA", new LiteralInt(12)},
+                                                       {"inputB", new LiteralInt(25)},
+                                                       {"inputC", new LiteralInt(37)}
   };
 
   // run tests
@@ -215,9 +215,9 @@ TEST(MultRewriteTest, noRewriteIfOutOfScope_EquivTest) { /* NOLINT */
   MultRewriteVisitor().visit(rewrittenAst);
 
   // create params for eval
-  std::map<std::string, Literal*> params = {{"inputA", new LiteralInt(12)},
-                                            {"inputB", new LiteralInt(25)},
-                                            {"inputC", new LiteralInt(37)}
+  std::unordered_map<std::string, Literal *> params = {{"inputA", new LiteralInt(12)},
+                                                       {"inputB", new LiteralInt(25)},
+                                                       {"inputC", new LiteralInt(37)}
   };
 
   // run tests
@@ -233,9 +233,9 @@ TEST(MultRewriteTest, noRewriteForIndependentStatements_EquivTest) { /* NOLINT *
   MultRewriteVisitor().visit(rewrittenAst);
 
   // create params for eval
-  std::map<std::string, Literal*> params = {{"inputA", new LiteralInt(12)},
-                                            {"inputB", new LiteralInt(25)},
-                                            {"inputC", new LiteralInt(37)}
+  std::unordered_map<std::string, Literal *> params = {{"inputA", new LiteralInt(12)},
+                                                       {"inputB", new LiteralInt(25)},
+                                                       {"inputC", new LiteralInt(37)}
   };
 
   // run tests
@@ -251,9 +251,9 @@ TEST(MultRewriteTest, rewriteNotApplicable_EquivTest) { /* NOLINT */
   MultRewriteVisitor().visit(rewrittenAst);
 
   // create params for eval
-  std::map<std::string, Literal*> params = {{"inputA", new LiteralInt(111)},
-                                            {"inputB", new LiteralInt(455)},
-                                            {"inputC", new LiteralInt(3447)}
+  std::unordered_map<std::string, Literal *> params = {{"inputA", new LiteralInt(111)},
+                                                       {"inputB", new LiteralInt(455)},
+                                                       {"inputC", new LiteralInt(3447)}
   };
 
   // run tests

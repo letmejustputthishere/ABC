@@ -1,45 +1,49 @@
-#ifndef AST_OPTIMIZER_LITERALSTRING_H
-#define AST_OPTIMIZER_LITERALSTRING_H
+#ifndef AST_OPTIMIZER_INCLUDE_LITERALSTRING_H
+#define AST_OPTIMIZER_INCLUDE_LITERALSTRING_H
 
 #include <string>
 #include "Literal.h"
 #include <map>
 
 class LiteralString : public Literal {
- private:
-  std::string value;
+private:
+    std::string value;
 
- protected:
-  void print(std::ostream &str) const override;
+    Node *createClonedNode(bool keepOriginalUniqueNodeId) override;
 
- public:
-  explicit LiteralString(std::string value);
+protected:
+    void print(std::ostream &str) const override;
 
-  ~LiteralString() override;
+public:
+    explicit LiteralString(std::string value);
 
-  [[nodiscard]] json toJson() const override;
+    ~LiteralString() override;
 
-  [[nodiscard]] const std::string &getValue() const;
+    [[nodiscard]] json toJson() const override;
 
-  void accept(IVisitor &v) override;
+    [[nodiscard]] const std::string &getValue() const;
 
-  [[nodiscard]] std::string getNodeName() const override;
+    void accept(Visitor &v) override;
 
-  Literal* evaluate(Ast &ast) override;
+    [[nodiscard]] std::string getNodeName() const override;
 
-  bool operator==(const LiteralString &rhs) const;
+    std::vector<Literal *> evaluate(Ast &ast) override;
 
-  bool operator!=(const LiteralString &rhs) const;
+    bool operator==(const LiteralString &rhs) const;
 
-  void addLiteralValue(std::string identifier, std::map<std::string, Literal*> &paramsMap) override;
-  void setValue(const std::string &newValue);
-  void setRandomValue(RandLiteralGen &rlg) override;
+    bool operator!=(const LiteralString &rhs) const;
 
-  std::string toString() const override;
+    void addLiteralValue(std::string identifier, std::unordered_map<std::string, Literal *> &paramsMap) override;
 
-  bool supportsCircuitMode() override;
+    void setValue(const std::string &newValue);
 
-  bool supportsDatatype(Datatype &datatype) override;
+    void setRandomValue(RandLiteralGen &rlg) override;
+
+    [[nodiscard]] std::string toString() const override;
+
+    bool supportsCircuitMode() override;
+
+    bool supportsDatatype(Datatype &datatype) override;
 };
 
-#endif //AST_OPTIMIZER_LITERALSTRING_H
+#endif //AST_OPTIMIZER_INCLUDE_LITERALSTRING_H

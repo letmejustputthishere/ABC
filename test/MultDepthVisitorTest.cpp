@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <Ast.h>
-#include <include/visitor/MultDepthVisitor.h>
+#include "Ast.h"
+#include "MultDepthVisitor.h"
 #include "Operator.h"
 #include "Function.h"
 #include "BinaryExpr.h"
@@ -154,6 +154,7 @@ TEST(MultDepthVisitorTests, NoLogicalAndOrMultiplicationPresent) { // NOLINT
   ast.setRootNode(f);
   f->addParameter(new FunctionParameter("int", new Variable("value")));
   f->addStatement(new VarDecl("loss",
+                              TYPES::BOOL,
                               new LogicalExpr(
                                   new Variable("value"),
                                   OpSymb::smaller,

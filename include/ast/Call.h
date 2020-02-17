@@ -1,5 +1,5 @@
-#ifndef AST_OPTIMIZER_CALL_H
-#define AST_OPTIMIZER_CALL_H
+#ifndef AST_OPTIMIZER_INCLUDE_CALL_H
+#define AST_OPTIMIZER_INCLUDE_CALL_H
 
 #include <string>
 #include <vector>
@@ -8,28 +8,30 @@
 #include "AbstractStatement.h"
 
 class Call : public AbstractExpr, public AbstractStatement {
- private:
-  Function* func{};
-  std::vector<FunctionParameter*> arguments;
+private:
+    Function *func{nullptr};
+    std::vector<FunctionParameter *> arguments;
 
- public:
-  Call(std::vector<FunctionParameter*> arguments, Function* func);
+    Node *createClonedNode(bool keepOriginalUniqueNodeId) override;
 
-  explicit Call(Function* func);
+public:
+    Call(std::vector<FunctionParameter *> arguments, Function *func);
 
-  ~Call() override;
+    explicit Call(Function *func);
 
-  [[nodiscard]] json toJson() const override;
+    ~Call() override;
 
-  void accept(IVisitor &v) override;
+    [[nodiscard]] json toJson() const override;
 
-  [[nodiscard]] const std::vector<FunctionParameter*> &getArguments() const;
+    void accept(Visitor &v) override;
 
-  [[nodiscard]] std::string getNodeName() const override;
+    [[nodiscard]] const std::vector<FunctionParameter *> &getArguments() const;
 
-  [[nodiscard]] Function* getFunc() const;
+    [[nodiscard]] std::string getNodeName() const override;
 
-  Literal* evaluate(Ast &ast) override;
+    [[nodiscard]] Function *getFunc() const;
+
+    std::vector<Literal *> evaluate(Ast &ast) override;
 };
 
-#endif //AST_OPTIMIZER_CALL_H
+#endif //AST_OPTIMIZER_INCLUDE_CALL_H

@@ -1,5 +1,5 @@
-#ifndef AST_OPTIMIZER_FUNCTION_H
-#define AST_OPTIMIZER_FUNCTION_H
+#ifndef AST_OPTIMIZER_INCLUDE_FUNCTION_H
+#define AST_OPTIMIZER_INCLUDE_FUNCTION_H
 
 #include <string>
 #include <vector>
@@ -8,43 +8,45 @@
 #include "VarDecl.h"
 
 class Function : public AbstractStatement {
- private:
-  std::string name;
-  std::vector<FunctionParameter> params;
-  std::vector<AbstractStatement*> body;
+private:
+    std::string name;
+    std::vector<FunctionParameter *> params;
+    std::vector<AbstractStatement *> body;
 
- public:
-  Function() = default;
+    Node *createClonedNode(bool keepOriginalUniqueNodeId) override;
 
-  [[nodiscard]] const std::string &getName() const;
+public:
+    Function() = default;
 
-  [[nodiscard]] const std::vector<FunctionParameter> &getParams() const;
+    [[nodiscard]] const std::string &getName() const;
 
-  [[nodiscard]] const std::vector<AbstractStatement*> &getBody() const;
+    [[nodiscard]] const std::vector<FunctionParameter *> &getParams() const;
 
-  Function(std::string name, std::vector<AbstractStatement*> bodyStatements);
+    [[nodiscard]] const std::vector<AbstractStatement *> &getBody() const;
 
-  Function(std::string name, std::vector<FunctionParameter> params,
-           std::vector<AbstractStatement*> body);
+    Function(std::string name, std::vector<AbstractStatement *> bodyStatements);
 
-  explicit Function(std::string name);
+    Function(std::string functionName, std::vector<FunctionParameter *> functionParameters,
+             std::vector<AbstractStatement *> functionStatements);
 
-  void addParameter(FunctionParameter* param);
+    explicit Function(std::string name);
 
-  void addStatement(AbstractStatement* pDecl);
+    void addParameter(FunctionParameter *param);
 
-  [[nodiscard]] json toJson() const override;
+    void addStatement(AbstractStatement *pDecl);
 
-  void accept(IVisitor &v) override;
+    [[nodiscard]] json toJson() const override;
 
-  [[nodiscard]] std::string getNodeName() const override;
+    void accept(Visitor &v) override;
 
-  void setParams(std::vector<FunctionParameter>* paramsVec);
+    [[nodiscard]] std::string getNodeName() const override;
 
-  Literal* evaluate(Ast &ast) override;
+    void setParams(std::vector<FunctionParameter *> paramsVec);
+
+    std::vector<Literal *> evaluate(Ast &ast) override;
 };
 
 /// Defines the JSON representation to be used for vector<Function> objects.
 void to_json(json &j, const Function &func);
 
-#endif //AST_OPTIMIZER_FUNCTION_H
+#endif //AST_OPTIMIZER_INCLUDE_FUNCTION_H

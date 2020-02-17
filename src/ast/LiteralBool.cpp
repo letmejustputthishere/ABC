@@ -1,6 +1,5 @@
-#include <Datatypes.h>
-#include "../../include/ast/LiteralBool.h"
-#include "../utilities/RandNumGen.h"
+#include "LiteralBool.h"
+#include "RandNumGen.h"
 
 LiteralBool::LiteralBool(bool value) : value(value) {}
 
@@ -11,7 +10,7 @@ json LiteralBool::toJson() const {
   return j;
 }
 
-void LiteralBool::accept(IVisitor &v) {
+void LiteralBool::accept(Visitor &v) {
   v.visit(*this);
 }
 
@@ -29,8 +28,8 @@ std::string LiteralBool::getNodeName() const {
 
 LiteralBool::~LiteralBool() = default;
 
-Literal* LiteralBool::evaluate(Ast &ast) {
-  return this;
+std::vector<Literal*> LiteralBool::evaluate(Ast &ast) {
+  return std::vector<Literal*>({this});
 }
 
 void LiteralBool::print(std::ostream &str) const {
@@ -45,7 +44,7 @@ bool LiteralBool::operator!=(const LiteralBool &rhs) const {
   return !(rhs == *this);
 }
 
-void LiteralBool::addLiteralValue(std::string identifier, std::map<std::string, Literal*> &paramsMap) {
+void LiteralBool::addLiteralValue(std::string identifier, std::unordered_map<std::string, Literal*> &paramsMap) {
   paramsMap.emplace(identifier, this);
 }
 
@@ -67,4 +66,8 @@ bool LiteralBool::supportsCircuitMode() {
 
 bool LiteralBool::supportsDatatype(Datatype &datatype) {
   return datatype.getType() == TYPES::BOOL;
+}
+
+Node* LiteralBool::createClonedNode(bool) {
+  return new LiteralBool(this->getValue());
 }

@@ -1,38 +1,40 @@
-#include "../../include/ast/LogicalExpr.h"
-#include <Variable.h>
+#include "LogicalExpr.h"
+#include "Variable.h"
 
 json LogicalExpr::toJson() const {
   json j;
   j["type"] = getNodeName();
   j["leftOperand"] = getLeft() ? getLeft()->toJson() : "";
-  j["operator"] = getOp()->getOperatorString();
+  j["operator"] = getOp() ? getOp()->getOperatorString() : "";
   j["rightOperand"] = getRight() ? getRight()->toJson() : "";
   return j;
 }
 
-void LogicalExpr::accept(IVisitor &v) {
+void LogicalExpr::accept(Visitor &v) {
   v.visit(*this);
 }
 
-AbstractExpr* LogicalExpr::getLeft() const {
-  return reinterpret_cast<AbstractExpr* >(getChildAtIndex(0, true));
+AbstractExpr *LogicalExpr::getLeft() const {
+  return reinterpret_cast<AbstractExpr * >(getChildAtIndex(0, true));
 }
 
-Operator* LogicalExpr::getOp() const {
-  return reinterpret_cast<Operator*>(getChildAtIndex(1, true));
+Operator *LogicalExpr::getOp() const {
+  return reinterpret_cast<Operator *>(getChildAtIndex(1, true));
 }
 
-AbstractExpr* LogicalExpr::getRight() const {
-  return reinterpret_cast<AbstractExpr* >(getChildAtIndex(2, true));
+AbstractExpr *LogicalExpr::getRight() const {
+  return reinterpret_cast<AbstractExpr * >(getChildAtIndex(2, true));
 }
 
 std::string LogicalExpr::getNodeName() const {
   return "LogicalExpr";
 }
 
-Literal* LogicalExpr::evaluate(Ast &ast) {
+std::vector<Literal *> LogicalExpr::evaluate(Ast &ast) {
   // we first need to evaluate the left-handside and right-handside as they can consists of nested binary expressions
-  return this->getOp()->applyOperator(this->getLeft()->evaluate(ast), this->getRight()->evaluate(ast));
+  return std::vector<Literal *>(
+      {this->getOp()->applyOperator(this->getLeft()->evaluate(ast).front(),
+                                    this->getRight()->evaluate(ast).front())});
 }
 
 LogicalExpr::LogicalExpr() {
@@ -51,7 +53,7 @@ std::vector<std::string> LogicalExpr::getVariableIdentifiers() {
   return leftVec;
 }
 
-LogicalExpr* LogicalExpr::contains(LogicalExpr* lexpTemplate, AbstractExpr* excludedSubtree) {
+LogicalExpr *LogicalExpr::contains(LogicalExpr *lexpTemplate, AbstractExpr *excludedSubtree) {
   if (excludedSubtree != nullptr && this == excludedSubtree) {
     return nullptr;
   } else {
@@ -62,20 +64,20 @@ LogicalExpr* LogicalExpr::contains(LogicalExpr* lexpTemplate, AbstractExpr* excl
   }
 }
 
-int LogicalExpr::countByTemplate(AbstractExpr* abstractExpr) {
+int LogicalExpr::countByTemplate(AbstractExpr *abstractExpr) {
   // check if abstractExpr is of type BinaryExpr
-  if (auto expr = dynamic_cast<LogicalExpr*>(abstractExpr)) {
+  if (auto expr = dynamic_cast<LogicalExpr *>(abstractExpr)) {
     // check if current BinaryExpr fulfills requirements of template abstractExpr
     // also check left and right operands for nested BinaryExps
     return (this->contains(expr, nullptr) != nullptr ? 1 : 0)
-        + getLeft()->countByTemplate(abstractExpr)
-        + getRight()->countByTemplate(abstractExpr);
+           + getLeft()->countByTemplate(abstractExpr)
+           + getRight()->countByTemplate(abstractExpr);
   } else {
     return 0;
   }
 }
 
-Node* LogicalExpr::cloneFlat() {
+Node *LogicalExpr::cloneFlat() {
   auto clonedLexp = new LogicalExpr();
   clonedLexp->setUniqueNodeId(this->getUniqueNodeId());
   return clonedLexp;
@@ -85,7 +87,7 @@ int LogicalExpr::getMaxNumberChildren() {
   return 3;
 }
 
-void LogicalExpr::setAttributes(AbstractExpr* leftOperand, Operator* operatore, AbstractExpr* rightOperand) {
+void LogicalExpr::setAttributes(AbstractExpr *leftOperand, Operator *operatore, AbstractExpr *rightOperand) {
   // update tree structure
   removeChildren();
   addChildren({leftOperand, operatore, rightOperand}, false);
@@ -96,24 +98,11 @@ bool LogicalExpr::supportsCircuitMode() {
   return true;
 }
 
-Node* LogicalExpr::cloneRecursiveDeep(bool keepOriginalUniqueNodeId) {
-  OpSymb::LogCompOp opSymbol;
-  try {
-    opSymbol = std::get<OpSymb::LogCompOp>(getOp()->getOperatorSymbol());
-  } catch (std::bad_variant_access &) {
-    throw std::logic_error(
-        "LogicalExpr contains unexpected operator. Expected operator of symbol enum OpSymb::LogCompOp.");
-  }
-
+Node *LogicalExpr::createClonedNode(bool keepOriginalUniqueNodeId) {
   auto clonedLogicalExpr =
       new LogicalExpr(getLeft()->cloneRecursiveDeep(keepOriginalUniqueNodeId)->castTo<AbstractExpr>(),
                       getOp()->cloneRecursiveDeep(keepOriginalUniqueNodeId)->castTo<Operator>(),
                       getRight()->cloneRecursiveDeep(keepOriginalUniqueNodeId)->castTo<AbstractExpr>());
-
-  // if keepOriginalUniqueNodeId is set: copy the ID of this node
-  if (keepOriginalUniqueNodeId) {
-    clonedLogicalExpr->setUniqueNodeId(this->getUniqueNodeId());
-  }
-
   return clonedLogicalExpr;
 }
+

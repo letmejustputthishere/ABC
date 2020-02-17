@@ -1,5 +1,5 @@
-#ifndef AST_OPTIMIZER_VARIABLE_H
-#define AST_OPTIMIZER_VARIABLE_H
+#ifndef AST_OPTIMIZER_INCLUDE_VARIABLE_H
+#define AST_OPTIMIZER_INCLUDE_VARIABLE_H
 
 #include <string>
 #include "AbstractExpr.h"
@@ -7,38 +7,39 @@
 #include <map>
 
 class Variable : public AbstractExpr {
- private:
-  std::string identifier;
+private:
+    std::string identifier;
 
- public:
-  explicit Variable(std::string identifier);
+    Node *createClonedNode(bool keepOriginalUniqueNodeId) override;
 
-  [[nodiscard]] json toJson() const override;
-  virtual ~Variable();
+public:
+    explicit Variable(std::string identifier);
 
-  void accept(IVisitor &v) override;
+    [[nodiscard]] json toJson() const override;
 
-  [[nodiscard]] std::string getNodeName() const override;
+    ~Variable() override;
 
-  [[nodiscard]] const std::string &getIdentifier() const;
+    void accept(Visitor &v) override;
 
-  bool operator==(const Variable &rhs) const;
+    [[nodiscard]] std::string getNodeName() const override;
 
-  bool operator!=(const Variable &rhs) const;
+    [[nodiscard]] const std::string &getIdentifier() const;
 
-  bool contains(Variable* var) override;
+    bool operator==(const Variable &rhs) const;
 
-  bool isEqual(AbstractExpr* other) override;
+    bool operator!=(const Variable &rhs) const;
 
-  Literal* evaluate(Ast &ast) override;
+    bool contains(Variable *var) override;
 
-  std::vector<std::string> getVariableIdentifiers() override;
+    bool isEqual(AbstractExpr *other) override;
 
-  [[nodiscard]] std::string toString() const override;
+    std::vector<Literal *> evaluate(Ast &ast) override;
 
-  bool supportsCircuitMode() override;
+    std::vector<std::string> getVariableIdentifiers() override;
 
-  Node* cloneRecursiveDeep(bool keepOriginalUniqueNodeId) override;
+    [[nodiscard]] std::string toString() const override;
+
+    bool supportsCircuitMode() override;
 };
 
-#endif //AST_OPTIMIZER_VARIABLE_H
+#endif //AST_OPTIMIZER_INCLUDE_VARIABLE_H

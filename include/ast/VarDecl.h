@@ -1,57 +1,65 @@
-#ifndef AST_OPTIMIZER_VARDECL_H
-#define AST_OPTIMIZER_VARDECL_H
+#ifndef AST_OPTIMIZER_INCLUDE_VARDECL_H
+#define AST_OPTIMIZER_INCLUDE_VARDECL_H
 
 #include <string>
 #include "AbstractStatement.h"
 #include "AbstractExpr.h"
-#include "../utilities/Datatypes.h"
+#include "Datatypes.h"
 
 class VarDecl : public AbstractStatement {
- private:
-  std::string identifier;
+private:
+    std::string identifier;
 
- public:
-  VarDecl(std::string name, TYPES datatype, AbstractExpr* initializer);
+public:
+    VarDecl(std::string name, TYPES datatype, AbstractExpr *initializer);
 
-  VarDecl(std::string name, int value);
+    VarDecl(std::string name, void *abstractExpr);
 
-  VarDecl(std::string name, bool value);
+    VarDecl(std::string name, int value);
 
-  /// This is just a helper constructor that allows to call VarDecl("randomString", "aiermkr");
-  /// without this constructor the call will be wrongly forwarded to the VarDecl(std::string, bool) constructor.
-  /// See https://stackoverflow.com/q/14770252/3017719.
-  /// \param name The variable's identifier.
-  /// \param valueAssignedTo The value assigned to the variable.
-  VarDecl(std::string name, const char* valueAssignedTo);
+    VarDecl(std::string name, bool value);
 
-  VarDecl(std::string name, float value);
+    /// This is just a helper constructor that allows to call VarDecl("randomString", "aiermkr");
+    /// without this constructor the call will wrongly be forwarded to the VarDecl(std::string, bool) constructor.
+    /// See https://stackoverflow.com/q/14770252/3017719.
+    /// \param name The variable's identifier.
+    /// \param valueAssignedTo The value assigned to the variable.
+    VarDecl(std::string name, const char *valueAssignedTo);
 
-  VarDecl(std::string name, std::string value);
+    VarDecl(std::string name, float value);
 
-  [[nodiscard]] json toJson() const override;
+    VarDecl(std::string name, std::string value);
 
-  void accept(IVisitor &v) override;
+    [[nodiscard]] json toJson() const override;
 
-  [[nodiscard]] std::string getNodeName() const override;
+    void accept(Visitor &v) override;
 
-  [[nodiscard]] const std::string &getIdentifier() const;
+    [[nodiscard]] std::string getNodeName() const override;
 
-  [[nodiscard]] Datatype* getDatatype() const;
+    [[nodiscard]] const std::string &getIdentifier() const;
 
-  [[nodiscard]] AbstractExpr* getInitializer() const;
+    [[nodiscard]] Datatype *getDatatype() const;
 
-  BinaryExpr* contains(BinaryExpr* bexpTemplate, BinaryExpr* excludedSubtree) override;
+    [[nodiscard]] AbstractExpr *getInitializer() const;
 
-  ~VarDecl() override;
+    BinaryExpr *contains(BinaryExpr *bexpTemplate, BinaryExpr *excludedSubtree) override;
 
-  std::string getVarTargetIdentifier() override;
+    ~VarDecl() override;
 
-  bool isEqual(AbstractStatement* as) override;
+    std::string getVarTargetIdentifier() override;
 
-  Literal* evaluate(Ast &ast) override;
-  void setAttributes(std::string varIdentifier, Datatype* datatype, AbstractExpr* value);
-  bool supportsCircuitMode() override;
-  int getMaxNumberChildren() override;
+    bool isEqual(AbstractStatement *as) override;
+
+    std::vector<Literal *> evaluate(Ast &ast) override;
+
+    void setAttributes(std::string varIdentifier, Datatype *datatype, AbstractExpr *value);
+
+    bool supportsCircuitMode() override;
+
+    int getMaxNumberChildren() override;
+
+private:
+    Node *createClonedNode(bool keepOriginalUniqueNodeId) override;
 };
 
-#endif //AST_OPTIMIZER_VARDECL_H
+#endif //AST_OPTIMIZER_INCLUDE_VARDECL_H

@@ -1,9 +1,9 @@
-#ifndef AST_OPTIMIZER_GENASTDEMO_H
-#define AST_OPTIMIZER_GENASTDEMO_H
+#ifndef MASTER_THESIS_CODE_GENASTDEMO_H
+#define MASTER_THESIS_CODE_GENASTDEMO_H
 
-#include <Ast.h>
+#include "Ast.h"
 
-/// Shows how to invoke the runDemo(...) method.
+/// Provides a REPL-based environment to showcase the different actions that this tool supports.
 void runInteractiveDemo();
 
 /// Generates a sample AST for the following code:
@@ -80,10 +80,41 @@ void generateDemoThree(Ast &ast);
 /// \param ast The Ast object this tree should be written into.
 void generateDemoFour(Ast &ast);
 
+/// Generates an sample AST for the following code:
+///
+///  \code{.cpp}
+///  void computeMult() {
+///      int result = inA * (inB * inC);
+///      return result;
+///  }
+///  \endcode
+///
+///
+/// \param ast The Ast object this tree should be written into.
 void generateDemoFive(Ast &ast);
 
+/// Generates an sample AST for the following code:
+///
+///  \code{.cpp}
+///  void multiMult() {
+///      int result = (inZ * (inA * (inB * inC)));
+///      return result;
+///  }
+///  \endcode
+///
+/// \param ast The Ast object this tree should be written into.
 void generateDemoSix(Ast &ast);
 
+/// Generates an sample AST for the following code:
+///
+///  \code{.cpp}
+///  void determineSuitableX(int encryptedA, int encryptedB) {
+///      int sum = encryptedA + encryptedB;
+///      return sum;
+///  }
+///  \endcode
+///
+/// \param ast The Ast object this tree should be written into.
 void generateDemoSeven(Ast &ast);
 
-#endif //AST_OPTIMIZER_GENASTDEMO_H
+#endif //MASTER_THESIS_CODE_GENASTDEMO_H

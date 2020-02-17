@@ -1,32 +1,34 @@
-#ifndef AST_OPTIMIZER_BLOCK_H
-#define AST_OPTIMIZER_BLOCK_H
+#ifndef AST_OPTIMIZER_INCLUDE_BLOCK_H
+#define AST_OPTIMIZER_INCLUDE_BLOCK_H
 
 #include <vector>
 #include "AbstractStatement.h"
 #include <string>
 
 class Block : public AbstractStatement {
- private:
-  std::vector<AbstractStatement*>* statements;
+private:
+    std::vector<AbstractStatement *> *statements;
 
- public:
-  Block();
+    Node *createClonedNode(bool keepOriginalUniqueNodeId) override;
 
-  ~Block() override;
+public:
+    Block();
 
-  explicit Block(AbstractStatement* stat);
+    ~Block() override;
 
-  explicit Block(std::vector<AbstractStatement*>* statements);
+    explicit Block(AbstractStatement *stat);
 
-  [[nodiscard]] json toJson() const override;
+    explicit Block(std::vector<AbstractStatement *> *statements);
 
-  void accept(IVisitor &v) override;
+    [[nodiscard]] json toJson() const override;
 
-  [[nodiscard]] std::string getNodeName() const override;
+    void accept(Visitor &v) override;
 
-  [[nodiscard]] std::vector<AbstractStatement*>* getStatements() const;
+    [[nodiscard]] std::string getNodeName() const override;
 
-  Literal* evaluate(Ast &ast) override;
+    [[nodiscard]] std::vector<AbstractStatement *> *getStatements() const;
+
+    std::vector<Literal *> evaluate(Ast &ast) override;
 };
 
-#endif //AST_OPTIMIZER_BLOCK_H
+#endif //AST_OPTIMIZER_INCLUDE_BLOCK_H

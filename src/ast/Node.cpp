@@ -1,9 +1,9 @@
-#include "../include/ast/Node.h"
 #include <sstream>
-#include <Operator.h>
-#include <set>
 #include <queue>
-#include "../include/ast/LogicalExpr.h"
+#include <set>
+#include "Operator.h"
+#include "AbstractExpr.h"
+#include "LogicalExpr.h"
 #include "Function.h"
 
 int Node::nodeIdCounter = 0;
@@ -12,9 +12,9 @@ std::string Node::genUniqueNodeId() {
   int nodeNo;
   try {
     nodeNo = assignedNodeIds.at(this);
-  } catch (std::out_of_range) {
-    throw std::logic_error(
-        "Could not find any reserved ID for node. Node constructor needs to reserve ID for node (see empty constructor).");
+  } catch (std::out_of_range &exception) {
+    throw std::logic_error("Could not find any reserved ID for node. "
+                           "Node constructor needs to reserve ID for node (see empty constructor).");
   }
 
   // clear the node entry as we will save the node ID in the uniqueNodeId field
@@ -50,37 +50,37 @@ void Node::resetNodeIdCounter() {
   Node::nodeIdCounter = 0;
 }
 
-const std::vector<Node*> &Node::getChildren() const {
+const std::vector<Node *> &Node::getChildren() const {
   return children;
 }
 
-std::vector<Node*> Node::getChildrenNonNull() const {
-  std::vector<Node*> childrenFiltered;
+std::vector<Node *> Node::getChildrenNonNull() const {
+  std::vector<Node *> childrenFiltered;
   std::copy_if(children.begin(), children.end(), std::back_inserter(childrenFiltered),
-               [](Node* n) { return n != nullptr; });
+               [](Node *n) { return n != nullptr; });
   return childrenFiltered;
 }
 
-std::vector<Node*> Node::getParentsNonNull() const {
-  std::vector<Node*> parentsFiltered;
+std::vector<Node *> Node::getParentsNonNull() const {
+  std::vector<Node *> parentsFiltered;
   std::copy_if(parents.begin(), parents.end(), std::back_inserter(parentsFiltered),
-               [](Node* n) { return n != nullptr; });
+               [](Node *n) { return n != nullptr; });
   return parentsFiltered;
 }
 
-void Node::addChildBilateral(Node* child) {
+void Node::addChildBilateral(Node *child) {
   addChild(child, true);
 }
 
-void Node::addChild(Node* child, bool addBackReference) {
+void Node::addChild(Node *child, bool addBackReference) {
   addChildren({child}, addBackReference);
 }
 
-void Node::addChildren(const std::vector<Node*> &childrenToAdd, bool addBackReference) {
+void Node::addChildren(const std::vector<Node *> &childrenToAdd, bool addBackReference) {
   // check whether the number of children to be added does not exceed the number of maximum supported children
-  if (childrenToAdd.size() > getMaxNumberChildren()) {
+  if (childrenToAdd.size() > getMaxNumberChildren() && getMaxNumberChildren() != -1) {
     throw std::invalid_argument("Node " + getUniqueNodeId() + " of type " + getNodeName() + " does not allow more than "
-                                    + std::to_string(getMaxNumberChildren()) + " children!");
+                                + std::to_string(getMaxNumberChildren()) + " children!");
   }
 
   // check if circuit mode is supported by current node, otherwise addChildren will lead to unexpected behavior
@@ -90,20 +90,24 @@ void Node::addChildren(const std::vector<Node*> &childrenToAdd, bool addBackRefe
   }
 
   // these actions are to be performed after a node was added to the list of children
-  auto doInsertPostAction = [&](Node* childToAdd) {
-    // if option 'addBackReference' is true, we add a back reference to the child as parent
-    if (addBackReference) childToAdd->addParent(this);
+  auto doInsertPostAction = [&](Node *childToAdd) {
+      // if option 'addBackReference' is true, we add a back reference to the child as parent
+      if (addBackReference) childToAdd->addParent(this);
   };
 
-  if (getChildren().empty()) {  // if the list of children is still empty, we can simply add all nodes in one batch
+  if (getChildren().empty() || getMaxNumberChildren()
+                               ==
+                               -1) {  // if the list of children is still empty, we can simply add all nodes in one batch
     // add children to the vector's end
     children.insert(children.end(), childrenToAdd.begin(), childrenToAdd.end());
     std::for_each(children.begin(), children.end(), doInsertPostAction);
     // if this nodes accepts an infinite number of children, pre-filling the slots does not make any sense -> skip it
-    // fill remaining slots with nullptr values
-    children.insert(children.end(), getMaxNumberChildren() - getChildren().size(), nullptr);
+    if (getMaxNumberChildren() != -1) {
+      // fill remaining slots with nullptr values
+      children.insert(children.end(), getMaxNumberChildren() - getChildren().size(), nullptr);
+    }
   } else {  // otherwise we need to add the children one-by-one by looking for free slots
-    int childIdx = 0;
+    size_t childIdx = 0;
     // add child in first empty spot
     for (auto it = getChildren().begin(); it != getChildren().end() && childIdx < childrenToAdd.size(); ++it) {
       if (*it == nullptr) {
@@ -116,22 +120,31 @@ void Node::addChildren(const std::vector<Node*> &childrenToAdd, bool addBackRefe
     // check if we were able to add all children, otherwise throw an exception
     if (childIdx != childrenToAdd.size()) {
       throw std::logic_error("Cannot add one or multiple children to " + this->getUniqueNodeId()
-                                 + " without overwriting an existing one. Consider removing an existing child first.");
+                             + " without overwriting an existing one. Consider removing an existing child first.");
     }
   }
 }
 
-void Node::setChild(std::vector<Node*>::const_iterator position, Node* value) {
+void Node::setChild(std::vector<Node *>::const_iterator position, Node *value) {
   auto newIterator = children.insert(position, value);
   children.erase(++newIterator);
 }
 
-void Node::removeChild(Node* child) {
+void Node::removeChild(Node *child) {
   auto it = std::find(children.begin(), children.end(), child);
-  if (it != children.end()) *it = nullptr; //children.erase(it);
+  if (it != children.end()) {
+    // if the node supports an infinite number of children (getMaxNumberChildren() == -1), we can delete the node from
+    // the children list, otherwise we just overwrite the slot with a nullptr
+    if (this->getMaxNumberChildren() != -1) {
+      *it = nullptr;
+    } else {
+      children.erase(it);
+    }
+  }
+  //children.erase(it);
 }
 
-void Node::removeChildBilateral(Node* child) {
+void Node::removeChildBilateral(Node *child) {
   child->removeParent(this);
   this->removeChild(child);
 }
@@ -143,15 +156,15 @@ void Node::isolateNode() {
   removeParents();
 }
 
-const std::vector<Node*> &Node::getParents() const {
+const std::vector<Node *> &Node::getParents() const {
   return parents;
 }
 
-void Node::addParent(Node* n) {
+void Node::addParent(Node *n) {
   parents.push_back(n);
 }
 
-void Node::removeParent(Node* parent) {
+void Node::removeParent(Node *parent) {
   auto it = std::find(parents.begin(), parents.end(), parent);
   if (it != parents.end()) parents.erase(it);
 }
@@ -164,25 +177,25 @@ void Node::removeParents() {
   parents.clear();
 }
 
-void Node::addParentTo(Node* parentNode, std::vector<Node*> nodesToAddParentTo) {
-  std::for_each(nodesToAddParentTo.begin(), nodesToAddParentTo.end(), [&](Node* n) {
-    if (n != nullptr) n->addParent(parentNode);
+void Node::addParentTo(Node *parentNode, std::vector<Node *> nodesToAddParentTo) {
+  std::for_each(nodesToAddParentTo.begin(), nodesToAddParentTo.end(), [&](Node *n) {
+      if (n != nullptr) n->addParent(parentNode);
   });
 }
 
 void Node::swapChildrenParents() {
-  std::vector<Node*> oldParents = this->parents;
+  std::vector<Node *> oldParents = this->parents;
   this->parents = this->children;
   this->children = oldParents;
   // toggle the isReversed boolean
   isReversed = !isReversed;
 }
 
-Literal* Node::evaluate(Ast &ast) {
-  return nullptr;
+std::vector<Literal *> Node::evaluate(Ast &ast) {
+  return std::vector<Literal *>();
 }
 
-void Node::accept(IVisitor &v) {
+void Node::accept(Visitor &v) {
   std::cout << "This shouldn't be executed!" << std::endl;
 }
 
@@ -198,7 +211,7 @@ std::string Node::toString() const {
   return this->toJson().dump();
 }
 
-std::ostream &operator<<(std::ostream &os, const std::vector<Node*> &v) {
+std::ostream &operator<<(std::ostream &os, const std::vector<Node *> &v) {
   os << "[";
   for (int i = 0; i < v.size(); ++i) {
     os << v[i]->getUniqueNodeId();
@@ -209,15 +222,11 @@ std::ostream &operator<<(std::ostream &os, const std::vector<Node*> &v) {
   return os;
 }
 
-Node* Node::cloneFlat() {
-  throw std::logic_error("ERROR: cloneFlat() not implemented for node of type " + getNodeName());
-}
-
-Node* Node::getUnderlyingNode() const {
+Node *Node::getUnderlyingNode() const {
   return underlyingNode;
 }
 
-void Node::setUnderlyingNode(Node* uNode) {
+void Node::setUnderlyingNode(Node *uNode) {
   underlyingNode = uNode;
 }
 
@@ -225,32 +234,54 @@ void Node::setUniqueNodeId(const std::string &unique_node_id) {
   uniqueNodeId = unique_node_id;
 }
 
-std::vector<Node*> Node::getAnc() {
+std::vector<Node *> Node::getAnc() {
   // use a set to avoid duplicates as there may be common ancestors between this node and any of the node's parents
-  std::set<Node*> result;
-  std::queue<Node*> processQueue{{this}};
+  std::set<Node *> result;
+  std::queue<Node *> processQueue{{this}};
   while (!processQueue.empty()) {
     auto curNode = processQueue.front();
     processQueue.pop();
     auto nextNodes = curNode->getParents();
-    std::for_each(nextNodes.begin(), nextNodes.end(), [&](Node* node) {
-      result.insert(node);
-      processQueue.push(node);
+    std::for_each(nextNodes.begin(), nextNodes.end(), [&](Node *node) {
+        result.insert(node);
+        processQueue.push(node);
     });
   }
-  return std::vector<Node*>(result.begin(), result.end());
+  return std::vector<Node *>(result.begin(), result.end());
 }
 
-Node* Node::cloneRecursiveDeep(bool keepOriginalUniqueNodeId) {
-  throw std::logic_error("ERROR: cloneRecursiveDeep() not implemented for node of type " + getNodeName());
+Node *Node::cloneFlat() {
+  throw std::logic_error("ERROR: cloneFlat() not implemented for node of type " + getNodeName());
 }
 
-bool Node::hasParent(Node* n) {
-  return std::any_of(getParents().begin(), getParents().end(), [&n](Node* p) { return (p == n); });
+Node *Node::cloneRecursiveDeep(bool keepOriginalUniqueNodeId) {
+  // call polymorphic createClonedNode to copy derived class-specific fields
+  Node *clonedNode = this->createClonedNode(keepOriginalUniqueNodeId);
+
+  // perform cloning of fields belonging to Node
+  if (keepOriginalUniqueNodeId) clonedNode->setUniqueNodeId(this->getUniqueNodeId());
+  if (this->isReversed) clonedNode->swapChildrenParents();
+  if (this->underlyingNode != nullptr) clonedNode->setUnderlyingNode(this->getUnderlyingNode());
+
+  return clonedNode;
+}
+
+Node *Node::createClonedNode(bool) {
+  throw std::logic_error(
+      "ERROR: Cannot execute cloneRecursiveDeep(...) because createClonedNode(...) is not implemented for node of type "
+      + getNodeName());
+}
+
+bool Node::hasParent(Node *n) {
+  return std::any_of(getParents().begin(), getParents().end(), [&n](Node *p) { return (p == n); });
+}
+
+bool Node::hasChild(Node *n) {
+  return std::any_of(getChildren().begin(), getChildren().end(), [&n](Node *p) { return (p == n); });
 }
 
 int Node::countChildrenNonNull() const {
-  return std::count_if(getChildren().begin(), getChildren().end(), [](Node* n) { return n != nullptr; });
+  return std::count_if(getChildren().begin(), getChildren().end(), [](Node *n) { return n != nullptr; });
 }
 
 int Node::getMaxNumberChildren() {
@@ -261,14 +292,13 @@ bool Node::supportsCircuitMode() {
   return false;
 }
 
-Node* Node::getChildAtIndex(int idx) const {
+Node *Node::getChildAtIndex(int idx) const {
   return getChildAtIndex(idx, false);
 }
 
-Node* Node::getChildAtIndex(int idx, bool isEdgeDirectionAware) const {
+Node *Node::getChildAtIndex(int idx, bool isEdgeDirectionAware) const {
   try {
-    if (isEdgeDirectionAware && isReversed) return parents.at(idx);
-    else return children.at(idx);
+    return (isEdgeDirectionAware && isReversed) ? parents.at(idx) : children.at(idx);
   } catch (std::out_of_range const &e) {
     return nullptr;
   }
@@ -278,4 +308,51 @@ Node::~Node() = default;
 
 bool Node::hasReversedEdges() const {
   return isReversed;
+}
+
+std::vector<Node *> Node::rewriteMultiInputGateToBinaryGatesChain(std::vector<Node *> inputNodes,
+                                                                  OpSymb::LogCompOp gateType) {
+  if (inputNodes.empty()) {
+    throw std::invalid_argument("Cannot construct a 0-input logical gate!");
+  }
+
+  // if there is only one input, we need to add the "neutral element" (i.e., the element that does not change the
+  // semantics of the logical expression) depending on the given LogCompOp to inputNodes
+  if (inputNodes.size() == 1) {
+    if (gateType == OpSymb::LogCompOp::logicalXor) {
+      // inputNodes[0] XOR false
+      inputNodes.push_back(new LiteralBool(false));
+    } else if (gateType == OpSymb::LogCompOp::logicalAnd) {
+      // inputNodes[0] AND true
+      inputNodes.push_back(new LiteralBool(true));
+    } else {
+      throw std::runtime_error(
+          "Method rewriteMultiInputGateToBinaryGatesChain currently supports 1-input gates of type logical-XOR "
+          "or logical-AND only.");
+    }
+  }
+
+  // vector of resulting binary gates
+  std::vector<Node *> outputNodes;
+
+  // handle first "special" gate -> takes two inputs as specified in inputNodes
+  auto it = std::begin(inputNodes);
+  auto recentLexp = new LogicalExpr((*it++)->castTo<AbstractExpr>(), gateType, (*it++)->castTo<AbstractExpr>());
+  outputNodes.push_back(recentLexp);
+
+  // handle all other gates -> are connected with each other
+  for (auto end = std::end(inputNodes); it != end; ++it) {
+    auto newLexp = new LogicalExpr(recentLexp, gateType, (*it)->castTo<AbstractExpr>());
+    outputNodes.push_back(newLexp);
+    recentLexp = newLexp;
+  }
+  return outputNodes;
+}
+
+Literal *Node::ensureSingleEvaluationResult(std::vector<Literal *> evaluationResult) {
+  if (evaluationResult.size() > 1) {
+    throw std::logic_error(
+        "Unexpected number of returned results (1 vs. " + std::to_string(evaluationResult.size()) + ")");
+  }
+  return evaluationResult.front();
 }

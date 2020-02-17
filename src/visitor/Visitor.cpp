@@ -1,5 +1,4 @@
 #include "Visitor.h"
-
 #include "Ast.h"
 #include "Function.h"
 #include "Operator.h"
@@ -8,7 +7,6 @@
 #include "LiteralBool.h"
 #include "LogicalExpr.h"
 #include "VarAssignm.h"
-#include "Group.h"
 #include "Block.h"
 #include "Return.h"
 #include "BinaryExpr.h"
@@ -54,9 +52,9 @@ void Visitor::visit(Call &elem) {
 void Visitor::visit(CallExternal &elem) {
   curScope->addStatement(&elem);
   // arguments for calling function
-  if (elem.getArguments() != nullptr) {
-    for (auto &fp : *elem.getArguments()) {
-      fp.accept(*this);
+  if (!elem.getArguments().empty()) {
+    for (auto &fp : elem.getArguments()) {
+      fp->accept(*this);
     }
   }
 }
@@ -66,7 +64,7 @@ void Visitor::visit(Function &elem) {
   changeToInnerScope(elem.getUniqueNodeId());
   // visit FunctionParameter
   for (auto fp : elem.getParams()) {
-    fp.accept(*this);
+    fp->accept(*this);
   }
   // visit Body statements
   for (auto &stmt : elem.getBody()) {
@@ -79,10 +77,6 @@ void Visitor::visit(FunctionParameter &elem) {
   elem.getValue()->accept(*this);
 }
 
-void Visitor::visit(Group &elem) {
-  elem.getExpr()->accept(*this);
-}
-
 void Visitor::visit(If &elem) {
   curScope->addStatement(&elem);
 
@@ -93,11 +87,11 @@ void Visitor::visit(If &elem) {
   // consisting of multiple commands, we need in the following manually open a new scope
 
   // thenBranch
-  if (auto* thenBranch = dynamic_cast<Block*>(elem.getThenBranch())) {
+  if (auto *thenBranch = dynamic_cast<Block *>(elem.getThenBranch())) {
     thenBranch->accept(*this);
   } else {
     // if thenBranch is no Block we need to manually open a new scope here
-    Node* thenNode = dynamic_cast<Node*>(elem.getThenBranch());
+    Node *thenNode = dynamic_cast<Node *>(elem.getThenBranch());
     assert(thenNode != nullptr); // this should never happen
     changeToInnerScope(thenNode->getUniqueNodeId());
     elem.getThenBranch()->accept(*this);
@@ -106,10 +100,10 @@ void Visitor::visit(If &elem) {
 
   if (elem.getElseBranch() != nullptr) {
     // elseBranch
-    if (auto* elseBranch = dynamic_cast<Node*>(elem.getElseBranch())) {
+    if (auto *elseBranch = dynamic_cast<Node *>(elem.getElseBranch())) {
       elem.getElseBranch()->accept(*this);
     } else {
-      Node* elseNode = dynamic_cast<Node*>(elem.getElseBranch());
+      Node *elseNode = dynamic_cast<Node *>(elem.getElseBranch());
       assert(elseNode != nullptr);
       changeToInnerScope(elseBranch->getUniqueNodeId());
       elem.getElseBranch()->accept(*this);
@@ -139,7 +133,7 @@ void Visitor::visit(Operator &elem) {}
 
 void Visitor::visit(Return &elem) {
   curScope->addStatement(&elem);
-  elem.getReturnExpr()->accept(*this);
+  for (auto &expr : elem.getReturnExpressions()) expr->accept(*this);
 }
 
 void Visitor::visit(UnaryExpr &elem) {
@@ -173,10 +167,10 @@ void Visitor::visit(While &elem) {
   // then-block
   // if statements following While are nested in a Block, a new scope will be created automatically;
   // if only a single statement is following, we manually need to open a new scope
-  if (auto* thenBlock = dynamic_cast<Block*>(elem.getBody())) {
+  if (auto *thenBlock = dynamic_cast<Block *>(elem.getBody())) {
     thenBlock->accept(*this);
   } else {
-    Node* block = dynamic_cast<Node*>(elem.getBody());
+    Node *block = dynamic_cast<Node *>(elem.getBody());
     assert(block != nullptr);
     changeToInnerScope(block->getUniqueNodeId());
     elem.getBody()->accept(*this);
@@ -193,3 +187,8 @@ void Visitor::changeToInnerScope(const std::string &nodeId) {
   auto temp = curScope->getOrCreateInnerScope(nodeId);
   this->curScope = temp;
 }
+
+Visitor::Visitor() {
+  curScope = nullptr;
+}
+

@@ -1,34 +1,39 @@
-#ifndef AST_OPTIMIZER_RETURN_H
-#define AST_OPTIMIZER_RETURN_H
+#ifndef AST_OPTIMIZER_INCLUDE_RETURN_H
+#define AST_OPTIMIZER_INCLUDE_RETURN_H
 
 #include <string>
+#include <vector>
 #include "AbstractStatement.h"
 #include "AbstractExpr.h"
 
 class Return : public AbstractStatement {
- public:
-  Return();
+public:
+    Return();
 
-  explicit Return(AbstractExpr* value);
+    explicit Return(AbstractExpr *returnValue);
 
-  [[nodiscard]] json toJson() const override;
+    explicit Return(std::vector<AbstractExpr *> returnValues);
 
-  void accept(IVisitor &v) override;
+    [[nodiscard]] json toJson() const override;
 
-  [[nodiscard]] std::string getNodeName() const override;
+    void accept(Visitor &v) override;
 
-  ~Return() override;
+    [[nodiscard]] std::string getNodeName() const override;
 
-  Literal* evaluate(Ast &ast) override;
+    ~Return() override;
 
-  [[nodiscard]] AbstractExpr* getReturnExpr() const;
+    std::vector<Literal *> evaluate(Ast &ast) override;
 
-  Node* cloneRecursiveDeep(bool keepOriginalUniqueNodeId) override;
+    [[nodiscard]] std::vector<AbstractExpr *> getReturnExpressions() const;
 
- protected:
-  int getMaxNumberChildren() override;
-  void setAttributes(AbstractExpr* returnExpr);
-  bool supportsCircuitMode() override;
+    Node *createClonedNode(bool keepOriginalUniqueNodeId) override;
+
+    void setAttributes(std::vector<AbstractExpr *> returnExpr);
+
+protected:
+    int getMaxNumberChildren() override;
+
+    bool supportsCircuitMode() override;
 };
 
-#endif //AST_OPTIMIZER_RETURN_H
+#endif //AST_OPTIMIZER_INCLUDE_RETURN_H

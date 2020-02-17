@@ -32,8 +32,8 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/nlohmann-json-src
 
 include_directories(
         ${ast_optimizer_SOURCE_DIR}/include/ast
-        ${ast_optimizer_SOURCE_DIR}/include/utilities
         ${ast_optimizer_SOURCE_DIR}/include/optimizer
+        ${ast_optimizer_SOURCE_DIR}/include/utilities
         ${ast_optimizer_SOURCE_DIR}/include/visitor
         ${ast_optimizer_SOURCE_DIR}/examples
         ${ast_optimizer_SOURCE_DIR}/test)
@@ -47,10 +47,8 @@ set(SOURCE_FILES
         ${ast_optimizer_SOURCE_DIR}/src/ast/Block.cpp
         ${ast_optimizer_SOURCE_DIR}/src/ast/Call.cpp
         ${ast_optimizer_SOURCE_DIR}/src/ast/CallExternal.cpp
-        ${ast_optimizer_SOURCE_DIR}/src/ast/CallExternal.cpp
         ${ast_optimizer_SOURCE_DIR}/src/ast/Function.cpp
         ${ast_optimizer_SOURCE_DIR}/src/ast/FunctionParameter.cpp
-        ${ast_optimizer_SOURCE_DIR}/src/ast/Group.cpp
         ${ast_optimizer_SOURCE_DIR}/src/ast/If.cpp
         ${ast_optimizer_SOURCE_DIR}/src/ast/Literal.cpp
         ${ast_optimizer_SOURCE_DIR}/src/ast/LiteralBool.cpp
@@ -76,9 +74,16 @@ set(SOURCE_FILES
         ${ast_optimizer_SOURCE_DIR}/src/visitor/Visitor.cpp
         ${ast_optimizer_SOURCE_DIR}/test/AstTestingGenerator.cpp)
 
+set(HEADER_ONLY_SOURCES
+        ${ast_optimizer_SOURCE_DIR}/include/ast/OpSymbEnum.h
+        ${ast_optimizer_SOURCE_DIR}/include/utilities/RandNumGen.h
+        ${ast_optimizer_SOURCE_DIR}/include/utilities/Datatypes.h
+        ${ast_optimizer_SOURCE_DIR}/include/utilities/DotPrinter.h)
+
 add_executable(ast_demo
         ${ast_optimizer_SOURCE_DIR}/main.cpp
-        ${SOURCE_FILES} include/utilities/DotPrinter.h)
+        ${SOURCE_FILES}
+        ${HEADER_ONLY_SOURCES})
 
 target_link_libraries(ast_demo PRIVATE nlohmann_json::nlohmann_json)
 

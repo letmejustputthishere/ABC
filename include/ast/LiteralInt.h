@@ -1,5 +1,5 @@
-#ifndef AST_OPTIMIZER_LITERALINT_H
-#define AST_OPTIMIZER_LITERALINT_H
+#ifndef AST_OPTIMIZER_INCLUDE_LITERALINT_H
+#define AST_OPTIMIZER_INCLUDE_LITERALINT_H
 
 #include "Literal.h"
 #include <string>
@@ -7,45 +7,47 @@
 #include <map>
 
 class LiteralInt : public Literal {
- private:
-  int value;
+private:
+    int value;
 
- public:
-  explicit LiteralInt(int value);
+    Node *createClonedNode(bool keepOriginalUniqueNodeId) override;
 
-  ~LiteralInt() override;
+public:
+    explicit LiteralInt(int value);
 
-  [[nodiscard]] int getValue() const;
+    ~LiteralInt() override;
 
-  [[nodiscard]] json toJson() const override;
+    [[nodiscard]] int getValue() const;
 
-  void accept(IVisitor &v) override;
+    [[nodiscard]] json toJson() const override;
 
-  [[nodiscard]] std::string getNodeName() const override;
+    void accept(Visitor &v) override;
 
-  Literal* evaluate(Ast &ast) override;
+    [[nodiscard]] std::string getNodeName() const override;
 
-  LiteralInt operator+(LiteralInt const &lint);
+    std::vector<Literal *> evaluate(Ast &ast) override;
 
-  friend std::ostream &operator<<(std::ostream &os, const LiteralInt &an_int);
+    LiteralInt operator+(LiteralInt const &lint);
 
-  bool operator==(const LiteralInt &rhs) const;
+    friend std::ostream &operator<<(std::ostream &os, const LiteralInt &an_int);
 
-  bool operator!=(const LiteralInt &rhs) const;
+    bool operator==(const LiteralInt &rhs) const;
 
-  bool supportsDatatype(Datatype &datatype) override;
+    bool operator!=(const LiteralInt &rhs) const;
 
-  void addLiteralValue(std::string identifier, std::map<std::string, Literal*> &paramsMap) override;
+    bool supportsDatatype(Datatype &datatype) override;
 
-  void setRandomValue(RandLiteralGen &rlg) override;
+    void addLiteralValue(std::string identifier, std::unordered_map<std::string, Literal *> &paramsMap) override;
 
-  void setValue(int newValue);
+    void setRandomValue(RandLiteralGen &rlg) override;
 
-  [[nodiscard]] std::string toString() const override;
+    void setValue(int newValue);
 
-  void print(std::ostream &str) const override;
+    [[nodiscard]] std::string toString() const override;
 
-  bool supportsCircuitMode() override;
+    void print(std::ostream &str) const override;
+
+    bool supportsCircuitMode() override;
 };
 
-#endif //AST_OPTIMIZER_LITERALINT_H
+#endif //AST_OPTIMIZER_INCLUDE_LITERALINT_H

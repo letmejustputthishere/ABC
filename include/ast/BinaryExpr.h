@@ -1,62 +1,73 @@
-#ifndef AST_OPTIMIZER_BINARYEXPR_H
-#define AST_OPTIMIZER_BINARYEXPR_H
+#ifndef AST_OPTIMIZER_INCLUDE_BINARYEXPR_H
+#define AST_OPTIMIZER_INCLUDE_BINARYEXPR_H
 
+#include <string>
+#include <vector>
 #include "Operator.h"
 #include "AbstractExpr.h"
 #include "Literal.h"
 #include "LiteralInt.h"
 #include "LiteralBool.h"
 #include "LiteralString.h"
-#include <string>
-#include <vector>
 
 class BinaryExpr : public AbstractExpr {
- public:
-  /// Represents an expression of the form "left op right", e.g., "2 + a" or "53 * 3".
-  /// \param left is the left operand of the expression.
-  /// \param op is the operator of the expression.
-  /// \param right is the right operand of the expression.
-  BinaryExpr(AbstractExpr* left, OpSymb::BinaryOp op, AbstractExpr* right);
-  BinaryExpr();
-  explicit BinaryExpr(OpSymb::BinaryOp op);
+public:
+    /// Represents an expression of the form "left op right", e.g., "2 + a" or "53 * 3".
+    /// \param left is the left operand of the expression.
+    /// \param op is the operator of the expression.
+    /// \param right is the right operand of the expression.
+    BinaryExpr(AbstractExpr *left, OpSymb::BinaryOp op, AbstractExpr *right);
 
-  template<typename T1, typename T2>
-  BinaryExpr(T1 left, OpSymb::BinaryOp op, T2 right) {
-    setAttributes(AbstractExpr::createParam(left), new Operator(op), AbstractExpr::createParam(right));
-  }
+    BinaryExpr();
 
-  ~BinaryExpr() override;
+    explicit BinaryExpr(OpSymb::BinaryOp op);
 
-  [[nodiscard]] json toJson() const override;
+    template<typename T1, typename T2>
+    BinaryExpr(T1 left, OpSymb::BinaryOp op, T2 right) {
+      setAttributes(AbstractExpr::createParam(left), new Operator(op), AbstractExpr::createParam(right));
+    }
 
-  [[nodiscard]] AbstractExpr* getLeft() const;
+    template<typename T1, typename T2>
+    BinaryExpr(T1 left, Operator *op, T2 right) {
+      setAttributes(AbstractExpr::createParam(left), op, AbstractExpr::createParam(right));
+    }
 
-  [[nodiscard]] Operator* getOp() const;
+    ~BinaryExpr() override;
 
-  [[nodiscard]] AbstractExpr* getRight() const;
+    [[nodiscard]] json toJson() const override;
 
-  void accept(IVisitor &v) override;
+    [[nodiscard]] AbstractExpr *getLeft() const;
 
-  [[nodiscard]] std::string getNodeName() const override;
+    [[nodiscard]] Operator *getOp() const;
 
-  static void swapOperandsLeftAWithRightB(BinaryExpr* bexpA, BinaryExpr* bexpB);
+    [[nodiscard]] AbstractExpr *getRight() const;
 
-  BinaryExpr* contains(BinaryExpr* bexpTemplate, AbstractExpr* excludedSubtree) override;
+    void accept(Visitor &v) override;
 
-  bool contains(Variable* var) override;
+    [[nodiscard]] std::string getNodeName() const override;
 
-  bool isEqual(AbstractExpr* other) override;
+    static void swapOperandsLeftAWithRightB(BinaryExpr *bexpA, BinaryExpr *bexpB);
 
-  Literal* evaluate(Ast &ast) override;
+    BinaryExpr *contains(BinaryExpr *bexpTemplate, AbstractExpr *excludedSubtree) override;
 
-  int countByTemplate(AbstractExpr* abstractExpr) override;
+    bool contains(Variable *var) override;
 
-  std::vector<std::string> getVariableIdentifiers() override;
-  void setAttributes(AbstractExpr* leftOperand, Operator* operatore, AbstractExpr* rightOperand);
+    bool isEqual(AbstractExpr *other) override;
 
- private:
-  int getMaxNumberChildren() override;
-  bool supportsCircuitMode() override;
+    std::vector<Literal *> evaluate(Ast &ast) override;
+
+    int countByTemplate(AbstractExpr *abstractExpr) override;
+
+    std::vector<std::string> getVariableIdentifiers() override;
+
+    void setAttributes(AbstractExpr *leftOperand, Operator *operatore, AbstractExpr *rightOperand);
+
+    int getMaxNumberChildren() override;
+
+    bool supportsCircuitMode() override;
+
+private:
+    Node *createClonedNode(bool keepOriginalUniqueNodeId) override;
 };
 
-#endif //AST_OPTIMIZER_BINARYEXPR_H
+#endif //AST_OPTIMIZER_INCLUDE_BINARYEXPR_H

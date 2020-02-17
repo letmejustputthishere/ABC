@@ -30,13 +30,12 @@
   "body": [
     {
       "type": "Return",
-      "value": {
-        "type": "BinaryExpr",
-        "leftOperand": {
+      "values": [
+        {
           "type": "BinaryExpr",
           "leftOperand": {
-            "type": "Group",
-            "expr": {
+            "type": "BinaryExpr",
+            "leftOperand": {
               "type": "BinaryExpr",
               "leftOperand": {
                 "type": "Variable",
@@ -47,20 +46,20 @@
                 "type": "LiteralInt",
                 "value": 221
               }
+            },
+            "operator": "mult",
+            "rightOperand": {
+              "type": "Variable",
+              "identifier": "b"
             }
           },
-          "operator": "mult",
+          "operator": "add",
           "rightOperand": {
             "type": "Variable",
-            "identifier": "b"
+            "identifier": "z"
           }
-        },
-        "operator": "add",
-        "rightOperand": {
-          "type": "Variable",
-          "identifier": "z"
         }
-      }
+      ]
     }
   ]
 }

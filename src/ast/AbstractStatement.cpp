@@ -1,7 +1,7 @@
 #include <iostream>
-#include "../../include/ast/AbstractStatement.h"
-#include "../../include/ast/Block.h"
-#include "../../include/ast/Call.h"
+#include "AbstractStatement.h"
+#include "Block.h"
+#include "Call.h"
 #include "BinaryExpr.h"
 
 std::string AbstractStatement::toString() const {
@@ -12,11 +12,11 @@ json AbstractStatement::toJson() const {
   return json({"type", "AbstractStatement"});
 }
 
-void AbstractStatement::accept(IVisitor &v) {
+void AbstractStatement::accept(Visitor &v) {
   std::cout << "This shouldn't be executed!" << std::endl;
 }
 
-BinaryExpr* AbstractStatement::contains(BinaryExpr* bexpTemplate, BinaryExpr* excludedSubtree) {
+BinaryExpr *AbstractStatement::contains(BinaryExpr *bexpTemplate, BinaryExpr *excludedSubtree) {
   return nullptr;
 }
 
@@ -24,12 +24,8 @@ std::string AbstractStatement::getVarTargetIdentifier() {
   return std::string();
 }
 
-bool AbstractStatement::isEqual(AbstractStatement* as) {
+bool AbstractStatement::isEqual(AbstractStatement *as) {
   return false;
-}
-
-Literal* AbstractStatement::evaluate(Ast &ast) {
-  return nullptr;
 }
 
 std::ostream &operator<<(std::ostream &outs, const AbstractStatement &obj) {
@@ -40,7 +36,7 @@ void to_json(json &j, const AbstractStatement &absStat) {
   j = absStat.toJson();
 }
 
-void to_json(json &j, const AbstractStatement* absStat) {
+void to_json(json &j, const AbstractStatement *absStat) {
   j = absStat->toJson();
 }
 

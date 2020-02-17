@@ -1,25 +1,22 @@
 #include <iostream>
-#include <Function.h>
-#include <Operator.h>
-#include <If.h>
-#include <LiteralInt.h>
-#include <LiteralBool.h>
-#include <LiteralFloat.h>
-#include <LogicalExpr.h>
-#include <VarAssignm.h>
-#include <Block.h>
-#include <Return.h>
-#include <BinaryExpr.h>
-#include <Ast.h>
-#include <CallExternal.h>
-#include <While.h>
-#include <UnaryExpr.h>
-#include <Call.h>
-#include <Group.h>
-
-#include "../../include/visitor/PrintVisitor.h"
-#include "../../main.h"
-#include "../utilities/Scope.h"
+#include "Function.h"
+#include "Operator.h"
+#include "If.h"
+#include "LiteralInt.h"
+#include "LiteralBool.h"
+#include "LiteralFloat.h"
+#include "LogicalExpr.h"
+#include "VarAssignm.h"
+#include "Block.h"
+#include "Return.h"
+#include "BinaryExpr.h"
+#include "Ast.h"
+#include "CallExternal.h"
+#include "While.h"
+#include "UnaryExpr.h"
+#include "Call.h"
+#include "PrintVisitor.h"
+#include "Scope.h"
 
 template<typename T>
 void PrintVisitor::printChildNodesIndented(T &elem) {
@@ -46,13 +43,13 @@ void PrintVisitor::visit(Block &elem) {
 }
 
 void PrintVisitor::visit(Call &elem) {
-  Node* node = static_cast<Node*>(static_cast<AbstractStatement*>(&elem));
+  Node *node = static_cast<Node *>(static_cast<AbstractStatement *>(&elem));
   addOutputStr(*node);
   printChildNodesIndented(elem);
 }
 
 void PrintVisitor::visit(CallExternal &elem) {
-  Node* node = static_cast<Node*>(static_cast<AbstractStatement*>(&elem));
+  Node *node = static_cast<Node *>(static_cast<AbstractStatement *>(&elem));
   addOutputStr(*node, {elem.getFunctionName()});
   printChildNodesIndented(elem);
 }
@@ -64,12 +61,6 @@ void PrintVisitor::visit(Function &elem) {
 
 void PrintVisitor::visit(FunctionParameter &elem) {
   addOutputStr(elem, {elem.getDatatype()->toString()});
-  printChildNodesIndented(elem);
-}
-
-void PrintVisitor::visit(Group &elem) {
-  addOutputStr(elem);
-  // group statements
   printChildNodesIndented(elem);
 }
 
@@ -186,11 +177,11 @@ void PrintVisitor::printScope() {
   ss << std::endl;
 }
 
-Scope* PrintVisitor::getLastPrintedScope() const {
+Scope *PrintVisitor::getLastPrintedScope() const {
   return lastPrintedScope;
 }
 
-void PrintVisitor::setLastPrintedScope(Scope* scope) {
+void PrintVisitor::setLastPrintedScope(Scope *scope) {
   this->lastPrintedScope = scope;
 }
 

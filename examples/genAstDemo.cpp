@@ -1,12 +1,11 @@
 #include "genAstDemo.h"
-#include <Call.h>
+#include "Call.h"
 #include <iostream>
 #include "Ast.h"
 #include "BinaryExpr.h"
 #include "Block.h"
 #include "CallExternal.h"
 #include "Function.h"
-#include "Group.h"
 #include "If.h"
 #include "LiteralBool.h"
 #include "LiteralInt.h"
@@ -16,8 +15,8 @@
 #include "UnaryExpr.h"
 #include "VarAssignm.h"
 #include "While.h"
-#include "../include/visitor/MultRewriteVisitor.h"
-#include "../include/visitor/PrintVisitor.h"
+#include "MultRewriteVisitor.h"
+#include "PrintVisitor.h"
 
 void runInteractiveDemo() {
   // ask which tree to be used for demo
@@ -111,11 +110,10 @@ void generateDemoOne(Ast &ast) {
       new Block(
           new VarAssignm("k",
                          new BinaryExpr(
-                             new Group(
-                                 new BinaryExpr(
-                                     new Variable("x"),
-                                     OpSymb::BinaryOp::multiplication,
-                                     new Variable("a"))),
+                             new BinaryExpr(
+                                 new Variable("x"),
+                                 OpSymb::BinaryOp::multiplication,
+                                 new Variable("a")),
                              OpSymb::BinaryOp::addition,
                              42)))));
 
@@ -183,8 +181,7 @@ void generateDemoTwo(Ast &ast) {
   // printf(outStr);
   func->addStatement(
       new CallExternal("printf",
-                       new std::vector<FunctionParameter>(
-                           {{"string", new Variable("outStr")}})));
+                       {new FunctionParameter("string", new Variable("outStr"))}));
 
   // return sum;
   func->addStatement(
@@ -196,13 +193,13 @@ void generateDemoThree(Ast &ast) {
   Function* func = dynamic_cast<Function*>(ast.setRootNode(new Function("computeMult")));
 
   // int a = 3;
-  func->addStatement(new VarDecl("a", new LiteralInt(3)));
+  func->addStatement(new VarDecl("a", 3));
 
   // int b = 7;
-  func->addStatement(new VarDecl("b", new LiteralInt(7)));
+  func->addStatement(new VarDecl("b", 7));
 
   // int c = 9;
-  func->addStatement(new VarDecl("c", new LiteralInt(9)));
+  func->addStatement(new VarDecl("c", 9));
 
   // int result = a * b;
   func->addStatement(
@@ -226,13 +223,13 @@ void generateDemoFour(Ast &ast) {
   Function* func = dynamic_cast<Function*>(ast.setRootNode(new Function("computeMult")));
 
   // int a = 3;
-  func->addStatement(new VarDecl("a", new LiteralInt(3)));
+  func->addStatement(new VarDecl("a", 3));
 
   // int b = 7;
-  func->addStatement(new VarDecl("b", new LiteralInt(7)));
+  func->addStatement(new VarDecl("b", 7));
 
   // int c = 9;
-  func->addStatement(new VarDecl("c", new LiteralInt(9)));
+  func->addStatement(new VarDecl("c", 9));
 
   // int result = a * b;
   func->addStatement(
@@ -278,21 +275,21 @@ void generateDemoFive(Ast &ast) {
 }
 
 void generateDemoSix(Ast &ast) {
-  //(Z * (A * (B * C))) --> ((B * C) * (A * Z))
+  //(Z * (A * (B * C))) --demo rewriter--> ((B * C) * (A * Z))
   // int computeMult() {...}
   Function* func = dynamic_cast<Function*>(ast.setRootNode(new Function("multiMult")));
 
   // int result = (inZ * (inA * (inB * inC)));
   func->addStatement(new VarDecl("result", TYPES::INT,
-                                 new Group(new BinaryExpr(new Variable("inZ"),
-                                                          OpSymb::multiplication,
-                                                          new Group(new BinaryExpr(
-                                                              new Variable("inA"),
-                                                              OpSymb::multiplication,
-                                                              new Group(new BinaryExpr(
-                                                                  new Variable("inB"),
-                                                                  OpSymb::multiplication,
-                                                                  new Variable("inC")))))))));
+                                 new BinaryExpr(new Variable("inZ"),
+                                                OpSymb::multiplication,
+                                                new BinaryExpr(
+                                                    new Variable("inA"),
+                                                    OpSymb::multiplication,
+                                                    new BinaryExpr(
+                                                        new Variable("inB"),
+                                                        OpSymb::multiplication,
+                                                        new Variable("inC"))))));
 
 
   // return result;

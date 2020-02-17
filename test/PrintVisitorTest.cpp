@@ -1,8 +1,7 @@
-#include <Ast.h>
-#include <include/visitor/PrintVisitor.h>
+#include "Ast.h"
+#include "PrintVisitor.h"
 #include <fstream>
 #include "gtest/gtest.h"
-#include "examples/genAstDemo.cpp"
 #include "AstTestingGenerator.h"
 
 class PrintVisitorTest : public ::testing::Test {

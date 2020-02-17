@@ -1,7 +1,7 @@
-#include "../../include/ast/While.h"
+#include "While.h"
 #include "LiteralBool.h"
 
-While::While(AbstractExpr* condition, AbstractStatement* body) : condition(condition), body(body) {}
+While::While(AbstractExpr *condition, AbstractStatement *body) : condition(condition), body(body) {}
 
 json While::toJson() const {
   json j;
@@ -11,15 +11,15 @@ json While::toJson() const {
   return j;
 }
 
-void While::accept(IVisitor &v) {
+void While::accept(Visitor &v) {
   v.visit(*this);
 }
 
-AbstractExpr* While::getCondition() const {
+AbstractExpr *While::getCondition() const {
   return condition;
 }
 
-AbstractStatement* While::getBody() const {
+AbstractStatement *While::getBody() const {
   return body;
 }
 
@@ -32,9 +32,10 @@ While::~While() {
   delete body;
 }
 
-Literal* While::evaluate(Ast &ast) {
-  while (*dynamic_cast<LiteralBool*>(getCondition()->evaluate(ast)) == LiteralBool(true)) {
+std::vector<Literal *> While::evaluate(Ast &ast) {
+  while (*dynamic_cast<LiteralBool *>(ensureSingleEvaluationResult(getCondition()->evaluate(ast)))
+         == LiteralBool(true)) {
     getBody()->evaluate(ast);
   }
-  return nullptr;
+  return std::vector<Literal *>();
 }

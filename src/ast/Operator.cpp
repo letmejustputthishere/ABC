@@ -1,21 +1,27 @@
 #include <variant>
 #include <typeindex>
 #include <iostream>
-#include "../../include/ast/Operator.h"
+#include "Operator.h"
 #include "LiteralInt.h"
 #include "LiteralString.h"
 #include "LiteralBool.h"
 #include "LiteralFloat.h"
 
-void Operator::accept(IVisitor &v) {
+void Operator::accept(Visitor &v) {
   v.visit(*this);
 }
 
-Operator::Operator(OpSymb::LogCompOp op) : operatorString(OpSymb::getTextRepr(op)), operatorSymbol(op) {}
+Operator::Operator(OpSymb::LogCompOp op) : operatorString(OpSymb::getTextRepr(op)) {
+  operatorSymbol = std::variant<OpSymb::BinaryOp, OpSymb::LogCompOp, OpSymb::UnaryOp>(op);
+}
 
-Operator::Operator(OpSymb::BinaryOp op) : operatorString(OpSymb::getTextRepr(op)), operatorSymbol(op) {}
+Operator::Operator(OpSymb::BinaryOp op) : operatorString(OpSymb::getTextRepr(op)) {
+  operatorSymbol = std::variant<OpSymb::BinaryOp, OpSymb::LogCompOp, OpSymb::UnaryOp>(op);
+}
 
-Operator::Operator(OpSymb::UnaryOp op) : operatorString(OpSymb::getTextRepr(op)), operatorSymbol(op) {}
+Operator::Operator(OpSymb::UnaryOp op) : operatorString(OpSymb::getTextRepr(op)) {
+  operatorSymbol = std::variant<OpSymb::BinaryOp, OpSymb::LogCompOp, OpSymb::UnaryOp>(op);
+}
 
 const std::string &Operator::getOperatorString() const {
   return operatorString;
@@ -41,19 +47,34 @@ bool Operator::equals(std::variant<OpSymb::BinaryOp, OpSymb::LogCompOp, OpSymb::
   return this->getOperatorString() == OpSymb::getTextRepr(op);
 }
 
-Literal* Operator::applyOperator(Literal* rhs) {
+bool Operator::equals(OpSymb::BinaryOp op) const {
+  return this->getOperatorString()
+         == OpSymb::getTextRepr(std::variant<OpSymb::BinaryOp, OpSymb::LogCompOp, OpSymb::UnaryOp>(op));
+}
+
+bool Operator::equals(OpSymb::LogCompOp op) const {
+  return this->getOperatorString()
+         == OpSymb::getTextRepr(std::variant<OpSymb::BinaryOp, OpSymb::LogCompOp, OpSymb::UnaryOp>(op));
+}
+
+bool Operator::equals(OpSymb::UnaryOp op) const {
+  return this->getOperatorString()
+         == OpSymb::getTextRepr(std::variant<OpSymb::BinaryOp, OpSymb::LogCompOp, OpSymb::UnaryOp>(op));
+}
+
+Literal *Operator::applyOperator(Literal *rhs) {
   // determine Literal subtype of rhs
-  if (auto rhsString = dynamic_cast<LiteralString*>(rhs))
+  if (auto rhsString = dynamic_cast<LiteralString *>(rhs))
     return applyOperator(rhsString);
-  else if (auto rhsInt = dynamic_cast<LiteralInt*>(rhs))
+  else if (auto rhsInt = dynamic_cast<LiteralInt *>(rhs))
     return applyOperator(rhsInt);
-  else if (auto rhsBool = dynamic_cast<LiteralBool*>(rhs))
+  else if (auto rhsBool = dynamic_cast<LiteralBool *>(rhs))
     return applyOperator(rhsBool);
   else
     throw std::logic_error("Could not recognize type of lhs in applyOperator(Literal* rhs).");
 }
 
-Literal* Operator::applyOperator(LiteralInt* rhs) {
+Literal *Operator::applyOperator(LiteralInt *rhs) {
   int value = rhs->getValue();
   if (this->equals(OpSymb::negation)) return new LiteralInt(-value);
   else if (this->equals(OpSymb::increment)) return new LiteralInt(++value);
@@ -62,7 +83,7 @@ Literal* Operator::applyOperator(LiteralInt* rhs) {
     throw std::logic_error("Could not apply unary operator (" + this->getOperatorString() + ") on (int).");
 }
 
-Literal* Operator::applyOperator(LiteralBool* rhs) {
+Literal *Operator::applyOperator(LiteralBool *rhs) {
   bool value = rhs->getValue();
   if (this->equals(OpSymb::negation)) return new LiteralBool(!value);
   else
@@ -70,12 +91,12 @@ Literal* Operator::applyOperator(LiteralBool* rhs) {
         "Could not apply unary operator (" + this->getOperatorString() + ") on (" + this->getNodeName() + ").");
 }
 
-Literal* Operator::applyOperator(LiteralString* rhs) {
+Literal *Operator::applyOperator(LiteralString *) {
   throw std::logic_error(
       "Could not apply unary operator (" + this->getOperatorString() + ") on (" + this->getNodeName() + ").");
 }
 
-Literal* Operator::applyOperator(LiteralFloat* rhs) {
+Literal *Operator::applyOperator(LiteralFloat *) {
   throw std::logic_error(
       "Could not apply unary operator (" + this->getOperatorString() + ") on (" + this->getNodeName() + ").");
 }
@@ -83,14 +104,16 @@ Literal* Operator::applyOperator(LiteralFloat* rhs) {
 // -----------------
 // First call of applyOperator -> both types are unknown
 // -----------------
-Literal* Operator::applyOperator(Literal* lhs, Literal* rhs) {
+Literal *Operator::applyOperator(Literal *lhs, Literal *rhs) {
   // determine Literal subtype of lhs
-  if (auto lhsString = dynamic_cast<LiteralString*>(lhs))
+  if (auto lhsString = dynamic_cast<LiteralString *>(lhs))
     return applyOperator(lhsString, rhs);
-  else if (auto lhsInt = dynamic_cast<LiteralInt*>(lhs))
+  else if (auto lhsInt = dynamic_cast<LiteralInt *>(lhs))
     return applyOperator(lhsInt, rhs);
-  else if (auto lhsBool = dynamic_cast<LiteralBool*>(lhs))
+  else if (auto lhsBool = dynamic_cast<LiteralBool *>(lhs))
     return applyOperator(lhsBool, rhs);
+  else if (auto lhsFloat = dynamic_cast<LiteralFloat *>(lhs))
+    return applyOperator(lhsFloat, rhs);
   else
     throw std::logic_error("Could not recognize type of lhs in applyOperator(Literal *lhs, Literal *rhs).");
 }
@@ -100,15 +123,15 @@ Literal* Operator::applyOperator(Literal* lhs, Literal* rhs) {
 // -----------------
 
 template<typename A>
-Literal* Operator::applyOperator(A* lhs, Literal* rhs) {
+Literal *Operator::applyOperator(A *lhs, Literal *rhs) {
   // determine Literal subtype of lhs
-  if (auto rhsString = dynamic_cast<LiteralString*>(rhs))
+  if (auto rhsString = dynamic_cast<LiteralString *>(rhs))
     return applyOperator(lhs, rhsString);
-  else if (auto rhsInt = dynamic_cast<LiteralInt*>(rhs))
+  else if (auto rhsInt = dynamic_cast<LiteralInt *>(rhs))
     return applyOperator(lhs, rhsInt);
-  else if (auto rhsBool = dynamic_cast<LiteralBool*>(rhs))
+  else if (auto rhsBool = dynamic_cast<LiteralBool *>(rhs))
     return applyOperator(lhs, rhsBool);
-  else if (auto rhsFloat = dynamic_cast<LiteralFloat*>(rhs))
+  else if (auto rhsFloat = dynamic_cast<LiteralFloat *>(rhs))
     return applyOperator(lhs, rhsFloat);
   else
     throw std::logic_error("template<typename A> applyOperator(A* lhs, Literal* rhs) failed!");
@@ -118,7 +141,7 @@ Literal* Operator::applyOperator(A* lhs, Literal* rhs) {
 // Third call of applyOperator -> both types are is known
 // -----------------
 
-Literal* Operator::applyOperator(LiteralFloat* lhs, LiteralFloat* rhs) {
+Literal *Operator::applyOperator(LiteralFloat *lhs, LiteralFloat *rhs) {
   float lhsVal = lhs->getValue();
   float rhsVal = rhs->getValue();
 
@@ -144,58 +167,57 @@ Literal* Operator::applyOperator(LiteralFloat* lhs, LiteralFloat* rhs) {
     throw std::logic_error("applyOperator(LiteralBool* lhs, LiteralInt* rhs) failed!");
 }
 
-Literal* Operator::applyOperator(LiteralFloat* lhs, LiteralInt* rhs) {
+Literal *Operator::applyOperator(LiteralFloat *lhs, LiteralInt *rhs) {
   auto rhsFloat = new LiteralFloat(static_cast<float>(rhs->getValue()));
   return applyOperator(lhs, rhsFloat);
 }
 
-Literal* Operator::applyOperator(LiteralInt* lhs, LiteralFloat* rhs) {
+Literal *Operator::applyOperator(LiteralInt *lhs, LiteralFloat *rhs) {
   auto lhsFloat = new LiteralFloat(static_cast<float>(lhs->getValue()));
   return applyOperator(lhsFloat, rhs);
 }
 
-Literal* Operator::applyOperator(LiteralFloat* lhs, LiteralBool* rhs) {
+Literal *Operator::applyOperator(LiteralFloat *lhs, LiteralBool *rhs) {
   auto rhsFloat = new LiteralFloat(static_cast<float>(rhs->getValue()));
   return applyOperator(lhs, rhsFloat);
 }
 
-Literal* Operator::applyOperator(LiteralBool* lhs, LiteralFloat* rhs) {
+Literal *Operator::applyOperator(LiteralBool *lhs, LiteralFloat *rhs) {
   auto lhsFloat = new LiteralFloat(static_cast<float>(lhs->getValue()));
   return applyOperator(lhsFloat, rhs);
 }
 
-Literal* Operator::applyOperator(LiteralFloat* lhs, LiteralString* rhs) {
+Literal *Operator::applyOperator(LiteralFloat *, LiteralString *) {
   throw std::invalid_argument("Operators on (float, string) not supported!");
-
 }
 
-Literal* Operator::applyOperator(LiteralString* lhs, LiteralFloat* rhs) {
+Literal *Operator::applyOperator(LiteralString *, LiteralFloat *) {
   throw std::invalid_argument("Operators on (string, float) not supported!");
 }
 
-Literal* Operator::applyOperator(LiteralString* lhs, LiteralInt* rhs) {
+Literal *Operator::applyOperator(LiteralString *, LiteralInt *) {
   throw std::invalid_argument("Operators on (string, int) not supported!");
 }
 
-Literal* Operator::applyOperator(LiteralInt* lhs, LiteralString* rhs) {
+Literal *Operator::applyOperator(LiteralInt *, LiteralString *) {
   throw std::invalid_argument("Operators on (int, string) not supported!");
 }
 
-Literal* Operator::applyOperator(LiteralString* lhs, LiteralBool* rhs) {
+Literal *Operator::applyOperator(LiteralString *, LiteralBool *) {
   throw std::invalid_argument("Operators on (string, bool) not supported!");
 }
 
-Literal* Operator::applyOperator(LiteralBool* lhs, LiteralString* rhs) {
+Literal *Operator::applyOperator(LiteralBool *, LiteralString *) {
   throw std::invalid_argument("Operators on (bool, string) not supported!");
 }
 
-Literal* Operator::applyOperator(LiteralString* lhs, LiteralString* rhs) {
+Literal *Operator::applyOperator(LiteralString *lhs, LiteralString *rhs) {
   if (this->equals(OpSymb::addition)) return new LiteralString(lhs->getValue() + rhs->getValue());
   else
     throw std::logic_error(getOperatorString() + " not supported for (string, string)");
 }
 
-Literal* Operator::applyOperator(LiteralBool* lhs, LiteralInt* rhs) {
+Literal *Operator::applyOperator(LiteralBool *lhs, LiteralInt *rhs) {
   bool lhsVal = lhs->getValue();
   int rhsVal = rhs->getValue();
 
@@ -222,7 +244,7 @@ Literal* Operator::applyOperator(LiteralBool* lhs, LiteralInt* rhs) {
     throw std::logic_error("applyOperator(LiteralBool* lhs, LiteralInt* rhs) failed!");
 }
 
-Literal* Operator::applyOperator(LiteralInt* lhs, LiteralBool* rhs) {
+Literal *Operator::applyOperator(LiteralInt *lhs, LiteralBool *rhs) {
   int lhsVal = lhs->getValue();
   bool rhsVal = rhs->getValue();
 
@@ -249,7 +271,7 @@ Literal* Operator::applyOperator(LiteralInt* lhs, LiteralBool* rhs) {
     throw std::logic_error("applyOperator(LiteralBool* lhs, LiteralInt* rhs) failed!");
 }
 
-Literal* Operator::applyOperator(LiteralBool* lhs, LiteralBool* rhs) {
+Literal *Operator::applyOperator(LiteralBool *lhs, LiteralBool *rhs) {
   int lhsVal = lhs->getValue();
   int rhsVal = rhs->getValue();
 
@@ -261,7 +283,7 @@ Literal* Operator::applyOperator(LiteralBool* lhs, LiteralBool* rhs) {
 
   else if (this->equals(OpSymb::logicalAnd)) return new LiteralBool(lhsVal && rhsVal);
   else if (this->equals(OpSymb::logicalOr)) return new LiteralBool(lhsVal || rhsVal);
-  else if (this->equals(OpSymb::logicalXor)) return new LiteralBool(lhsVal != rhsVal);
+  else if (this->equals(OpSymb::logicalXor) || this->equals(OpSymb::unequal)) return new LiteralBool(lhsVal != rhsVal);
 
   else if (this->equals(OpSymb::smaller)) return new LiteralBool(lhsVal < rhsVal);
   else if (this->equals(OpSymb::smallerEqual)) return new LiteralBool(lhsVal <= rhsVal);
@@ -269,13 +291,12 @@ Literal* Operator::applyOperator(LiteralBool* lhs, LiteralBool* rhs) {
   else if (this->equals(OpSymb::greaterEqual)) return new LiteralBool(lhsVal >= rhsVal);
 
   else if (this->equals(OpSymb::equal)) return new LiteralBool(lhsVal == rhsVal);
-  else if (this->equals(OpSymb::unequal)) return new LiteralBool(lhsVal != rhsVal);
 
   else
     throw std::logic_error("applyOperator(LiteralBool* lhs, LiteralBool* rhs) failed!");
 }
 
-Literal* Operator::applyOperator(LiteralInt* lhs, LiteralInt* rhs) {
+Literal *Operator::applyOperator(LiteralInt *lhs, LiteralInt *rhs) {
   int lhsVal = lhs->getValue();
   int rhsVal = rhs->getValue();
 
@@ -320,10 +341,7 @@ const std::variant<OpSymb::BinaryOp, OpSymb::LogCompOp, OpSymb::UnaryOp> &Operat
 
 Operator::~Operator() = default;
 
-Node* Operator::cloneRecursiveDeep(bool keepOriginalUniqueNodeId) {
-  auto clonedOperator = new Operator(this->getOperatorSymbol());
-  if (keepOriginalUniqueNodeId) {
-    clonedOperator->setUniqueNodeId(this->getUniqueNodeId());
-  }
-  return clonedOperator;
+Node *Operator::createClonedNode(bool) {
+  return new Operator(this->getOperatorSymbol());
 }
+
