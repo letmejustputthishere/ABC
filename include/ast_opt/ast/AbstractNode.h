@@ -23,7 +23,7 @@ class AbstractNode {
   std::vector<AbstractNode *> children{};
 
   /// Stores the parent nodes of the current node.
-  std::vector<AbstractNode *> parents{};
+  AbstractNode * parent = nullptr;
 
   /// A static ongoing counter that is incremented after creating a new AbstractNode object. The counter's value is used
   /// to build the unique node ID.
@@ -145,10 +145,6 @@ class AbstractNode {
    *  @{
    */
 
-  /// Returns a vector of pointers to parent nodes but without those parents that are nullptr.
-  /// \return A vector of non-nullptr parent nodes.
-  [[nodiscard]] std::vector<AbstractNode *> getParentsNonNull() const;
-
   /// Returns all the ancestor nodes of the current node, i.e., the ancestors of this node, the ancestors of the
   /// ancestors et cetera.
   /// \return A list of ancestor nodes.
@@ -168,12 +164,15 @@ class AbstractNode {
 
   /// Checks whether this node has a  parent
   /// \return True if this node has a parent, otherwise returns False.
-  bool hasParent();
+  bool hasParent() const;
 
-  /// Returns a pointer to the only parent node. If this node has more than one parent, then a std::logic_exception is
-  /// thrown.
-  /// \return A pointer to the node's only parent node.
+  /// Returns a pointer to the only parent node.
+  /// \return A pointer to the node's parent node.
   AbstractNode *getParent();
+
+  /// Returns a pointer to the only parent node.
+  /// \return A pointer to the node's parent node.
+  const AbstractNode *getParent() const;
 
   /** @} */ // End of parents group
 

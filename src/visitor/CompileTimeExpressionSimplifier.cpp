@@ -249,8 +249,6 @@ void CompileTimeExpressionSimplifier::visit(GetMatrixSize &elem) {
 }
 
 void isolateNode(AbstractNode* n) {
-  for (auto &p : n->getParentsNonNull()) p->removeChild(n, false);
-  for (auto &c : n->getChildrenNonNull()) c->removeFromParent();
   n->removeChildren();
   n->removeFromParent();
 }

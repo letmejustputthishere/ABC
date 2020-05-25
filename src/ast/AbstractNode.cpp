@@ -50,13 +50,6 @@ std::vector<AbstractNode *> AbstractNode::getChildrenNonNull() const {
   return childrenFiltered;
 }
 
-std::vector<AbstractNode *> AbstractNode::getParentsNonNull() const {
-  std::vector<AbstractNode *> parentsFiltered;
-  std::copy_if(parents.begin(), parents.end(), std::back_inserter(parentsFiltered),
-               [](AbstractNode *n) { return n!=nullptr; });
-  return parentsFiltered;
-}
-
 void AbstractNode::addChild(AbstractNode *child, bool addBackReference) {
   addChildren({child});
 }
@@ -144,21 +137,68 @@ void AbstractNode::removeChild(AbstractNode *child, bool removeBackreference) {
   }
 }
 
-void AbstractNode::setParent(AbstractNode *newParent) {
-  parents.push_back(newParent);
-  for (auto &p : getParentsNonNull()) {
-    p->addChild(this, false);
-  }
-}
-
 void AbstractNode::removeChildren() {
+  //TODO: Unset parent in the children
   children.clear();
 }
 
+int AbstractNode::countChildrenNonNull() const {
+  return std::count_if(getChildren().begin(), getChildren().end(), [](AbstractNode *n) { return n!=nullptr; });
+}
+
+int AbstractNode::getMaxNumberChildren() {
+  return 0;
+}
+
+AbstractNode *AbstractNode::getChildAtIndex(int idx) const {
+  return children.at(idx);
+}
+
+void AbstractNode::replaceChild(AbstractNode *originalChild, AbstractNode *newChild) {
+  //TODO: Make this more efficient
+  auto pos = std::find(children.begin(), children.end(), originalChild);
+  if (pos==children.end()) {
+    throw std::runtime_error("Could not execute AbstractNode::replaceChildren because the node to be replaced could "
+                             "not be found in the children vector!");
+  }
+  children[std::distance(children.begin(), pos)] = newChild;
+
+  // remove edge: originalChild -> currentNode
+  originalChild->removeFromParent();
+
+  // add edges: newChildToBeAdded -> currentNode but before detach any existing parents from this child node
+  if (newChild!=nullptr) {
+    newChild->removeFromParent();
+    newChild->setParent(this);
+  }
+}
+
+bool AbstractNode::hasParent(AbstractNode *parentNode) {
+  return getParent()==parentNode;
+}
+
+bool AbstractNode::hasParent() const {
+  return getParent()!=nullptr;
+}
+
+AbstractNode *AbstractNode::getParent() {
+  return parent;
+}
+
+const AbstractNode *AbstractNode::getParent() const {
+  return parent;
+}
+
+void AbstractNode::setParent(AbstractNode *newParent) {
+  if (parent) {
+    throw std::logic_error("Cannot overwrite parent.");
+  } else {
+    parent = newParent;
+  }
+}
+
 void AbstractNode::removeFromParent() {
-  //TODO: Break infinite loop!
   getParent()->removeChild(this);
-  parents.clear();
 }
 
 void to_json(json &j, const AbstractNode &n) {
@@ -229,62 +269,14 @@ std::vector<AbstractNode *> AbstractNode::getDescendants() {
   return std::vector<AbstractNode *>(result.begin(), result.end());
 }
 
-bool AbstractNode::hasParent(AbstractNode *parentNode) {
-  return getParent()==parentNode;
-}
-
-bool AbstractNode::hasParent() {
-  return getParent()!=nullptr;
-}
-
-int AbstractNode::countChildrenNonNull() const {
-  return std::count_if(getChildren().begin(), getChildren().end(), [](AbstractNode *n) { return n!=nullptr; });
-}
-
-int AbstractNode::getMaxNumberChildren() {
-  return 0;
-}
-
-AbstractNode *AbstractNode::getChildAtIndex(int idx) const {
-  return getChildAtIndex(idx);
-}
-
 AbstractNode::~AbstractNode() = default;
 
 AbstractNode *AbstractNode::cloneFlat() {
   throw std::runtime_error("Cannot clone an AbstractNode. Use the overridden cloneFlat instead.");
 }
 
-void AbstractNode::replaceChild(AbstractNode *originalChild, AbstractNode *newChild) {
-  auto pos = std::find(children.begin(), children.end(), originalChild);
-  if (pos==children.end()) {
-    throw std::runtime_error("Could not execute AbstractNode::replaceChildren because the node to be replaced could "
-                             "not be found in the children vector!");
-  }
-  children[std::distance(children.begin(), pos)] = newChild;
-
-  // remove edge: originalChild -> currentNode
-  originalChild->removeFromParent();
-
-  // add edges: newChildToBeAdded -> currentNode but before detach any existing parents from this child node
-  if (newChild!=nullptr) {
-    newChild->removeFromParent();
-    newChild->setParent(this);
-  }
-}
-
 std::string AbstractNode::toString(bool) const {
   throw std::runtime_error("toString not implemented for class " + getNodeType() + ".");
-}
-
-AbstractNode *AbstractNode::getParent() {
-  auto parentsVector = getParentsNonNull();
-  if (parentsVector.size() > 1) {
-    throw std::logic_error("AbstractNode::getParent() failed because node has more than one parent!");
-  } else if (parentsVector.empty()) {
-    throw std::logic_error("AbstractNode::getParent() failed because node does not have a parent");
-  }
-  return this->getParent();
 }
 
 void AbstractNode::updateClone(bool keepOriginalUniqueNodeId, const AbstractNode *originalNode) {
