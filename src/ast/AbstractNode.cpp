@@ -246,15 +246,7 @@ int AbstractNode::getMaxNumberChildren() {
 }
 
 AbstractNode *AbstractNode::getChildAtIndex(int idx) const {
-  return getChildAtIndex(idx, false);
-}
-
-AbstractNode *AbstractNode::getChildAtIndex(int idx, bool isEdgeDirectionAware) const {
-  try {
-    return (isEdgeDirectionAware && isReversed) ? parents.at(idx) : children.at(idx);
-  } catch (std::out_of_range const &e) {
-    return nullptr;
-  }
+  return getChildAtIndex(idx);
 }
 
 AbstractNode::~AbstractNode() = default;

@@ -138,18 +138,7 @@ Ast::evaluateAst(const std::unordered_map<std::string, AbstractLiteral *> &param
 }
 
 bool Ast::isReversed() const {
-  int sum = 0;
-  auto allNodes = getAllNodes();
-  for (auto &node : allNodes) { if (node->isReversed) sum++; }
-
-  // check that we are in a consistent state, i.e., either all of the nodes have reversed edges or none of them
-  bool allReversed = (sum==allNodes.size());
-  bool noneReversed = (sum==0);
-  if (!allReversed && !noneReversed) {
-    throw std::runtime_error("Inconsistent state! AST consists of some nodes that have reversed edges.");
-  } else {
-    return allReversed;
-  }
+  return false;
 }
 
 Ast::Ast(const Ast &otherAst, bool keepOriginalUniqueNodeId) : rootNode(nullptr) {
@@ -177,7 +166,7 @@ std::set<AbstractNode *> Ast::getAllNodes(const std::function<bool(AbstractNode 
     // if (no predicate is set) OR (predicate is set AND node fulfills predicate) -> add node to result set
     if (predicate==nullptr || predicate(curNode)) allNodes.insert(curNode);
     // depending on the status of the node, enqueue the next nodes
-    auto nextNodesToConsider = curNode->isReversed ? std::vector<AbstractNode*>(1,curNode->getParent()) : curNode->getChildrenNonNull();
+    auto nextNodesToConsider = curNode->getChildrenNonNull();
     for (auto &c : nextNodesToConsider) nodesToCheck.push(c);
   }
   return allNodes;

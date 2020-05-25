@@ -32,7 +32,6 @@ class NodeCloneTestFixture : public ::testing::Test {
     } else {
       ASSERT_NE(original->getUniqueNodeId(), clone->getUniqueNodeId());
     }
-    ASSERT_EQ(original->isReversed, clone->isReversed);
   }
 };
 
