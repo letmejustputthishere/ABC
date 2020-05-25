@@ -89,13 +89,13 @@ void EvaluationAlgorithms::genLinearRegressionAst(Ast &ast) {
   func->addStatement(new VarDecl("sumXY", 0));
 
   auto *forLoopBlock = new Block();
-  forLoopBlock->addChild(new VarAssignm("sumX",
+  forLoopBlock->addStatement(new VarAssignm("sumX",
                                         new OperatorExpr(new Operator(ADDITION),
                                                          {new Variable("sumX"),
                                                           new MatrixElementRef(new Variable("dataX"),
                                                                                new LiteralInt(0),
                                                                                new Variable("i"))})));
-  forLoopBlock->addChild(new VarAssignm("sumXX",
+  forLoopBlock->addStatement(new VarAssignm("sumXX",
                                         new OperatorExpr(new Operator(ADDITION),
                                                          {new Variable("sumXX"),
                                                           new OperatorExpr(new Operator(MULTIPLICATION),
@@ -105,13 +105,13 @@ void EvaluationAlgorithms::genLinearRegressionAst(Ast &ast) {
                                                                             new MatrixElementRef(new Variable("dataX"),
                                                                                                  new LiteralInt(0),
                                                                                                  new Variable("i"))})})));
-  forLoopBlock->addChild(new VarAssignm("sumY",
+  forLoopBlock->addStatement(new VarAssignm("sumY",
                                         new OperatorExpr(new Operator(ADDITION),
                                                          {new Variable("sumY"),
                                                           new MatrixElementRef(new Variable("dataY"),
                                                                                new LiteralInt(0),
                                                                                new Variable("i"))})));
-  forLoopBlock->addChild(new VarAssignm("sumXY",
+  forLoopBlock->addStatement(new VarAssignm("sumXY",
                                         new OperatorExpr(new Operator(ADDITION),
                                                          {new Variable("sumXY"),
                                                           new OperatorExpr(new Operator(MULTIPLICATION),
@@ -169,12 +169,12 @@ void EvaluationAlgorithms::genLinearRegressionAstAfterCtes(Ast &ast) {
   func->addStatement(new VarDecl("sumXY", 0));
 
   auto unrolledLoopsBlock = new Block();
-  unrolledLoopsBlock->addChild(new VarDecl("i", 0));
+  unrolledLoopsBlock->addStatement(new VarDecl("i", 0));
 
   auto forLoopBlock = new Block();
 
   // i, i+1, i+2
-  forLoopBlock->addChild(
+  forLoopBlock->addStatement(
       new VarAssignm("sumX", new OperatorExpr(new Operator(ADDITION),
                                               {new Variable("sumX"),
                                                new MatrixElementRef(new Variable("dataX"),
@@ -190,7 +190,7 @@ void EvaluationAlgorithms::genLinearRegressionAstAfterCtes(Ast &ast) {
                                                                     new OperatorExpr(new Operator(ADDITION),
                                                                                      {new Variable("i"),
                                                                                       new LiteralInt(2)}))})));
-  forLoopBlock->addChild(
+  forLoopBlock->addStatement(
       new VarAssignm("sumXX",
                      new OperatorExpr(new Operator(ADDITION),
                                       {new Variable("sumXX"),
@@ -226,7 +226,7 @@ void EvaluationAlgorithms::genLinearRegressionAstAfterCtes(Ast &ast) {
                                                                                                {new Variable("i"),
                                                                                                 new LiteralInt(2)}))
                                                         })})));
-  forLoopBlock->addChild(new VarAssignm("sumY",
+  forLoopBlock->addStatement(new VarAssignm("sumY",
                                         new OperatorExpr(new Operator(ADDITION),
                                                          {new Variable("sumY"),
                                                           new MatrixElementRef(new Variable("dataY"),
@@ -243,7 +243,7 @@ void EvaluationAlgorithms::genLinearRegressionAstAfterCtes(Ast &ast) {
                                                                                                 {new Variable("i"),
                                                                                                  new LiteralInt(2)}))
                                                          })));
-  forLoopBlock->addChild(new VarAssignm("sumXY",
+  forLoopBlock->addStatement(new VarAssignm("sumXY",
                                         new OperatorExpr(new Operator(ADDITION),
                                                          {new Variable("sumXY"),
                                                           new OperatorExpr(new Operator(MULTIPLICATION),
@@ -285,11 +285,11 @@ void EvaluationAlgorithms::genLinearRegressionAstAfterCtes(Ast &ast) {
                                                                                                   new LiteralInt(2)})
                                                                             )})})));
 
-  forLoopBlock->addChild(new VarAssignm("i",
+  forLoopBlock->addStatement(new VarAssignm("i",
                                         new OperatorExpr(new Operator(ADDITION),
                                                          {new Variable("i"), new LiteralInt(3)})));
 
-  unrolledLoopsBlock->addChild(new For(nullptr,
+  unrolledLoopsBlock->addStatement(new For(nullptr,
                                        new OperatorExpr(new Operator(LOGICAL_AND), {
                                            new OperatorExpr(new Operator(SMALLER),
                                                             {new Variable("i"),
@@ -313,10 +313,10 @@ void EvaluationAlgorithms::genLinearRegressionAstAfterCtes(Ast &ast) {
 
   // == CLEANUP LOOP ===
   auto cleanupLoopBlock = new Block();
-  cleanupLoopBlock->addChild(new VarAssignm("sumX",
+  cleanupLoopBlock->addStatement(new VarAssignm("sumX",
                                             new ArithmeticExpr(new Variable("sumX"), ADDITION, new MatrixElementRef
                                                 (new Variable("dataX"), new LiteralInt(0), new Variable("i")))));
-  cleanupLoopBlock->addChild(new VarAssignm("sumXX",
+  cleanupLoopBlock->addStatement(new VarAssignm("sumXX",
                                             new ArithmeticExpr(new Variable("sumXX"), ADDITION,
                                                                new ArithmeticExpr(new MatrixElementRef(new Variable(
                                                                    "dataX"),
@@ -328,10 +328,10 @@ void EvaluationAlgorithms::genLinearRegressionAstAfterCtes(Ast &ast) {
                                                                                                        new LiteralInt(0),
                                                                                                        new Variable("i"))
                                                                ))));
-  cleanupLoopBlock->addChild(new VarAssignm("sumY",
+  cleanupLoopBlock->addStatement(new VarAssignm("sumY",
                                             new ArithmeticExpr(new Variable("sumY"), ADDITION, new MatrixElementRef
                                                 (new Variable("dataY"), new LiteralInt(0), new Variable("i")))));
-  cleanupLoopBlock->addChild(new VarAssignm("sumXY",
+  cleanupLoopBlock->addStatement(new VarAssignm("sumXY",
                                             new ArithmeticExpr(new Variable("sumXY"), ADDITION,
                                                                new ArithmeticExpr(new MatrixElementRef(new Variable(
                                                                    "dataX"),
@@ -343,7 +343,7 @@ void EvaluationAlgorithms::genLinearRegressionAstAfterCtes(Ast &ast) {
                                                                                                        new LiteralInt(0),
                                                                                                        new Variable("i"))
                                                                ))));
-  unrolledLoopsBlock->addChild(new For(nullptr,
+  unrolledLoopsBlock->addStatement(new For(nullptr,
                                        new LogicalExpr(new Variable("i"),
                                                        SMALLER,
                                                        new GetMatrixSize(new Variable("dataX"), new LiteralInt(1))),
@@ -437,7 +437,7 @@ void EvaluationAlgorithms::genPolynomialRegressionAst(Ast &ast) {
 
   auto forLoopBlock = new Block();
 
-  forLoopBlock->addChild(
+  forLoopBlock->addStatement(
       new VarAssignm("xym", new OperatorExpr(new Operator(ADDITION),
                                              {new Variable("xym"),
                                               new OperatorExpr(new Operator(MULTIPLICATION),
@@ -450,7 +450,7 @@ void EvaluationAlgorithms::genPolynomialRegressionAst(Ast &ast) {
                                                                     new LiteralInt(0),
                                                                     new Variable("i"))})})));
 
-  forLoopBlock->addChild(
+  forLoopBlock->addStatement(
       new VarAssignm("x2ym", new OperatorExpr(new Operator(ADDITION),
                                               {new Variable("x2ym"),
                                                new OperatorExpr(new Operator(MULTIPLICATION),
@@ -512,9 +512,9 @@ void EvaluationAlgorithms::genPolynomialRegressionAstAfterCtes(Ast &ast) {
   func->addStatement(unrolledLoopsBlock);
 
   // UNROLLED LOOP
-  unrolledLoopsBlock->addChild(new VarDecl("i", 0));
+  unrolledLoopsBlock->addStatement(new VarDecl("i", 0));
   auto unwindedForLoopBlock = new Block();
-  unwindedForLoopBlock->addChild(
+  unwindedForLoopBlock->addStatement(
       new VarAssignm("xym", new OperatorExpr(new Operator(ADDITION),
                                              {new Variable("xym"),
                                               new OperatorExpr(new Operator(MULTIPLICATION),
@@ -553,7 +553,7 @@ void EvaluationAlgorithms::genPolynomialRegressionAstAfterCtes(Ast &ast) {
                                                                                      {new Variable("i"),
                                                                                       new LiteralInt(2)}))})})));
 
-  unwindedForLoopBlock->addChild(
+  unwindedForLoopBlock->addStatement(
       new VarAssignm("x2ym", new OperatorExpr(new Operator(ADDITION),
                                               {new Variable("x2ym"),
                                                new OperatorExpr(new Operator(MULTIPLICATION),
@@ -609,11 +609,11 @@ void EvaluationAlgorithms::genPolynomialRegressionAstAfterCtes(Ast &ast) {
                                                                                        new LiteralInt(2)}))})
                                               })));
 
-  unwindedForLoopBlock->addChild(new VarAssignm("i",
+  unwindedForLoopBlock->addStatement(new VarAssignm("i",
                                                 new OperatorExpr(new Operator(ADDITION),
                                                                  {new Variable("i"), new LiteralInt(3)})));
 
-  unrolledLoopsBlock->addChild(new For(nullptr,
+  unrolledLoopsBlock->addStatement(new For(nullptr,
                                        new OperatorExpr(new Operator(LOGICAL_AND), {
                                            new OperatorExpr(new Operator(SMALLER),
                                                             {new Variable("i"),
@@ -634,7 +634,7 @@ void EvaluationAlgorithms::genPolynomialRegressionAstAfterCtes(Ast &ast) {
 
   // CLEANUP LOOP
   auto forLoopBlock = new Block();
-  forLoopBlock->addChild(
+  forLoopBlock->addStatement(
       new VarAssignm("xym", new OperatorExpr(new Operator(ADDITION),
                                              {new Variable("xym"),
                                               new OperatorExpr(new Operator(MULTIPLICATION),
@@ -646,7 +646,7 @@ void EvaluationAlgorithms::genPolynomialRegressionAstAfterCtes(Ast &ast) {
                                                                     new Variable("x"),
                                                                     new LiteralInt(0),
                                                                     new Variable("i"))})})));
-  forLoopBlock->addChild(
+  forLoopBlock->addStatement(
       new VarAssignm("x2ym", new OperatorExpr(new Operator(ADDITION),
                                               {new Variable("x2ym"),
                                                new OperatorExpr(new Operator(MULTIPLICATION),
@@ -662,7 +662,7 @@ void EvaluationAlgorithms::genPolynomialRegressionAstAfterCtes(Ast &ast) {
                                                                      new Variable("y"),
                                                                      new LiteralInt(0),
                                                                      new Variable("i"))})})));
-  unrolledLoopsBlock->addChild(new For(nullptr,
+  unrolledLoopsBlock->addStatement(new For(nullptr,
                                        new OperatorExpr(new Operator(SMALLER),
                                                         {new Variable("i"),
                                                          new GetMatrixSize(new Variable("x"), new LiteralInt(1))}),
@@ -1055,7 +1055,7 @@ void EvaluationAlgorithms::genSobelFilterAst(Ast &ast) {
       outerForLoopBlock));
 
   auto innerForLoopBlock = new Block();
-  innerForLoopBlock->addChild(
+  innerForLoopBlock->addStatement(
       new VarDecl("rot", new Datatype(Types::INT), new Rotate(new Variable("img"),
                                                               new OperatorExpr(
                                                                   new Operator(ADDITION),
@@ -1067,7 +1067,7 @@ void EvaluationAlgorithms::genSobelFilterAst(Ast &ast) {
                                                                    new Variable("j")}))));
 
   auto hvForLoopBlock = new Block();
-  hvForLoopBlock->addChild(new MatrixAssignm(
+  hvForLoopBlock->addStatement(new MatrixAssignm(
       new MatrixElementRef(new Variable("h"), new LiteralInt(0), new Variable("k")),
       new OperatorExpr(new Operator(MULTIPLICATION),
                        {new MatrixElementRef(new Variable("rot"), new LiteralInt(0), new Variable("k")),
@@ -1076,7 +1076,7 @@ void EvaluationAlgorithms::genSobelFilterAst(Ast &ast) {
                                                               {new OperatorExpr(new Operator(MULTIPLICATION),
                                                                                 {new LiteralInt(3), new Variable("i")}),
                                                                new Variable("j")}))})));
-  hvForLoopBlock->addChild(new MatrixAssignm(
+  hvForLoopBlock->addStatement(new MatrixAssignm(
       new MatrixElementRef(new Variable("v"), new LiteralInt(0), new Variable("k")),
       new OperatorExpr(new Operator(MULTIPLICATION),
                        {new MatrixElementRef(new Variable("rot"), new LiteralInt(0), new Variable("k")),
@@ -1085,7 +1085,7 @@ void EvaluationAlgorithms::genSobelFilterAst(Ast &ast) {
                                                               {new OperatorExpr(new Operator(MULTIPLICATION),
                                                                                 {new LiteralInt(3), new Variable("j")}),
                                                                new Variable("i")}))})));
-  innerForLoopBlock->addChild(
+  innerForLoopBlock->addStatement(
       new For(new VarDecl("k", new Datatype(Types::INT), new LiteralInt(0)),
               new OperatorExpr(new Operator(SMALLER), {new Variable("k"),
                                                        new GetMatrixSize(new Variable("rot"), new LiteralInt(1))}),
@@ -1093,19 +1093,19 @@ void EvaluationAlgorithms::genSobelFilterAst(Ast &ast) {
               hvForLoopBlock));
 
   auto innerMostForLoopBlock = new Block();
-  innerMostForLoopBlock->addChild(new MatrixAssignm(
+  innerMostForLoopBlock->addStatement(new MatrixAssignm(
       new MatrixElementRef(new Variable("Ix"), new LiteralInt(0), new Variable("k")),
       new OperatorExpr(new Operator(ADDITION), {
           new MatrixElementRef(new Variable("Ix"), new LiteralInt(0), new Variable("k")),
           new MatrixElementRef(new Variable("h"), new LiteralInt(0), new Variable("k"))})));
-  innerMostForLoopBlock->addChild(new MatrixAssignm(
+  innerMostForLoopBlock->addStatement(new MatrixAssignm(
       new MatrixElementRef(new Variable("Iy"), new LiteralInt(0), new Variable("k")),
       new OperatorExpr(new Operator(ADDITION), {
           new MatrixElementRef(new Variable("Iy"), new LiteralInt(0), new Variable("k")),
           new MatrixElementRef(new Variable("v"), new LiteralInt(0), new Variable("k"))})));
 
   auto elseBlock = new Block();
-  elseBlock->addChild(new For(new VarDecl("k", new Datatype(Types::INT), new LiteralInt(0)),
+  elseBlock->addStatement(new For(new VarDecl("k", new Datatype(Types::INT), new LiteralInt(0)),
                               new OperatorExpr(new Operator(SMALLER),
                                                {new Variable("k"),
                                                 new GetMatrixSize(new Variable("img"), new LiteralInt(1))}),
@@ -1114,7 +1114,7 @@ void EvaluationAlgorithms::genSobelFilterAst(Ast &ast) {
                                                                     new LiteralInt(1)})),
                               innerMostForLoopBlock));
 
-  innerForLoopBlock->addChild(new If(new OperatorExpr(new Operator(LOGICAL_AND),
+  innerForLoopBlock->addStatement(new If(new OperatorExpr(new Operator(LOGICAL_AND),
                                                       {new OperatorExpr(new Operator(EQUAL),
                                                                         {new Variable("i"), new LiteralInt(0)}),
                                                        new OperatorExpr(new Operator(EQUAL),
@@ -1123,7 +1123,7 @@ void EvaluationAlgorithms::genSobelFilterAst(Ast &ast) {
                                                 new VarAssignm("Iy", new Variable("v"))}),
                                      elseBlock));
 
-  outerForLoopBlock->addChild(new For(
+  outerForLoopBlock->addStatement(new For(
       new VarDecl("j", new Datatype(Types::INT), new LiteralInt(0)),
       new OperatorExpr(new Operator(SMALLER), {new Variable("j"), new LiteralInt(3)}),
       new VarAssignm("j", new OperatorExpr(new Operator(ADDITION), {new Variable("j"), new LiteralInt(1)})),
@@ -1132,7 +1132,7 @@ void EvaluationAlgorithms::genSobelFilterAst(Ast &ast) {
   func->addStatement(new VarDecl("result", new Datatype(Types::INT)));
 
   auto sumForLoopBlock = new Block();
-  sumForLoopBlock->addChild(
+  sumForLoopBlock->addStatement(
       new MatrixAssignm(new MatrixElementRef(new Variable("result"), new LiteralInt(0), new Variable("m")),
                         new OperatorExpr(new Operator(ADDITION),
                                          {new OperatorExpr(new Operator(MULTIPLICATION),

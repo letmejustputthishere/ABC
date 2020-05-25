@@ -42,6 +42,16 @@ class ArithmeticExpr : public AbstractBinaryExpr {
   [[nodiscard]] std::string getNodeType() const override;
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
+
+  void setLeft(AbstractExpr* left) {
+    if(children.empty()) {
+      children.push_back(left);
+    } else {
+      removeChild(children[0]);
+      children[0] = left;
+      left->setParent(this);
+    }
+  }
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_ARITHMETICEXPR_H_

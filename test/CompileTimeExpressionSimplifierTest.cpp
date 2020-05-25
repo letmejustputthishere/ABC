@@ -2189,7 +2189,7 @@ TEST_F(CompileTimeExpressionSimplifierFixture, partialforLoopUnrolling) { /* NOL
       });
   auto forLoop =
       new For(unrolledLoopInitializer, unrolledLoopCondition, unrolledLoopUpdater, unrolledLoopBodyStatements);
-  newBlock->addChild(forLoop);
+  newBlock->addStatement(forLoop);
 
   // for (; i < numIterations; i=i+1)  // cleanup loop
   auto cleanupLoopInitializer = nullptr;
@@ -2206,7 +2206,7 @@ TEST_F(CompileTimeExpressionSimplifierFixture, partialforLoopUnrolling) { /* NOL
                        cleanupLoopCondition->castTo<AbstractExpr>(),
                        cleanupLoopUpdater->castTo<AbstractStatement>(),
                        cleanupLoopBodyStatements);
-  newBlock->addChild(child);
+  newBlock->addStatement(child);
   // ...}  // end of the new block
 
   // Return sum;

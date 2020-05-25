@@ -32,6 +32,8 @@ class Block : public AbstractStatement {
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
   bool isEqual(AbstractStatement *otherBlockStatement) override;
+
+  void addStatement(AbstractStatement* stmt);
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_BLOCK_H_

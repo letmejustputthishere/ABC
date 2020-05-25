@@ -28,6 +28,8 @@ class Return : public AbstractStatement {
 
   void setAttributes(std::vector<AbstractExpr *> returnExpr);
 
+  void addReturnExpr(AbstractExpr* returnExpr);
+
   [[nodiscard]] std::string toString(bool printChildren) const override;
   bool isEqual(AbstractStatement *as) override;
 

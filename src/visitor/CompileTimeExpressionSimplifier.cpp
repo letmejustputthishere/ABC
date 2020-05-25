@@ -201,10 +201,13 @@ void CompileTimeExpressionSimplifier::visit(MatrixAssignm &elem) {
       //TODO: THIS CAUSES ITERATOR INVALIDATION ISSUES!!
       //  INSTEAD: REPLACE CURRENT ELEM WITH NEW BLOCK, LET PARENT DEAL WITH INLINING
       // and attach the assignment statement immediately before this MatrixAssignm
-      for (auto &s: varAssignm) {
-        elem.getParent()->addChild(s, true);
+      if (auto parentAsBlock = dynamic_cast<Block *>(elem.getParent())) {
+        for (auto &s: varAssignm) {
+          parentAsBlock->addStatement(s);
+        }
+      } else {
+        throw std::logic_error("Cannot add Statement into non-Block environment.");
       }
-
       // and remove the value in variableValues map to avoid saving any further assignments
       variableValues.setVariableValue(var, VariableValue(varValue.getDatatype(), nullptr));
     }
@@ -248,7 +251,7 @@ void CompileTimeExpressionSimplifier::visit(GetMatrixSize &elem) {
   }
 }
 
-void isolateNode(AbstractNode* n) {
+void isolateNode(AbstractNode *n) {
   n->removeChildren();
   n->removeFromParent();
 }
@@ -810,7 +813,7 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
   if (!elem.getInitializer()) { elem.setInitializer(new Block()); };
   auto assignments = emitVariableAssignments(loopVariables);
   for (auto &a : assignments) {
-    elem.getInitializer()->addChild(a, true);
+    elem.getInitializer()->addStatement(a);
   }
 
   // The values of loop variables we got from the initializer should not be substituted inside the loop
@@ -842,7 +845,7 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
   if (!elem.getBody()) { elem.setBody(new Block()); };
   auto new_assignments = emitVariableAssignments(loopVariables);
   for (auto &a : new_assignments) {
-    elem.getBody()->addChild(a, true);
+    elem.getBody()->addStatement(a);
   }
 
   // Manual scope handling
@@ -913,7 +916,7 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
         // If there are any stmts left, transfer them to the unrolledBlock
         for (auto &s: clonedBody->getStatements()) {
           s->removeFromParent();
-          unrolledBlock->addChild(s, true);
+          unrolledBlock->addStatement(s);
         }
         nodesQueuedForDeletion.push_back(clonedBody);
       }
@@ -926,7 +929,7 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
         // If there are any stmts left, transfer them to the unrolledBlock
         for (auto &s: clonedUpdate->getStatements()) {
           s->removeFromParent();
-          unrolledBlock->addChild(s, true);
+          unrolledBlock->addStatement(s);
         }
         nodesQueuedForDeletion.push_back(clonedUpdate);
       }

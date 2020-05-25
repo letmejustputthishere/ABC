@@ -9,10 +9,12 @@
 
 void Function::addParameter(FunctionParameter *param) {
   if (children.empty()) {
-    addChild(new ParameterList({param}));
-  } else {
-    dynamic_cast<ParameterList *>(children.at(0))->addChild(param);
+    auto pl = new ParameterList({param});
+    children.push_back(pl);
+    pl->setParent(this);
   }
+  getParameterList()->addParameter(param);
+
 }
 
 Function::Function(std::string name, Block *pt) : name(std::move(name)) {
@@ -30,12 +32,18 @@ Function::Function(std::string functionName, ParameterList *functionParameters,
 }
 
 void Function::addStatement(AbstractStatement *statement) {
-  if (children.empty()) addChild(new ParameterList());
-  if (children.size() == 1) {// only Parameters
-      // Introduce the wrapper Block
-      addChild(new Block);
+  if (children.empty()) {
+    auto pl = new ParameterList();
+    children.push_back(pl);
+    pl->setParent(this);
   }
-  getBody()->addChild(statement);
+  if (children.size()==1) {// only Parameters
+    // Introduce the wrapper Block
+    auto b = new Block();
+    children.push_back(b);
+    b->setParent(this);
+  }
+  getBody()->addStatement(statement);
 }
 
 const std::string &Function::getName() const {
@@ -74,7 +82,8 @@ std::string Function::getNodeType() const {
 
 void Function::setParameterList(ParameterList *paramsVec) {
   if (!children.empty()) this->removeChild(children.at(0), false);
-  addChild(paramsVec);
+  children[0] = paramsVec;
+  paramsVec->setParent(this);
 }
 
 Function *Function::clone(bool keepOriginalUniqueNodeId) const {

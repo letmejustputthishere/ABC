@@ -50,10 +50,6 @@ std::vector<AbstractNode *> AbstractNode::getChildrenNonNull() const {
   return childrenFiltered;
 }
 
-void AbstractNode::addChild(AbstractNode *child, bool addBackReference) {
-  addChildren({child});
-}
-
 void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd, AbstractNode *insertBeforeNode) {
   auto it = std::find(children.begin(), children.end(), insertBeforeNode);
   if (it==children.end()) {

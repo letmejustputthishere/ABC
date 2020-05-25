@@ -78,3 +78,7 @@ bool Return::isEqual(AbstractStatement *as) {
   }
   return false;
 }
+void Return::addReturnExpr(AbstractExpr *returnExpr) {
+  children.push_back(returnExpr);
+  returnExpr->setParent(this);
+}

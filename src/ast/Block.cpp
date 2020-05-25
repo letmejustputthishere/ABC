@@ -16,7 +16,7 @@ json Block::toJson() const {
 }
 
 Block::Block(AbstractStatement *stat) {
-  this->addChild(stat);
+  this->addStatement(stat);
 }
 
 Block::Block(std::vector<AbstractStatement *> statements) {
@@ -88,4 +88,10 @@ bool Block::isEqual(AbstractStatement *otherBlockStatement) {
     return (thisStatIt==thisStatements.end()) && (otherStatIt==otherStatements.end());
   }
   return false;
+}
+void Block::addStatement(AbstractStatement *stmt) {
+  children.push_back(stmt);
+  if (stmt) {
+    stmt->setParent(this);
+  }
 }

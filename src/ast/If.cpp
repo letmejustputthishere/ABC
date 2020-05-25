@@ -56,21 +56,23 @@ void If::setAttributes(AbstractExpr *condition, AbstractStatement *thenBranch, A
   // update tree structure
   removeChildren();
 
-  addChild(condition, true);
+  children.push_back(condition);
 
   auto thenBranchAsBlock = dynamic_cast<Block *>(thenBranch);
   if (!thenBranchAsBlock) {
     thenBranchAsBlock = new Block;
-    thenBranchAsBlock->addChild(thenBranch, true);
+    thenBranchAsBlock->addStatement(thenBranch);
   }
-  addChild(thenBranchAsBlock, true);
+  children.push_back(thenBranchAsBlock);
+  thenBranchAsBlock->setParent(this);
 
   auto elseBranchAsBlock = dynamic_cast<Block *>(elseBranch);
   if (!elseBranchAsBlock) {
     elseBranchAsBlock = new Block;
-    elseBranchAsBlock->addChild(elseBranch, true);
+    elseBranchAsBlock->addStatement(elseBranch);
   }
-  addChild(elseBranchAsBlock, true);
+  children.push_back(elseBranchAsBlock);
+  elseBranchAsBlock->setParent(this);
 
 }
 std::string If::toString(bool printChildren) const {

@@ -10,7 +10,8 @@ void Transpose::accept(Visitor &v) {
 
 Transpose::Transpose(AbstractExpr *operand) {
   removeChildren();
-  addChild(operand, true);
+  children.push_back(operand);
+  operand->setParent(this);
 }
 
 AbstractExpr *Transpose::getOperand() const {

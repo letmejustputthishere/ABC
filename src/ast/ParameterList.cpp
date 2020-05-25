@@ -22,7 +22,7 @@ ParameterList *ParameterList::clone(bool keepOriginalUniqueNodeId) const {
 
 ParameterList::ParameterList(std::vector<FunctionParameter *> parameters) {
   for (auto &fp : parameters) {
-    addChild(fp);
+    addParameter(fp);
   }
 }
 
@@ -41,4 +41,8 @@ int ParameterList::getMaxNumberChildren() {
 
 std::string ParameterList::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
+}
+void ParameterList::addParameter(FunctionParameter *param) {
+  children.push_back(param);
+  param->setParent(this);
 }

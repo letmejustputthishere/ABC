@@ -66,7 +66,8 @@ void OperatorExpr::setAttributes(Operator *newOperator, std::vector<AbstractExpr
   // remove any existing children (i.e., operator and operands)
   removeChildren();
   // add the operator
-  addChild(newOperator);
+  children.push_back(newOperator);
+  newOperator->setParent(this);
 
   // The basic idea of this OperatorExpr aggregation logic can be summarized as follow:
   // Adding operands to this OperatorExpr always automatically applies the operator on the known operands

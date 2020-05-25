@@ -118,11 +118,11 @@ void AstTestingGenerator::genAstRewritingOne(Ast &ast) {
   // int computePrivate(int inputA, int inputB, int inputC)
   auto func = new Function("computePrivate");
   auto funcParams = new ParameterList();
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputA")));
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputB")));
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputC")));
   func->setParameterList(funcParams);
 
@@ -149,11 +149,11 @@ void AstTestingGenerator::genAstRewritingTwo(Ast &ast) {
   // int computePrivate(int inputA, int inputB, int inputC)
   auto func = new Function("computePrivate");
   auto funcParams = new ParameterList();
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputA")));
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputB")));
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputC")));
   func->setParameterList(funcParams);
 
@@ -184,11 +184,11 @@ void AstTestingGenerator::genAstRewritingThree(Ast &ast) {
   // int computePrivate(int inputA, int inputB, int inputC)
   auto func = new Function("computePrivate");
   auto funcParams = new ParameterList();
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputA")));
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputB")));
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputC")));
   func->setParameterList(funcParams);
 
@@ -223,11 +223,11 @@ void AstTestingGenerator::genAstRewritingFour(Ast &ast) {
   // int computePrivate(int inputA, int inputB, int inputC)
   auto func = new Function("computePrivate");
   auto funcParams = new ParameterList();
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputA")));
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputB")));
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputC")));
   func->setParameterList(funcParams);
 
@@ -261,11 +261,11 @@ void AstTestingGenerator::genAstRewritingFive(Ast &ast) {
   // int computePrivate(int inputA, int inputB, int inputC)
   auto func = new Function("computePrivate");
   auto funcParams = new ParameterList();
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::INT), new Variable("inputA")));
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::INT), new Variable("inputB")));
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::INT), new Variable("inputC")));
   func->setParameterList(funcParams);
 
@@ -296,11 +296,11 @@ void AstTestingGenerator::genAstRewritingSix(Ast &ast) {
   // int computePrivate(int inputA, int inputB, int inputC)
   auto func = new Function("computePrivate");
   auto funcParams = new ParameterList();
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::INT), new Variable("inputA")));
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::INT), new Variable("inputB")));
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::INT), new Variable("inputC")));
   func->setParameterList(funcParams);
 
@@ -331,11 +331,11 @@ void AstTestingGenerator::genAstEvalOne(Ast &ast) {
   // int computePrivate(int inputA, int inputB, int inputC)
   auto func = new Function("computeAvg");
   auto funcParams = new ParameterList();
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::INT), new Variable("width")));
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::INT), new Variable("length")));
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::INT), new Variable("depth")));
   func->setParameterList(funcParams);
 
@@ -362,11 +362,11 @@ void AstTestingGenerator::genAstEvalTwo(Ast &ast) {
   // int computePrivate(int inputA, int inputB, int inputC)
   auto func = new Function("computePrivate");
   auto funcParams = new ParameterList();
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::INT), new Variable("inputA")));
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::INT), new Variable("inputB")));
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::BOOL), new Variable("takeIf")));
   func->setParameterList(funcParams);
 
@@ -415,13 +415,13 @@ void AstTestingGenerator::genAstEvalThree(Ast &ast) {
   // bool computeLogical(int inputA, bool strong, bool negate, int inputB)
   auto func = new Function("computePrivate");
   auto funcParams = new ParameterList();
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::INT), new Variable("inputA")));
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::BOOL), new Variable("strong")));
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::BOOL), new Variable("negate")));
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::INT), new Variable("inputB")));
   func->setParameterList(funcParams);
 
@@ -459,9 +459,9 @@ void AstTestingGenerator::genAstEvalThree(Ast &ast) {
 void AstTestingGenerator::genAstEvalFour(Ast &ast) {
   auto func = new Function("concatString");
   auto funcParams = new ParameterList();
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::STRING), new Variable("strA")));
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::STRING), new Variable("strB")));
   func->setParameterList(funcParams);
 
@@ -686,11 +686,11 @@ void AstTestingGenerator::genAstMultDepthOne(Ast &ast) {
   // int computePrivate(int inputA, int inputB, int inputC)
   auto func = new Function("computePrivate");
   auto funcParams = new ParameterList();
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputA")));
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputB")));
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputC")));
   func->setParameterList(funcParams);
 
@@ -721,11 +721,11 @@ void AstTestingGenerator::genAstMultDepthTwo(Ast &ast) {
   // int computePrivate(int inputA, int inputB, int inputC)
   auto func = new Function("computePrivate");
   auto funcParams = new ParameterList();
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::INT), new Variable("base")));
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::INT), new Variable("defaultC")));
-  funcParams->addChild(new FunctionParameter(
+  funcParams->addParameter(new FunctionParameter(
       new Datatype(Types::BOOL), new Variable("useBase")));
   func->setParameterList(funcParams);
 
@@ -1120,7 +1120,7 @@ void AstTestingGenerator::genAstIncludingForStatement(Ast &ast) {
   // int sumNTimes2()
   auto func = new Function("sumNTimes2");
   auto funcParams = new ParameterList();
-  funcParams->addChild(
+  funcParams->addParameter(
       new FunctionParameter(new Datatype(Types::INT), new Variable("inputA")));
   func->setParameterList(funcParams);
 

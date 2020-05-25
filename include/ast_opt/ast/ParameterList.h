@@ -20,6 +20,8 @@ class ParameterList : public AbstractStatement {
   int getMaxNumberChildren() override;
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
+
+  void addParameter(FunctionParameter* param);
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_PARAMETERLIST_H_

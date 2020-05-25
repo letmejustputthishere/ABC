@@ -86,12 +86,6 @@ class AbstractNode {
   /// \return A list of descendant nodes.
   std::vector<AbstractNode *> getDescendants();
 
-  /// Adds a new child node to the node's list of children. If addBackReference is True then also updates the child's
-  /// list of parent nodes.
-  /// \param child The node to be added as child.
-  /// \param addBackReference If True, then adds this node as parent to the child node.
-  void addChild(AbstractNode *child, bool addBackReference = true);
-
   /// Adds multiple children to the node's list of children. If addBackReference is True then also updates the child's
   /// list of parent nodes for each of the added children.
   /// \param childrenToAdd A vector of nodes to be added as children to this node.
