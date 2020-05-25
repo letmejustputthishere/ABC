@@ -86,7 +86,6 @@ set(SOURCE_FILES
         ${ast_optimizer_SOURCE_DIR}/src/ast/VarDecl.cpp
         ${ast_optimizer_SOURCE_DIR}/src/ast/Variable.cpp
         ${ast_optimizer_SOURCE_DIR}/src/ast/While.cpp
-        ${ast_optimizer_SOURCE_DIR}/src/optimizer/ConeRewriter.cpp
         ${ast_optimizer_SOURCE_DIR}/src/utilities/MultiplicativeDepthCalculator.cpp
         ${ast_optimizer_SOURCE_DIR}/src/utilities/NodeUtils.cpp
         ${ast_optimizer_SOURCE_DIR}/src/utilities/Scope.cpp
@@ -165,7 +164,6 @@ set(PUBLIC_HEADERS
         ${ast_optimizer_SOURCE_DIR}/include/ast_opt/ast/Variable.h
         ${ast_optimizer_SOURCE_DIR}/include/ast_opt/ast/While.h
         ${ast_optimizer_SOURCE_DIR}/include/ast_opt/evaluation/EvaluationAlgorithms.h
-        ${ast_optimizer_SOURCE_DIR}/include/ast_opt/optimizer/ConeRewriter.h
         ${ast_optimizer_SOURCE_DIR}/include/ast_opt/utilities/DotPrinter.h
         ${ast_optimizer_SOURCE_DIR}/include/ast_opt/utilities/EvaluationPrinter.h
         ${ast_optimizer_SOURCE_DIR}/include/ast_opt/utilities/GraphNode.h
@@ -192,7 +190,7 @@ target_link_libraries(ast_opt PUBLIC nlohmann_json::nlohmann_json)
 target_include_directories(ast_opt PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
-set_target_properties(ast_opt PROPERTIES PUBLIC_HEADER ${PUBLIC_HEADERS})
+set_target_properties(ast_opt PROPERTIES PUBLIC_HEADER "${PUBLIC_HEADERS}")
 target_compile_features(ast_opt PUBLIC cxx_std_17)
 
 if (SEAL_FOUND)

@@ -32,7 +32,6 @@ set(TEST_FILES
         ChildParentTest.cpp
         AstClassTest.cpp
         DotPrinterTest.cpp
-        ConeRewriterTest.cpp
         LiteralTest.cpp
         NodeTest.cpp
         NodeCloneRecursiveDeepTest.cpp
