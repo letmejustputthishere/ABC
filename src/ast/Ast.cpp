@@ -158,12 +158,6 @@ Ast::Ast(const Ast &otherAst, bool keepOriginalUniqueNodeId) : rootNode(nullptr)
 
 Ast::Ast(const Ast &otherAst) : Ast(otherAst, false) {}
 
-bool Ast::isValidCircuit() {
-  std::set<AbstractNode *> allAstNodes = getAllNodes();
-  auto supportCircuitMode = [](AbstractNode *n) { return n->supportsCircuitMode(); };
-  return std::all_of(allAstNodes.begin(), allAstNodes.end(), supportCircuitMode);
-}
-
 void Ast::reverseEdges() {
   for (auto &node : getAllNodes()) node->swapChildrenParents();
 }

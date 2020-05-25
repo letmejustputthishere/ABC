@@ -36,8 +36,6 @@ class GetMatrixSize : public AbstractExpr {
 
   AbstractExpr *clone(bool keepOriginalUniqueNodeId) const override;
 
-  bool supportsCircuitMode() override;
-
   [[nodiscard]] AbstractExpr *getMatrixOperand() const;
 
   [[nodiscard]] AbstractExpr *getDimensionParameter() const;

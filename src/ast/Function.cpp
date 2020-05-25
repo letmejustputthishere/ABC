@@ -109,10 +109,6 @@ int Function::getMaxNumberChildren() {
   return 2;
 }
 
-bool Function::supportsCircuitMode() {
-  return true;
-}
-
 std::string Function::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {getName()});
 }

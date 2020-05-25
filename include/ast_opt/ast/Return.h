@@ -34,7 +34,6 @@ class Return : public AbstractStatement {
  protected:
   int getMaxNumberChildren() override;
 
-  bool supportsCircuitMode() override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_RETURN_H_

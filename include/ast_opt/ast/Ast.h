@@ -52,11 +52,6 @@ class Ast {
   /// \return True iff all edges of the AST are reversed, otherwise false.
   [[nodiscard]] bool isReversed() const;
 
-  /// Checks whether the current AST consists of nodes that are circuit-compatible, i.e., that define the child/parent
-  /// nodes and can be looked at as a circuit.
-  /// \return True iff the current AST consists of circuit-compatible nodes only.
-  bool isValidCircuit();
-
   /// Reverses all edges by switching child and parent nodes of each reachable node within the AST.
   void reverseEdges();
 

@@ -64,10 +64,6 @@ std::string LiteralString::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {matrix->toString()});
 }
 
-bool LiteralString::supportsCircuitMode() {
-  return true;
-}
-
 bool LiteralString::supportsDatatype(Datatype &datatype) {
   return datatype.getType()==Types::STRING;
 }

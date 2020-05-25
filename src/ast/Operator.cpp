@@ -123,10 +123,6 @@ Operator::Operator(OpSymbolVariant opVar) {
   this->operatorString = OpSymb::getTextRepr(opVar);
 }
 
-bool Operator::supportsCircuitMode() {
-  return true;
-}
-
 const OpSymbolVariant &Operator::getOperatorSymbol() const {
   return operatorSymbol;
 }

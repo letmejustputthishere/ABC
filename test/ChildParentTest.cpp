@@ -116,7 +116,6 @@ TEST(ChildParentTests, Block) {  /* NOLINT */
       new Block(new VarAssignm("varX", new LiteralInt(22)));
   ASSERT_EQ(blockStatement->getChildren().size(), 1);
   ASSERT_EQ(blockStatement->getParents().size(), 0);
-  ASSERT_TRUE(blockStatement->supportsCircuitMode());
   ASSERT_EQ(blockStatement->getMaxNumberChildren(), -1);
 }
 
@@ -126,7 +125,6 @@ TEST(ChildParentTests, Block_addAdditionalChild) {  /* NOLINT */
   auto varAssignm = new VarAssignm("varX", new LiteralInt(531));
   blockStatement->addChild(varAssignm);
 
-  ASSERT_TRUE(blockStatement->supportsCircuitMode());
   ASSERT_EQ(blockStatement->getMaxNumberChildren(), -1);
 
   ASSERT_EQ(blockStatement->getChildren().size(), 2);
@@ -143,7 +141,6 @@ TEST(ChildParentTests, CallStandardConstructor) {  /* NOLINT */
   auto funcParam = new FunctionParameter(new Datatype(Types::INT), new LiteralInt(221));
   auto call = new Call({funcParam}, func);
 
-  ASSERT_TRUE(call->supportsCircuitMode());
   ASSERT_EQ(call->getMaxNumberChildren(), 2);
 
   // children
@@ -163,7 +160,6 @@ TEST(ChildParentTests, CallArgumentlessConstructor) {  /* NOLINT */
   auto func = new Function("computeSecretX");
   auto call = new Call(func);
 
-  ASSERT_TRUE(call->supportsCircuitMode());
   ASSERT_EQ(call->getMaxNumberChildren(), 2);
 
   // children
@@ -212,7 +208,6 @@ TEST(ChildParentTests, CallExternal) {  /* NOLINT */
   // using AbstractExpr
   ASSERT_EQ(callExternal->AbstractExpr::getChildren().size(), 0);
   ASSERT_EQ(callExternal->AbstractExpr::getParents().size(), 0);
-  ASSERT_FALSE(callExternal->AbstractExpr::supportsCircuitMode());
   ASSERT_EQ(callExternal->AbstractExpr::getMaxNumberChildren(), 0);
 }
 
@@ -237,7 +232,6 @@ TEST_F(FunctionFixture, FunctionSupportedInCircuitMode) {  /* NOLINT */
   // Function is circuit-compatible, i.e., supports use of child/parent relationship
   ASSERT_EQ(funcComputeX->getChildren().size(), 2);
   ASSERT_EQ(returnStatement->getParents().size(), 0);
-  ASSERT_TRUE(funcComputeX->supportsCircuitMode());
   ASSERT_EQ(funcComputeX->getMaxNumberChildren(), 2);
 }
 
@@ -812,7 +806,6 @@ TEST_F(WhileStmtFixture, WhileStandardConstructor) {  /* NOLINT */
   auto whileStmt = new While(whileCondition, whileBlock);
 
   EXPECT_EQ(whileStmt->getMaxNumberChildren(), 2);
-  EXPECT_EQ(whileStmt->supportsCircuitMode(), true);
 
   // children
   EXPECT_EQ(whileStmt->countChildrenNonNull(), 2);

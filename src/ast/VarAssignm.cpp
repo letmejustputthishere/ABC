@@ -46,10 +46,6 @@ bool VarAssignm::isEqual(AbstractStatement *as) {
   return false;
 }
 
-bool VarAssignm::supportsCircuitMode() {
-  return true;
-}
-
 int VarAssignm::getMaxNumberChildren() {
   return 1;
 }

@@ -47,8 +47,6 @@ class Datatype : public AbstractNode {
 
   void accept(Visitor &v) override;
 
-  bool supportsCircuitMode() override;
-
   [[nodiscard]] json toJson() const override;
 
 };

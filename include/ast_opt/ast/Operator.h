@@ -95,8 +95,6 @@ class Operator : public AbstractNode {
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  bool supportsCircuitMode() override;
-
   ~Operator() override;
 
   Operator *clone(bool keepOriginalUniqueNodeId) const override;

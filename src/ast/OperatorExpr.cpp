@@ -7,10 +7,6 @@ int OperatorExpr::getMaxNumberChildren() {
   return -1;
 }
 
-bool OperatorExpr::supportsCircuitMode() {
-  return true;
-}
-
 OperatorExpr::OperatorExpr(Operator *op) {
   setAttributes(op, {});
 }

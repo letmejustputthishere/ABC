@@ -31,8 +31,6 @@ class Call : public AbstractExpr {
 
   int getMaxNumberChildren() override;
 
-  bool supportsCircuitMode() override;
-
   std::vector<std::string> getVariableIdentifiers() override;
 
   std::vector<Variable *> getVariables() override;

@@ -39,10 +39,6 @@ AbstractExpr *GetMatrixSize::clone(bool keepOriginalUniqueNodeId) const {
                            getDimensionParameter()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>());
 }
 
-bool GetMatrixSize::supportsCircuitMode() {
-  return true;
-}
-
 GetMatrixSize::GetMatrixSize(AbstractExpr *matrix, AbstractExpr *requestedDimension) {
   removeChildren();
   addChildren({matrix, requestedDimension}, true);

@@ -38,7 +38,6 @@ class Variable : public AbstractExpr {
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  bool supportsCircuitMode() override;
   std::vector<Variable *> getVariables() override;
 };
 

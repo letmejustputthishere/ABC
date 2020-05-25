@@ -59,10 +59,6 @@ bool AbstractBinaryExpr::isEqual(AbstractExpr *other) {
   return false;
 }
 
-bool AbstractBinaryExpr::supportsCircuitMode() {
-  return true;
-}
-
 bool AbstractBinaryExpr::contains(Variable *var) {
   return (getLeft()->contains(var) || getRight()->contains(var));
 }

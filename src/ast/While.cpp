@@ -46,6 +46,3 @@ int While::getMaxNumberChildren() {
   return 2;
 }
 
-bool While::supportsCircuitMode() {
-  return true;
-}

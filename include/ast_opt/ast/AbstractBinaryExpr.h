@@ -19,8 +19,6 @@ class AbstractBinaryExpr : public AbstractExpr {
 
   std::vector<std::string> getVariableIdentifiers() override;
 
-  bool supportsCircuitMode() override;
-
   bool contains(Variable *var) override;
 
   int countByTemplate(AbstractExpr *abstractExpr) override;

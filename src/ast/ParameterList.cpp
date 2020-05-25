@@ -39,10 +39,6 @@ int ParameterList::getMaxNumberChildren() {
   return -1;
 }
 
-bool ParameterList::supportsCircuitMode() {
-  return true;
-}
-
 std::string ParameterList::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
 }

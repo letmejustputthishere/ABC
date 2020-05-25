@@ -29,8 +29,6 @@ class Block : public AbstractStatement {
 
   int getMaxNumberChildren() override;
 
-  bool supportsCircuitMode() override;
-
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
   bool isEqual(AbstractStatement *otherBlockStatement) override;

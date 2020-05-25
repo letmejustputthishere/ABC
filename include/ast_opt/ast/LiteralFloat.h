@@ -47,8 +47,6 @@ class LiteralFloat : public AbstractLiteral {
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  bool supportsCircuitMode() override;
-
   bool supportsDatatype(Datatype &datatype) override;
 
   void print(std::ostream &str) const override;

@@ -78,10 +78,6 @@ std::string For::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
 }
 
-bool For::supportsCircuitMode() {
-  return true;
-}
-
 json For::toJson() const {
   json j;
   j["type"] = getNodeType();

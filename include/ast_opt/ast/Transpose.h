@@ -33,8 +33,6 @@ class Transpose : public AbstractExpr {
 
   AbstractNode *cloneFlat() override;
 
-  bool supportsCircuitMode() override;
-
   [[nodiscard]] AbstractExpr *getOperand() const;
 };
 

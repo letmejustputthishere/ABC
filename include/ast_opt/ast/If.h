@@ -29,8 +29,6 @@ class If : public AbstractStatement {
 
   int getMaxNumberChildren() override;
 
-  bool supportsCircuitMode() override;
-
   void setAttributes(AbstractExpr *condition, AbstractStatement *thenBranch, AbstractStatement *elseBranch);
 
   [[nodiscard]] std::string toString(bool printChildren) const override;

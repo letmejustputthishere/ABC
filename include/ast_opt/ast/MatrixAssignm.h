@@ -23,8 +23,6 @@ class MatrixAssignm : public AbstractStatement {
 
   AbstractNode *clone(bool keepOriginalUniqueNodeId) const override;
 
-  bool supportsCircuitMode() override;
-
   [[nodiscard]] json toJson() const override;
 
   AbstractBinaryExpr *contains(AbstractBinaryExpr *aexpTemplate, ArithmeticExpr *excludedSubtree) override;

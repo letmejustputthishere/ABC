@@ -239,10 +239,6 @@ class AbstractNode {
   /// \param newUniqueNodeId The new unique node's identifier.
   void setUniqueNodeId(const std::string &newUniqueNodeId);
 
-  /// This method returns True iff the class derived from the AbstractNode class properly makes use of the child/parent
-  /// fields as it would be expected in a circuit.
-  virtual bool supportsCircuitMode();
-
   /// Indicates whether the edges of this node are reversed compared to its initial state.
   bool isReversed{false};
 

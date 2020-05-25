@@ -89,11 +89,6 @@ void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd,
                              "number of children -> must add child in next free child spot.");
   }
 
-  // check if circuit mode is supported by current node, otherwise addChildren will lead to unexpected behavior
-  if (!this->supportsCircuitMode()) {
-    throw std::logic_error("Cannot use addChildren because node does not support circuit mode!");
-  }
-
   // these actions are to be performed after a node was added to the list of children
   auto doInsertPostAction = [&](AbstractNode *childToAdd) {
     // if option 'addBackReference' is true, we add a back reference to the child as parent
@@ -277,10 +272,6 @@ int AbstractNode::countChildrenNonNull() const {
 
 int AbstractNode::getMaxNumberChildren() {
   return 0;
-}
-
-bool AbstractNode::supportsCircuitMode() {
-  return false;
 }
 
 AbstractNode *AbstractNode::getChildAtIndex(int idx) const {

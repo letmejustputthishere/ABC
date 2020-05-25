@@ -51,9 +51,6 @@ If *If::clone(bool keepOriginalUniqueNodeId) const {
 int If::getMaxNumberChildren() {
   return 3;
 }
-bool If::supportsCircuitMode() {
-  return true;
-}
 
 void If::setAttributes(AbstractExpr *condition, AbstractStatement *thenBranch, AbstractStatement *elseBranch) {
   // update tree structure

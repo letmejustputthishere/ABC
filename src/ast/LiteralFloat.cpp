@@ -65,10 +65,6 @@ std::string LiteralFloat::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {matrix->toString()});
 }
 
-bool LiteralFloat::supportsCircuitMode() {
-  return true;
-}
-
 bool LiteralFloat::supportsDatatype(Datatype &datatype) {
   return datatype.getType()==Types::FLOAT;
 }

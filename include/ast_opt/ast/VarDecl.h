@@ -58,8 +58,6 @@ class VarDecl : public AbstractStatement {
 
   void setAttributes(std::string varIdentifier, Datatype *datatype, AbstractExpr *value);
 
-  bool supportsCircuitMode() override;
-
   int getMaxNumberChildren() override;
 
   [[nodiscard]] std::string toString(bool printChildren) const override;

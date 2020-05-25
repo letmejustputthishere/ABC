@@ -285,10 +285,6 @@ class Matrix : public AbstractMatrix {
     return -1;
   }
 
-  bool supportsCircuitMode() override {
-    return true;
-  }
-
   bool operator==(const Matrix &rhs) const;
 
   bool operator!=(const Matrix &rhs) const {

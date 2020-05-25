@@ -66,10 +66,6 @@ int FunctionParameter::getMaxNumberChildren() {
   return 2;
 }
 
-bool FunctionParameter::supportsCircuitMode() {
-  return true;
-}
-
 void FunctionParameter::setAttributes(Datatype *datatype, AbstractExpr *value) {
   removeChildren();
   addChildren({datatype, value}, true);

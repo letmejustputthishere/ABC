@@ -34,7 +34,6 @@ class UnaryExpr : public AbstractExpr {
   std::vector<Variable *> getVariables() override;
 
  protected:
-  bool supportsCircuitMode() override;
 
   int getMaxNumberChildren() override;
 };

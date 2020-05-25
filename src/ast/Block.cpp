@@ -64,10 +64,6 @@ int Block::getMaxNumberChildren() {
   return -1;
 }
 
-bool Block::supportsCircuitMode() {
-  return true;
-}
-
 std::string Block::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
 }

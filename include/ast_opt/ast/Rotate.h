@@ -28,8 +28,6 @@ class Rotate : public AbstractExpr {
 
   AbstractNode *cloneFlat() override;
 
-  bool supportsCircuitMode() override;
-
   [[nodiscard]] AbstractExpr *getOperand() const;
 
   [[nodiscard]] std::string getNodeType() const override;

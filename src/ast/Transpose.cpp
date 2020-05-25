@@ -59,7 +59,4 @@ AbstractNode *Transpose::cloneFlat() {
   return new Transpose();
 }
 
-bool Transpose::supportsCircuitMode() {
-  return true;
-}
 Transpose::Transpose() = default;

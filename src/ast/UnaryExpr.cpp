@@ -32,10 +32,6 @@ UnaryExpr::~UnaryExpr() {
   for (auto &child : getChildren()) delete child;
 }
 
-bool UnaryExpr::supportsCircuitMode() {
-  return true;
-}
-
 int UnaryExpr::getMaxNumberChildren() {
   return 2;
 }

@@ -63,10 +63,6 @@ int Call::getMaxNumberChildren() {
   return 2;
 }
 
-bool Call::supportsCircuitMode() {
-  return true;
-}
-
 ParameterList *Call::getParameterList() const {
   return dynamic_cast<ParameterList *>(getChildAtIndex(0));
 }

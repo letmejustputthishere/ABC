@@ -23,8 +23,6 @@ class OperatorExpr : public AbstractExpr {
 
   int getMaxNumberChildren() override;
 
-  bool supportsCircuitMode() override;
-
   void setOperator(Operator *op);
 
   [[nodiscard]] Operator *getOperator() const;

@@ -34,10 +34,6 @@ AbstractNode *Rotate::cloneFlat() {
   return new Rotate();
 }
 
-bool Rotate::supportsCircuitMode() {
-  return true;
-}
-
 AbstractExpr *Rotate::getOperand() const {
   return dynamic_cast<AbstractExpr *>(getChildAtIndex(0));
 }

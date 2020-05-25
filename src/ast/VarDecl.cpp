@@ -108,10 +108,6 @@ bool VarDecl::isEqual(AbstractStatement *as) {
   return false;
 }
 
-bool VarDecl::supportsCircuitMode() {
-  return true;
-}
-
 int VarDecl::getMaxNumberChildren() {
   return 2;
 }

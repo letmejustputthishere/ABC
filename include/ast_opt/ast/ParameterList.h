@@ -19,8 +19,6 @@ class ParameterList : public AbstractStatement {
 
   int getMaxNumberChildren() override;
 
-  bool supportsCircuitMode() override;
-
   [[nodiscard]] std::string toString(bool printChildren) const override;
 };
 

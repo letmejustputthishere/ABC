@@ -50,8 +50,6 @@ class LiteralBool : public AbstractLiteral {
 
   void print(std::ostream &str) const override;
 
-  bool supportsCircuitMode() override;
-
   bool isEqual(AbstractExpr *other) override;
 
   bool isNull() override;

@@ -107,9 +107,6 @@ static void astOutputComparer(Ast &unmodifiedAst, Ast &rewrittenAst, unsigned in
   // create random number generator with test-specific seed
   RandLiteralGen rng(seed);
 
-  // check whether this is a circuit or AST because depending on that we need to use the appropriate evaluation function
-  bool isCircuit = unmodifiedAst.isValidCircuit();
-
   // trigger printing of the output format (header)
   if (evalPrinter)evalPrinter->printHeader();
 
@@ -119,13 +116,9 @@ static void astOutputComparer(Ast &unmodifiedAst, Ast &rewrittenAst, unsigned in
 
     // evaluate both ASTs with previously generated params using the appropriate evaluate function for ASTs or circuits
     std::vector<AbstractLiteral *> resultExpected, resultRewrittenAst;
-    if (isCircuit) {
-      resultExpected = unmodifiedAst.evaluateCircuit(evalParams, false);
-      resultRewrittenAst = rewrittenAst.evaluateCircuit(evalParams, false);
-    } else {
-      resultExpected = unmodifiedAst.evaluateAst(evalParams, false);
-      resultRewrittenAst = rewrittenAst.evaluateAst(evalParams, false);
-    }
+    resultExpected = unmodifiedAst.evaluateAst(evalParams, false);
+    resultRewrittenAst = rewrittenAst.evaluateAst(evalParams, false);
+
 
     // result plausability check
     if (resultExpected.size()!=resultRewrittenAst.size())

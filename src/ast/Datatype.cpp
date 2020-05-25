@@ -89,6 +89,3 @@ void Datatype::accept(Visitor &v) {
   v.visit(*this);
 }
 
-bool Datatype::supportsCircuitMode() {
-  return true;
-}

@@ -38,8 +38,6 @@ class MatrixElementRef : public AbstractExpr {
 
   AbstractNode *cloneFlat() override;
 
-  bool supportsCircuitMode() override;
-
   [[nodiscard]] AbstractExpr *getOperand() const;
 
   [[nodiscard]] AbstractExpr *getRowIndex() const;

@@ -65,10 +65,6 @@ AbstractNode *MatrixAssignm::clone(bool keepOriginalUniqueNodeId) const {
   return clonedMatrixAssigm;
 }
 
-bool MatrixAssignm::supportsCircuitMode() {
-  return true;
-}
-
 json MatrixAssignm::toJson() const {
   json j;
   j["type"] = getNodeType();

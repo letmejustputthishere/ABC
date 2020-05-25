@@ -38,8 +38,6 @@ class For : public AbstractStatement {
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  bool supportsCircuitMode() override;
-
   [[nodiscard]] json toJson() const override;
 
   bool isEqual(AbstractStatement *other) override;

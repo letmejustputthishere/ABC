@@ -131,7 +131,3 @@ AbstractNode *MatrixElementRef::cloneFlat() {
   return new MatrixElementRef(nullptr, nullptr, nullptr);
 }
 
-bool MatrixElementRef::supportsCircuitMode() {
-  return true;
-}
-

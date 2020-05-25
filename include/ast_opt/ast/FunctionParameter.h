@@ -29,8 +29,6 @@ class FunctionParameter : public AbstractExpr {
 
   int getMaxNumberChildren() override;
 
-  bool supportsCircuitMode() override;
-
   void setAttributes(Datatype *datatype, AbstractExpr *value);
 
   bool operator==(const FunctionParameter &rhs) const;

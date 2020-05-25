@@ -54,10 +54,6 @@ std::string Variable::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {getIdentifier()});
 }
 
-bool Variable::supportsCircuitMode() {
-  return true;
-}
-
 Variable::~Variable() = default;
 
 Variable *Variable::clone(bool keepOriginalUniqueNodeId) const {

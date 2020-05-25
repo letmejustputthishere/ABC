@@ -25,7 +25,6 @@ class While : public AbstractStatement {
 
   int getMaxNumberChildren() override;
 
-  bool supportsCircuitMode() override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_WHILE_H_

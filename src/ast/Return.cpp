@@ -51,10 +51,6 @@ std::vector<AbstractExpr *> Return::getReturnExpressions() const {
   return vec;
 }
 
-bool Return::supportsCircuitMode() {
-  return true;
-}
-
 Return *Return::clone(bool keepOriginalUniqueNodeId) const {
   std::vector<AbstractExpr *> returnValues;
   for (auto &child : getReturnExpressions())

@@ -32,8 +32,6 @@ class VarAssignm : public AbstractStatement {
 
   bool isEqual(AbstractStatement *as) override;
 
-  bool supportsCircuitMode() override;
-
   int getMaxNumberChildren() override;
 
   void setAttribute(AbstractExpr *assignmentValue);
