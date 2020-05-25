@@ -164,17 +164,8 @@ class AbstractNode {
   /// \param newParent The new parent node
   void setParent(AbstractNode *newParent);
 
-  /// Removes a certain parent from this node.
-  /// \param parentToBeRemoved The node to be removed from this node's parents.
-  void removeParent(AbstractNode *parentToBeRemoved);
-
-  /// Removes this node from its parent's children list. If removeParentBackreference is True, then also removes the
-  /// parents from this node's parent list.
-  /// \param removeParentBackreference Indicates whether to update this node's parents list too.
-  AbstractNode *removeFromParents(bool removeParentBackreference = true);
-
-  /// Removes all parents from this node. Note: Does not update the parent's children.
-  void removeParents();
+  /// Removes parent from this node  and also removes this node from parent's children
+  void removeFromParent();
 
   /// Checks whether this node has a certain parent (parentNode).
   /// \param parentNode The node that is searched for in this node's parent list.
@@ -228,9 +219,6 @@ class AbstractNode {
 
   /// Indicates whether the edges of this node are reversed compared to its initial state.
   bool isReversed{false};
-
-  /// Removes this node from all of its parents and children, and also removes all parents and children from this node.
-  void isolateNode();
 
   /// Casts a node to type T which must be the specific derived class of the node to cast successfully.
   /// \tparam T The derived class of the node object.

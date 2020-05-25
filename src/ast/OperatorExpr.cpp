@@ -232,8 +232,8 @@ void OperatorExpr::replaceChild(AbstractNode *originalChild, AbstractNode *newCh
     // apply the operand aggregation mechanism again as replacing a child may have generated new aggregation
     // opportunities (e.g., if variable is now a Literal value)
     auto op = getOperator();
-    op->removeFromParents();
-    for (auto &operand : operands) operand->removeFromParents(true);
+    op->removeFromParent();
+    for (auto &operand : operands) operand->removeFromParent();
     setAttributes(op, operands);
   }
 }

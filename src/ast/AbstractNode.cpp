@@ -132,7 +132,7 @@ void AbstractNode::removeChild(AbstractNode *child, bool removeBackreference) {
   auto it = std::find(children.begin(), children.end(), child);
   if (it!=children.end()) {
     if (removeBackreference) {
-      (*it)->removeParent(this);
+      (*it)->removeFromParent();
     }
     // if the node supports an infinite number of children (getMaxNumberChildren() == -1), we can delete the node from
     // the children list, otherwise we just overwrite the slot with a nullptr
@@ -144,13 +144,6 @@ void AbstractNode::removeChild(AbstractNode *child, bool removeBackreference) {
   }
 }
 
-void AbstractNode::isolateNode() {
-  for (auto &p : getParentsNonNull()) p->removeChild(this, false);
-  for (auto &c : getChildrenNonNull()) c->removeParent(this);
-  removeChildren();
-  removeParents();
-}
-
 void AbstractNode::setParent(AbstractNode *newParent) {
   parents.push_back(newParent);
   for (auto &p : getParentsNonNull()) {
@@ -158,19 +151,13 @@ void AbstractNode::setParent(AbstractNode *newParent) {
   }
 }
 
-void AbstractNode::removeParent(AbstractNode *parentToBeRemoved) {
-  auto it = std::find(parents.begin(), parents.end(), parentToBeRemoved);
-  if (it!=parents.end()) {
-    (*it)->removeChild(this, false);
-    parents.erase(it);
-  }
-}
-
 void AbstractNode::removeChildren() {
   children.clear();
 }
 
-void AbstractNode::removeParents() {
+void AbstractNode::removeFromParent() {
+  //TODO: Break infinite loop!
+  getParent()->removeChild(this);
   parents.clear();
 }
 
@@ -285,20 +272,13 @@ void AbstractNode::replaceChild(AbstractNode *originalChild, AbstractNode *newCh
   children[std::distance(children.begin(), pos)] = newChild;
 
   // remove edge: originalChild -> currentNode
-  originalChild->removeParent(this);
+  originalChild->removeFromParent();
 
   // add edges: newChildToBeAdded -> currentNode but before detach any existing parents from this child node
   if (newChild!=nullptr) {
-    newChild->removeFromParents();
+    newChild->removeFromParent();
     newChild->setParent(this);
   }
-}
-
-AbstractNode *AbstractNode::removeFromParents(bool removeParentBackreference) {
-  for (auto &p : getParentsNonNull()) {
-    p->removeChild(this, removeParentBackreference);
-  }
-  return this;
 }
 
 std::string AbstractNode::toString(bool) const {

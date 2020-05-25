@@ -248,6 +248,13 @@ void CompileTimeExpressionSimplifier::visit(GetMatrixSize &elem) {
   }
 }
 
+void isolateNode(AbstractNode* n) {
+  for (auto &p : n->getParentsNonNull()) p->removeChild(n, false);
+  for (auto &c : n->getChildrenNonNull()) c->removeFromParent();
+  n->removeChildren();
+  n->removeFromParent();
+}
+
 void CompileTimeExpressionSimplifier::visit(Ast &elem) {
   // clean up data structures from any possible previous run
   emittedVariableDeclarations.clear();
@@ -272,7 +279,7 @@ void CompileTimeExpressionSimplifier::visit(Ast &elem) {
   std::set<AbstractNode *> nodesToDelete(nodesQueuedForDeletion.begin(), nodesQueuedForDeletion.end());
   // isolate all nodes from their parent and children: this must be done for all nodes before starting to delete
   // because otherwise it might happen that we try to access nodes that have already been deleted
-  for (auto &n : nodesToDelete) { n->isolateNode(); }
+  for (auto &n : nodesToDelete) { isolateNode(n); }
   // now delete the nodes sequentially
   for (auto node : nodesToDelete) { elem.deleteNode(&node, true); }
 }
@@ -356,10 +363,10 @@ void CompileTimeExpressionSimplifier::visit(ArithmeticExpr &elem) {
   // transform this ArithmeticExpr into an OperatorExpr
   if (elem.hasParent()) {
     auto op = elem.getOperator();
-    op->removeFromParents();
+    op->removeFromParent();
     std::vector<AbstractExpr *> operands{elem.getLeft(), elem.getRight()};
-    elem.getLeft()->removeFromParents();
-    elem.getRight()->removeFromParents();
+    elem.getLeft()->removeFromParent();
+    elem.getRight()->removeFromParent();
     auto operatorExpr = new OperatorExpr(op, operands);
     elem.getParent()->replaceChild(&elem, operatorExpr);
     enqueueNodeForDeletion(&elem);
@@ -373,10 +380,10 @@ void CompileTimeExpressionSimplifier::visit(LogicalExpr &elem) {
   // transform this LogicalExpr into an OperatorExpr
   if (elem.hasParent()) {
     auto op = elem.getOperator();
-    op->removeFromParents();
+    op->removeFromParent();
     std::vector<AbstractExpr *> operands{elem.getLeft(), elem.getRight()};
-    elem.getLeft()->removeFromParents();
-    elem.getRight()->removeFromParents();
+    elem.getLeft()->removeFromParent();
+    elem.getRight()->removeFromParent();
     auto operatorExpr = new OperatorExpr(op, operands);
     elem.getParent()->replaceChild(&elem, operatorExpr);
     enqueueNodeForDeletion(&elem);
@@ -398,9 +405,9 @@ void CompileTimeExpressionSimplifier::visit(UnaryExpr &elem) {
   } else if (elem.hasParent()) {
     // if this UnaryExpr cannot be evaluated, replace the UnaryExpr by an OperatorExpr
     auto op = elem.getOperator();
-    op->removeFromParents();
+    op->removeFromParent();
     std::vector<AbstractExpr *> operands{elem.getRight()};
-    elem.getRight()->removeFromParents();
+    elem.getRight()->removeFromParent();
     auto operatorExpr = new OperatorExpr(op, operands);
     elem.getParent()->replaceChild(&elem, operatorExpr);
   }
@@ -439,7 +446,7 @@ void CompileTimeExpressionSimplifier::visit(OperatorExpr &elem) {
       // go through all operands of this sub-OperatorExpr, remove each from its current parent and add it as operand to
       // this OperatorExpr
       for (auto &operand : operandsToBeAdded) {
-        operand->removeFromParents();
+        operand->removeFromParent();
         newOperands.push_back(operand->castTo<AbstractExpr>());
       }
       // mark the obsolete OperatorExpr child for deletion
@@ -448,13 +455,13 @@ void CompileTimeExpressionSimplifier::visit(OperatorExpr &elem) {
     } else {
       // if this operand is not an OperatorExpr, we also need to remove it from this OperatorExpr because re-adding it
       // as operand would otherwise lead to having two times the same parent
-      (*it)->removeFromParents();
+      (*it)->removeFromParent();
       newOperands.push_back((*it)->castTo<AbstractExpr>());
     }
   }
   // replaced the operands by the merged list of operands also including those operands that were not an OperatorExpr
   auto curOperator = elem.getOperator();
-  curOperator->removeFromParents();
+  curOperator->removeFromParent();
   elem.setAttributes(curOperator, newOperands);
 
   // if this OperatorExpr is a logical expression, try to apply Boolean laws to further simplify this expression
@@ -567,7 +574,7 @@ void CompileTimeExpressionSimplifier::visit(Call &elem) {
       // remove return expression from its parent (return statement) and replace Call by extracted return statement
       auto parentNode = elem.getParent();
       auto returnExpr = returnStmt->getReturnExpressions().front();
-      returnExpr->removeFromParents(true);
+      returnExpr->removeFromParent();
       parentNode->replaceChild(&elem, returnExpr);
 
       // revisit subtree as new simplification opportunities may exist now
@@ -642,7 +649,7 @@ void CompileTimeExpressionSimplifier::visit(If &elem) {
       enqueueNodeForDeletion(then);
       // negate the condition and delete the conditions stored value (is now invalid)
       auto condition = elem.getCondition();
-      condition->removeFromParents();
+      condition->removeFromParent();
       auto newCondition = new OperatorExpr(new Operator(UnaryOp::NEGATION), {condition});
       // replace the If statement's Then branch by the Else branch
       auto newThen = elem.getElseBranch();
@@ -907,7 +914,7 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
 
         // If there are any stmts left, transfer them to the unrolledBlock
         for (auto &s: clonedBody->getStatements()) {
-          s->removeParents();
+          s->removeFromParent();
           unrolledBlock->addChild(s, true);
         }
         nodesQueuedForDeletion.push_back(clonedBody);
@@ -920,7 +927,7 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
         clonedUpdate->accept(loopCTES);
         // If there are any stmts left, transfer them to the unrolledBlock
         for (auto &s: clonedUpdate->getStatements()) {
-          s->removeParents();
+          s->removeFromParent();
           unrolledBlock->addChild(s, true);
         }
         nodesQueuedForDeletion.push_back(clonedUpdate);
@@ -982,7 +989,7 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
 //
 //  // move initializer from For-loop into newly added block
 //  auto forLoopInitializer = elem.getInitializer();
-//  forLoopInitializer->removeFromParents();
+//  forLoopInitializer->removeFromParent();
 //  blockEmbeddingLoops->addChild(forLoopInitializer);
 //
 //  // replace this For-loop in its parent node by the new block and move the For-loop into the block
@@ -1047,7 +1054,7 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
 //
 //  // delete update statement from loop since it's now incorporated into the body but keep a copy since we need it
 //  // for the cleanup loop
-//  elem.getUpdate()->removeFromParents();
+//  elem.getUpdate()->removeFromParent();
 //
 //  // Erase any variable from variableValues that is written in the loop's body such that it is not replaced by any
 //  // known value while visiting the body's statements. This includes the iteration variable as we moved the update
@@ -1071,9 +1078,9 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
 //  // conditions using a logical-AND. Then remove all temporarily added Return statements.
 //  std::vector<AbstractExpr *> newConds;
 //  for (auto rStmt : tempReturnStmts) {
-//    rStmt->removeFromParents(true);
+//    rStmt->removeFromParent(true);
 //    auto expr = rStmt->getReturnExpressions().front();
-//    expr->removeFromParents(true);
+//    expr->removeFromParent(true);
 //    newConds.push_back(expr);
 //    enqueueNodeForDeletion(rStmt);
 //  }
@@ -1298,7 +1305,7 @@ void CompileTimeExpressionSimplifier::setMatrixVariableValue(const std::string &
   if (matrixElementValue!=nullptr) {
     // clone the given value and detach it from its parent
     valueToStore = matrixElementValue->clone(false)->castTo<AbstractExpr>();
-    valueToStore->removeFromParents();
+    valueToStore->removeFromParent();
   }
 
   auto var = variableValues.getVariableEntryDeclaredInThisOrOuterScope(variableIdentifier, curScope);
