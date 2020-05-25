@@ -41,7 +41,7 @@ AbstractExpr *GetMatrixSize::clone(bool keepOriginalUniqueNodeId) const {
 
 GetMatrixSize::GetMatrixSize(AbstractExpr *matrix, AbstractExpr *requestedDimension) {
   removeChildren();
-  addChildren({matrix, requestedDimension}, true);
+  addChildren({matrix, requestedDimension});
 }
 std::vector<std::string> GetMatrixSize::getVariableIdentifiers() {
   auto results = getMatrixOperand()->getVariableIdentifiers();

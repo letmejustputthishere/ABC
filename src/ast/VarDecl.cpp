@@ -59,7 +59,7 @@ void VarDecl::setAttributes(std::string varIdentifier, Datatype *varDatatype, Ab
   this->identifier = std::move(varIdentifier);
   // handle attributes that are itself nodes
   removeChildren();
-  addChildren({varDatatype, varValue}, true);
+  addChildren({varDatatype, varValue});
 }
 
 void VarDecl::accept(Visitor &v) {

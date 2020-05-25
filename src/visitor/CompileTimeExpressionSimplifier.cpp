@@ -1350,7 +1350,7 @@ void CompileTimeExpressionSimplifier::emitVariableDeclaration(ScopedVariable var
   }
 
   // passing position in children vector is req. to prepend the new VarAssignm (i.e., as new first child of parent)
-  parent->addChildren({newVarDeclaration}, true, parent->getChildren().begin());
+  parent->addChildren({newVarDeclaration}, parent->getChildren().begin());
   emittedVariableDeclarations.emplace(variableToEmit, new EmittedVariableData(newVarDeclaration));
 }
 
@@ -1502,7 +1502,7 @@ void CompileTimeExpressionSimplifier::cleanUpBlock(Block &elem) {
   } else {
     elem.removeChildren();
     // not adding backreferences because they already exist
-    elem.addChildren(newChildren, false);
+    elem.addChildren(newChildren);
   }
 }
 bool CompileTimeExpressionSimplifier::isUnrollLoopAllowed() const {

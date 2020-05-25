@@ -17,7 +17,7 @@ void MatrixElementRef::setAttributes(AbstractExpr *elementContainingMatrix,
                                      AbstractExpr *rowIndex,
                                      AbstractExpr *columnIndex) {
   removeChildren();
-  addChildren({elementContainingMatrix, rowIndex, columnIndex}, true);
+  addChildren({elementContainingMatrix, rowIndex, columnIndex});
 }
 
 MatrixElementRef::MatrixElementRef(AbstractExpr *mustEvaluateToAbstractLiteral, AbstractExpr *rowIndex) {

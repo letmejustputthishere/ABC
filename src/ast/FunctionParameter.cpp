@@ -68,7 +68,7 @@ int FunctionParameter::getMaxNumberChildren() {
 
 void FunctionParameter::setAttributes(Datatype *datatype, AbstractExpr *value) {
   removeChildren();
-  addChildren({datatype, value}, true);
+  addChildren({datatype, value});
 }
 
 bool FunctionParameter::operator==(const FunctionParameter &rhs) const {

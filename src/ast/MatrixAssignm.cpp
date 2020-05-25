@@ -10,7 +10,7 @@ MatrixAssignm::MatrixAssignm(MatrixElementRef *assignmentTarget, AbstractExpr *v
 
 void MatrixAssignm::setAttributes(AbstractExpr *assignmTarget, AbstractExpr *value) {
   removeChildren();
-  addChildren({assignmTarget, value}, true);
+  addChildren({assignmTarget, value});
 }
 
 std::string MatrixAssignm::getNodeType() const {

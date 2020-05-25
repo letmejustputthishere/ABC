@@ -39,7 +39,7 @@ While *While::clone(bool keepOriginalUniqueNodeId) const {
 
 void While::setAttributes(AbstractExpr *loopCondition, AbstractStatement *loopBody) {
   removeChildren();
-  addChildren({loopCondition, loopBody}, true);
+  addChildren({loopCondition, loopBody});
 }
 
 int While::getMaxNumberChildren() {

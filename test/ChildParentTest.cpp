@@ -83,7 +83,7 @@ TEST_F(ArithmeticExprFixture, ArithmeticExprAddChildException_NoEmptyChildSpotAv
 
 TEST_F(ArithmeticExprFixture, ArithmeticExprAddChildException_TooManyChildrenAdded) {  /* NOLINT */
   auto arithmeticExpr = new ArithmeticExpr(left, opSymb, right);
-  EXPECT_THROW(arithmeticExpr->addChildren({{left, otherLeft, new Operator(opSymb), right}}, false),
+  EXPECT_THROW(arithmeticExpr->addChildren({{left, otherLeft, new Operator(opSymb), right}}),
                std::invalid_argument);
 }
 
@@ -293,7 +293,7 @@ TEST_F(FunctionParameterFixture, FunctionParameterAddChildException_NoEmptyChild
 
 TEST_F(FunctionParameterFixture, FunctionParameterAddChildException_TooManyChildrenAdded) {  /* NOLINT */
   auto functionParameter = new FunctionParameter(datatype, variableThreshold);
-  EXPECT_THROW(functionParameter->addChildren({{datatype, variableSecret, variableThreshold}}, false),
+  EXPECT_THROW(functionParameter->addChildren({{datatype, variableSecret, variableThreshold}}),
                std::invalid_argument);
 }
 
@@ -384,7 +384,7 @@ TEST_F(IfStmtFixture, IfStmtAddChildException_NoEmptyChildSpotAvailable) {  /* N
 TEST_F(IfStmtFixture, IfStmtAddChildException_TooManyChildrenAdded) {  /* NOLINT */
   auto ifStmt = new If(condition, thenBranch);
   auto newElseBranch = new Block(new VarAssignm("a", new LiteralInt(1024)));
-  EXPECT_THROW(ifStmt->addChildren({{elseBranch, newElseBranch}}, false),
+  EXPECT_THROW(ifStmt->addChildren({{elseBranch, newElseBranch}}),
                std::invalid_argument);
 }
 
@@ -523,7 +523,7 @@ TEST_F(LogicalExprFixture, LogicalExprAddChildException_NoEmptyChildSpotAvailabl
 
 TEST_F(LogicalExprFixture, LogicalExprAddChildException_TooManyChildrenAdded) {  /* NOLINT */
   auto logicalExpr = new LogicalExpr(literalInt, opSymb, literalIntAnother);
-  EXPECT_THROW(logicalExpr->addChildren({{literalInt, literalIntAnother, new Operator(opSymb), literalBool}}, false),
+  EXPECT_THROW(logicalExpr->addChildren({{literalInt, literalIntAnother, new Operator(opSymb), literalBool}}),
                std::invalid_argument);
 }
 
@@ -637,7 +637,7 @@ TEST_F(UnaryExprFixture, UnaryExprAddChildException_NoEmptyChildSpotAvailable) {
 
 TEST_F(UnaryExprFixture, UnaryExprAddChildException_TooManyChildrenAdded) {  /* NOLINT */
   auto unaryExpr = new UnaryExpr(opSymbNegation, literalBoolTrue);
-  EXPECT_THROW(unaryExpr->addChildren({new Operator(UnaryOp::NEGATION), new LiteralBool(false)}, false),
+  EXPECT_THROW(unaryExpr->addChildren({new Operator(UnaryOp::NEGATION), new LiteralBool(false)}),
                std::logic_error);
 }
 
@@ -690,7 +690,7 @@ TEST_F(VarAssignmFixture, VarAssignm_NoEmptyChildSpotAvailable) {  /* NOLINT */
 
 TEST_F(VarAssignmFixture, VarAssignm_TooManyChildrenAdded) {  /* NOLINT */
   auto varAssignm = new VarAssignm(variableIdentifier, literalInt222);
-  EXPECT_THROW(varAssignm->addChildren({new LiteralBool(true), new LiteralInt(5343)}, false), std::invalid_argument);
+  EXPECT_THROW(varAssignm->addChildren({new LiteralBool(true), new LiteralInt(5343)}), std::invalid_argument);
 }
 
 TEST_F(VarAssignmFixture, VarAssignmAddChildSuccess) {  /* NOLINT */

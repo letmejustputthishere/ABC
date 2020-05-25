@@ -47,7 +47,7 @@ void For::setAttributes(AbstractStatement *initializer,
   if (dynamic_cast<Block *>(body)==nullptr) {
     body = new Block(body);
   }
-  addChildren({initializer, condition, update, body}, true);
+  addChildren({initializer, condition, update, body});
 }
 
 int For::getMaxNumberChildren() {

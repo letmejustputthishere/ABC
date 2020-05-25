@@ -58,20 +58,19 @@ std::vector<AbstractNode *> AbstractNode::getParentsNonNull() const {
 }
 
 void AbstractNode::addChild(AbstractNode *child, bool addBackReference) {
-  addChildren({child}, addBackReference);
+  addChildren({child});
 }
 
-void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd, bool addBackReference, AbstractNode *
-insertBeforeNode) {
+void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd, AbstractNode *insertBeforeNode) {
   auto it = std::find(children.begin(), children.end(), insertBeforeNode);
   if (it==children.end()) {
     throw std::runtime_error("addChildren failed: Could not find node given as parameter insertBeforeNode "
                              "that is required to determine insert position.");
   }
-  addChildren(childrenToAdd, addBackReference, it);
+  addChildren(childrenToAdd, it);
 }
 
-void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd, bool addBackReference,
+void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd,
                                std::vector<AbstractNode *>::const_iterator insertPosition) {
   auto allowsInfiniteNumberOfChildren = (getMaxNumberChildren()==-1);
 
@@ -91,8 +90,8 @@ void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd,
 
   // these actions are to be performed after a node was added to the list of children
   auto doInsertPostAction = [&](AbstractNode *childToAdd) {
-    // if option 'addBackReference' is true, we add a back reference to the child as parent
-    if (addBackReference && childToAdd!=nullptr) childToAdd->addParent(this, false);
+    // add a back reference to the child as parent
+    if (childToAdd!=nullptr) childToAdd->addParent(this, false);
   };
 
   // if this nodes accepts an infinite number of children, pre-filling the slots does not make any sense -> skip it
@@ -125,8 +124,8 @@ void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd,
   }
 }
 
-void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd, bool addBackReference) {
-  addChildren(childrenToAdd, addBackReference, children.end());
+void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd) {
+  addChildren(childrenToAdd, children.end());
 }
 
 void AbstractNode::removeChild(AbstractNode *child, bool removeBackreference) {
