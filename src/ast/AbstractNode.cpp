@@ -183,14 +183,6 @@ void AbstractNode::removeParents() {
   parents.clear();
 }
 
-void AbstractNode::swapChildrenParents() {
-  std::vector<AbstractNode *> oldParents = this->parents;
-  this->parents = this->children;
-  this->children = oldParents;
-  // toggle the isReversed boolean
-  isReversed = !isReversed;
-}
-
 void to_json(json &j, const AbstractNode &n) {
   j = n.toJson();
 }
@@ -288,10 +280,6 @@ AbstractNode *AbstractNode::getChildAtIndex(int idx, bool isEdgeDirectionAware) 
 
 AbstractNode::~AbstractNode() = default;
 
-bool AbstractNode::hasReversedEdges() const {
-  return isReversed;
-}
-
 AbstractNode *AbstractNode::cloneFlat() {
   throw std::runtime_error("Cannot clone an AbstractNode. Use the overridden cloneFlat instead.");
 }
@@ -337,5 +325,4 @@ AbstractNode *AbstractNode::getOnlyParent() {
 
 void AbstractNode::updateClone(bool keepOriginalUniqueNodeId, const AbstractNode *originalNode) {
   if (keepOriginalUniqueNodeId) setUniqueNodeId(originalNode->getUniqueNodeId());
-  if (originalNode->isReversed) swapChildrenParents();
 }

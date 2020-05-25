@@ -36,27 +36,6 @@ TEST_F(DotPrinterFixture, getDotFormattedStringTest_printSimpleArithmeticExpress
   ASSERT_EQ(dp.getDotFormattedString(arithmeticExpression), expectedStr);
 }
 
-TEST_F(DotPrinterFixture, getDotFormattedStringTest_printReversedArithmeticExpression) { /* NOLINT */
-  auto arithmeticExpression = new ArithmeticExpr(
-      new Variable("alpha"), ArithmeticOp::MULTIPLICATION, new LiteralInt(212));
-
-  // reversing the edge should only flip parents with children
-  arithmeticExpression->swapChildrenParents();
-
-  auto expectedStr =
-      "\tArithmeticExpr_3 [label=\"ArithmeticExpr_3\\n[l(v): 0, r(v): 0]\" shape=oval style=filled fillcolor=white]\n"
-      "\t{ Variable_0, Operator_4, LiteralInt_2 } -> { ArithmeticExpr_3 }\n";
-
-  Ast ast(arithmeticExpression);
-  MultiplicativeDepthCalculator mdc(ast);
-  DotPrinter dp;
-  dp.setIndentationCharacter("\t")
-      .setMultiplicativeDepthsCalculator(mdc)
-      .setShowMultDepth(true);
-
-  ASSERT_EQ(dp.getDotFormattedString(arithmeticExpression), expectedStr);
-}
-
 TEST_F(DotPrinterFixture, getDotFormattedStringTest_printFunction) { /* NOLINT */
   auto functionParameters =
       new ParameterList({new FunctionParameter(new Datatype(Types::INT),

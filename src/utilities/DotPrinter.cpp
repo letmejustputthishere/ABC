@@ -33,8 +33,7 @@ DotPrinter::setMultiplicativeDepthsCalculator(MultiplicativeDepthCalculator &mul
 std::string DotPrinter::getDotFormattedString(AbstractNode *n) {
   std::stringstream finalString;
 
-  // depending on whether the graph is reversed we are interested in the parents or children
-  auto vec = (n->hasReversedEdges() ? n->getParentsNonNull() : n->getChildrenNonNull());
+  auto vec = n->getChildrenNonNull();
 
   // define criteria when to print node details
   auto printNodeDetailsCriterion = (vec.empty()    // if node is a tree leaf
@@ -47,7 +46,7 @@ std::string DotPrinter::getDotFormattedString(AbstractNode *n) {
   if (vec.empty()) return finalString.str();
 
   // otherwise also generate string for edge and return both
-  finalString << DotEdge(n, n->hasReversedEdges()).buildEdgeString(this->indentationCharacter);
+  finalString << DotEdge(n).buildEdgeString(this->indentationCharacter);
   return finalString.str();
 }
 

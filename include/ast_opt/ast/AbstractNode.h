@@ -198,13 +198,6 @@ class AbstractNode {
 
   /** @} */ // End of parents group
 
-  /// Swaps the children and parents vectors which corresponds to flipping the edges of this node.
-  /// Note: This should never be performed on individual nodes only but instead on the whole AST, see method
-  /// Ast::reverseEdges(). Keep in mind that most methods are not aware of this swapped relationship and do not work.
-  /// Use *getChildAtIndex(int idx, bool isEdgeDirectionAware) by specifying isEdgeDirectionAware=true to get a specific
-  /// child.
-  void swapChildrenParents();
-
   /// Part of the visitor pattern.
   /// Must be overridden in derived classes and must call v.visit(node).
   /// This allows the correct overload for the derived class to be called in the visitor.
@@ -244,10 +237,6 @@ class AbstractNode {
 
   /// Removes this node from all of its parents and children, and also removes all parents and children from this node.
   void isolateNode();
-
-  /// Checks whether the edges of this node are reversed (i.e., node's parents and children are swapped).
-  /// \return True iff the node's edges are reversed.
-  [[nodiscard]] bool hasReversedEdges() const;
 
   /// Casts a node to type T which must be the specific derived class of the node to cast successfully.
   /// \tparam T The derived class of the node object.

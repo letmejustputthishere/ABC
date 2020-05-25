@@ -52,9 +52,6 @@ class Ast {
   /// \return True iff all edges of the AST are reversed, otherwise false.
   [[nodiscard]] bool isReversed() const;
 
-  /// Reverses all edges by switching child and parent nodes of each reachable node within the AST.
-  void reverseEdges();
-
   /// Traverses the tree in BFS-style and collects all the nodes of the AST.
   /// \return A list of all nodes reachable from the AST's root node.
   [[nodiscard]] std::set<AbstractNode *> getAllNodes() const;

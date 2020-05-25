@@ -129,14 +129,9 @@ struct DotEdge {
   }
 
  public:
-  DotEdge(AbstractNode *n, bool isReversedEdge) {
-    if (isReversedEdge) {
-      lhsArrow = buildCommaSeparatedList(n->getParentsNonNull());
-      rhsArrow = n->getUniqueNodeId();
-    } else {
-      lhsArrow = n->getUniqueNodeId();
-      rhsArrow = buildCommaSeparatedList(n->getChildrenNonNull());
-    }
+  DotEdge(AbstractNode *n) {
+    lhsArrow = n->getUniqueNodeId();
+    rhsArrow = buildCommaSeparatedList(n->getChildrenNonNull());
   }
 
   std::string buildEdgeString(const std::string &indentation) {

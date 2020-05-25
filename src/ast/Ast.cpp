@@ -158,10 +158,6 @@ Ast::Ast(const Ast &otherAst, bool keepOriginalUniqueNodeId) : rootNode(nullptr)
 
 Ast::Ast(const Ast &otherAst) : Ast(otherAst, false) {}
 
-void Ast::reverseEdges() {
-  for (auto &node : getAllNodes()) node->swapChildrenParents();
-}
-
 std::set<AbstractNode *> Ast::getAllNodes() const {
   return getAllNodes(nullptr);
 }
