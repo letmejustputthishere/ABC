@@ -59,7 +59,7 @@ void DotPrinter::printAsDotFormattedGraph(Ast &ast) {
     auto il = q.front().second;
     q.pop_front();
     *outputStream << getDotFormattedString(curNode);
-    auto nodes = (ast.isReversed()) ? curNode->getParentsNonNull() : curNode->getChildrenNonNull();
+    auto nodes = (ast.isReversed()) ? std::vector<AbstractNode *>(1, curNode->getParent()) : curNode->getChildrenNonNull();
     for (auto &n : nodes) q.emplace_front(n, il + 1);
   }
   *outputStream << "}" << std::endl;
@@ -74,7 +74,7 @@ void DotPrinter::printAllReachableNodes(AbstractNode *pNode) {
     if (printedNodes.count(curNode)==0) {
       *outputStream << DotPrinter::getDotFormattedString(curNode);
       for (auto &c : curNode->getChildrenNonNull()) { q.push(c); }
-      for (auto &p : curNode->getParentsNonNull()) { q.push(p); }
+      q.push(curNode->getParent());
       printedNodes.insert(curNode);
     }
   }

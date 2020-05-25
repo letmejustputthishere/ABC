@@ -177,7 +177,7 @@ std::set<AbstractNode *> Ast::getAllNodes(const std::function<bool(AbstractNode 
     // if (no predicate is set) OR (predicate is set AND node fulfills predicate) -> add node to result set
     if (predicate==nullptr || predicate(curNode)) allNodes.insert(curNode);
     // depending on the status of the node, enqueue the next nodes
-    auto nextNodesToConsider = curNode->isReversed ? curNode->getParentsNonNull() : curNode->getChildrenNonNull();
+    auto nextNodesToConsider = curNode->isReversed ? std::vector<AbstractNode*>(1,curNode->getParent()) : curNode->getChildrenNonNull();
     for (auto &c : nextNodesToConsider) nodesToCheck.push(c);
   }
   return allNodes;

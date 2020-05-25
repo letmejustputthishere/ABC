@@ -29,7 +29,7 @@ TEST_F(AstTestFixture, deleteNode_deleteSingleLeafNodeOnly) { /* NOLINT */
   // retrieve the deletion target -> variable of the arithmetic expression
   auto variable = arithmeticExpr->getChildAtIndex(0);
   ASSERT_NE(variable, nullptr);
-  ASSERT_EQ(variable->getParents().front(), arithmeticExpr);
+  ASSERT_EQ(variable->getParent(), arithmeticExpr);
 
   // delete node and verify deletion success
   ast.deleteNode(&variable);
@@ -48,7 +48,7 @@ TEST_F(AstTestFixture, deleteNode_deleteRecursiveSubtreeNonEmpty) { /* NOLINT */
   // save and check node's children
   const auto &arithmeticExprChildren = arithmeticExpr->getChildren();
   for (auto &c : arithmeticExprChildren)
-    ASSERT_EQ(c->getOnlyParent(), arithmeticExpr);
+    ASSERT_EQ(c->getParent(), arithmeticExpr);
 
   // delete node and its subtree and verify deletion success
   AbstractNode *arithmeticExprPtr = arithmeticExpr;
@@ -73,7 +73,7 @@ TEST_F(AstTestFixture, deleteNode_deleteRecursiveSubtreeEmpty) { /* NOLINT */
   // retrieve the deletion target -> variable of the arithmetic expression
   auto variable = arithmeticExpr->getChildAtIndex(0);
   ASSERT_NE(variable, nullptr);
-  ASSERT_EQ(variable->getParents().front(), arithmeticExpr);
+  ASSERT_EQ(variable->getParent(), arithmeticExpr);
 
   // delete node and verify deletion success
   ast.deleteNode(&variable, true);
@@ -95,7 +95,7 @@ TEST_F(AstTestFixture, deleteNode_ChildrenExisting) { /* NOLINT */
   // save and check node's children
   int arithmeticExprNumChildren = arithmeticExpr->countChildrenNonNull();
   for (auto &c : arithmeticExpr->getChildrenNonNull())
-    ASSERT_EQ(c->getOnlyParent(), arithmeticExpr);
+    ASSERT_EQ(c->getParent(), arithmeticExpr);
 
   // delete node and its subtree and verify deletion success
   AbstractNode *arithmeticExprPtr = arithmeticExpr;

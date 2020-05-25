@@ -69,7 +69,7 @@ void CompileTimeExpressionSimplifier::visit(Rotate &elem) {
       // perform rotation on the cloned literal
       clonedVal->getMatrix()->rotate(getKnownValue(elem.getRotationFactor())->castTo<LiteralInt>()->getValue(), true);
       // replace this Rotate node by a new node containing the rotated operand
-      elem.getOnlyParent()->replaceChild(&elem, clonedVal);
+      elem.getParent()->replaceChild(&elem, clonedVal);
       enqueueNodeForDeletion(&elem);
     }
   }
@@ -88,7 +88,7 @@ void CompileTimeExpressionSimplifier::visit(Transpose &elem) {
       // perform transpose on the cloned literal
       clonedVal->getMatrix()->transpose(true);
       // replace this Rotate node by a new node containing the rotated operand
-      elem.getOnlyParent()->replaceChild(&elem, clonedVal);
+      elem.getParent()->replaceChild(&elem, clonedVal);
       enqueueNodeForDeletion(&elem);
     }
   }
@@ -202,7 +202,7 @@ void CompileTimeExpressionSimplifier::visit(MatrixAssignm &elem) {
       //  INSTEAD: REPLACE CURRENT ELEM WITH NEW BLOCK, LET PARENT DEAL WITH INLINING
       // and attach the assignment statement immediately before this MatrixAssignm
       for (auto &s: varAssignm) {
-        elem.getOnlyParent()->addChild(s, true);
+        elem.getParent()->addChild(s, true);
       }
 
       // and remove the value in variableValues map to avoid saving any further assignments
@@ -210,7 +210,7 @@ void CompileTimeExpressionSimplifier::visit(MatrixAssignm &elem) {
     }
   }
   if (enqueueNodeForDeletion_) {
-    elem.getOnlyParent()->replaceChild(&elem, nullptr);
+    elem.getParent()->replaceChild(&elem, nullptr);
     enqueueNodeForDeletion(&elem);
   }
 }
@@ -227,7 +227,7 @@ void CompileTimeExpressionSimplifier::visit(MatrixElementRef &elem) {
     auto matrix = dynamic_cast<AbstractLiteral *>(getKnownValue(elem.getOperand()))->getMatrix();
     auto retrievedElement = matrix->getElementAt(rowIndex, columnIndex);
     // replace this MatrixElementRef referred by the parent node by the retrieved element
-    elem.getOnlyParent()->replaceChild(&elem, retrievedElement);
+    elem.getParent()->replaceChild(&elem, retrievedElement);
   }
 }
 
@@ -244,7 +244,7 @@ void CompileTimeExpressionSimplifier::visit(GetMatrixSize &elem) {
     }
     auto dimSize = matrixAsAbstractLiteral->getMatrix()->getDimensions()
         .getNthDimensionSize(requestedDimension->getValue());
-    elem.getOnlyParent()->replaceChild(&elem, new LiteralInt(dimSize));
+    elem.getParent()->replaceChild(&elem, new LiteralInt(dimSize));
   }
 }
 
@@ -313,7 +313,7 @@ void CompileTimeExpressionSimplifier::visit(Variable &elem) {
   // if we know the variable's value (i.e., its value is either any subtype of AbstractLiteral or an AbstractExpr if
   // this is a symbolic value that defines on other variables), we can replace this variable node by its value
   if (auto value = variableValues.getVariableValueDeclaredInThisOrOuterScope(elem.getIdentifier(), curScope)) {
-    if (!elem.getParentsNonNull().empty()) elem.getOnlyParent()->replaceChild(&elem, value->clone(false));
+    if (elem.hasParent()) elem.getParent()->replaceChild(&elem, value->clone(false));
   }
 }
 
@@ -336,7 +336,7 @@ void CompileTimeExpressionSimplifier::visit(VarDecl &elem) {
   variableValues.addDeclaredVariable(sv, vv);
 
   // we no longer need this node or its children, since the value is now in the variableValues map
-  elem.getOnlyParent()->replaceChild(&elem, nullptr);
+  elem.getParent()->replaceChild(&elem, nullptr);
   enqueueNodeForDeletion(&elem);
 }
 
@@ -348,20 +348,20 @@ void CompileTimeExpressionSimplifier::visit(VarAssignm &elem) {
   variableValues.setVariableValue(var, newVV);
 
   // Delete this node
-  elem.getOnlyParent()->replaceChild(&elem, nullptr);
+  elem.getParent()->replaceChild(&elem, nullptr);
   enqueueNodeForDeletion(&elem);
 }
 
 void CompileTimeExpressionSimplifier::visit(ArithmeticExpr &elem) {
   // transform this ArithmeticExpr into an OperatorExpr
-  if (!elem.getParentsNonNull().empty()) {
+  if (elem.hasParent()) {
     auto op = elem.getOperator();
     op->removeFromParents();
     std::vector<AbstractExpr *> operands{elem.getLeft(), elem.getRight()};
     elem.getLeft()->removeFromParents();
     elem.getRight()->removeFromParents();
     auto operatorExpr = new OperatorExpr(op, operands);
-    elem.getOnlyParent()->replaceChild(&elem, operatorExpr);
+    elem.getParent()->replaceChild(&elem, operatorExpr);
     enqueueNodeForDeletion(&elem);
     operatorExpr->accept(*this);
   } else {
@@ -371,14 +371,14 @@ void CompileTimeExpressionSimplifier::visit(ArithmeticExpr &elem) {
 
 void CompileTimeExpressionSimplifier::visit(LogicalExpr &elem) {
   // transform this LogicalExpr into an OperatorExpr
-  if (!elem.getParentsNonNull().empty()) {
+  if (elem.hasParent()) {
     auto op = elem.getOperator();
     op->removeFromParents();
     std::vector<AbstractExpr *> operands{elem.getLeft(), elem.getRight()};
     elem.getLeft()->removeFromParents();
     elem.getRight()->removeFromParents();
     auto operatorExpr = new OperatorExpr(op, operands);
-    elem.getOnlyParent()->replaceChild(&elem, operatorExpr);
+    elem.getParent()->replaceChild(&elem, operatorExpr);
     enqueueNodeForDeletion(&elem);
     operatorExpr->accept(*this);
   } else {
@@ -394,15 +394,15 @@ void CompileTimeExpressionSimplifier::visit(UnaryExpr &elem) {
     // if operand value is known -> evaluate the expression and store its result
     auto result = evaluateNodeRecursive(&elem, getTransformedVariableMap());
     // replace this UnaryExpr by the evaluation's result
-    elem.getOnlyParent()->replaceChild(&elem, result.front());
-  } else if (!elem.getParentsNonNull().empty()) {
+    elem.getParent()->replaceChild(&elem, result.front());
+  } else if (elem.hasParent()) {
     // if this UnaryExpr cannot be evaluated, replace the UnaryExpr by an OperatorExpr
     auto op = elem.getOperator();
     op->removeFromParents();
     std::vector<AbstractExpr *> operands{elem.getRight()};
     elem.getRight()->removeFromParents();
     auto operatorExpr = new OperatorExpr(op, operands);
-    elem.getOnlyParent()->replaceChild(&elem, operatorExpr);
+    elem.getParent()->replaceChild(&elem, operatorExpr);
   }
   enqueueNodeForDeletion(&elem);
 }
@@ -465,7 +465,7 @@ void CompileTimeExpressionSimplifier::visit(OperatorExpr &elem) {
   // Exception: If this is an unary operator (e.g., !a) containing an unknown operand (e.g., Variable a) then this
   // replacement is not legal. This case is excluded by !elem.getOperator()->isUnaryOp().
   if (elem.getOperands().size()==1 && !elem.getOperator()->isUnaryOp()) {
-    elem.getOnlyParent()->replaceChild(&elem, elem.getOperands().at(0));
+    elem.getParent()->replaceChild(&elem, elem.getOperands().at(0));
   }
 }
 
@@ -559,13 +559,13 @@ void CompileTimeExpressionSimplifier::visit(Call &elem) {
         // if the current node is a Variable node and it is a function parameter -> replace it
         auto nodeAsVariable = dynamic_cast<Variable *>(node);
         if (nodeAsVariable!=nullptr && varReplacementMap.count(nodeAsVariable->getIdentifier()) > 0) {
-          node->getOnlyParent()->replaceChild(node,
-                                              varReplacementMap.at(nodeAsVariable->getIdentifier())->clone(false));
+          node->getParent()->replaceChild(node,
+                                          varReplacementMap.at(nodeAsVariable->getIdentifier())->clone(false));
         }
       }
 
       // remove return expression from its parent (return statement) and replace Call by extracted return statement
-      auto parentNode = elem.getOnlyParent();
+      auto parentNode = elem.getParent();
       auto returnExpr = returnStmt->getReturnExpressions().front();
       returnExpr->removeFromParents(true);
       parentNode->replaceChild(&elem, returnExpr);
@@ -661,7 +661,7 @@ void CompileTimeExpressionSimplifier::visit(If &elem) {
                 // the Else-branch is always executed but it is empty after simplification  (thus queued for deletion)
             || (!thenAlwaysExecuted && elem.getElseBranch()==nullptr)) {
       // enqueue the If statement and its children for deletion
-      elem.getOnlyParent()->replaceChild(&elem, nullptr);
+      elem.getParent()->replaceChild(&elem, nullptr);
       enqueueNodeForDeletion(&elem);
     }
   }
@@ -728,7 +728,7 @@ void CompileTimeExpressionSimplifier::visit(If &elem) {
     variableValues = originalVariableValues;
 
     // enqueue the If statement and its children for deletion
-    elem.getOnlyParent()->replaceChild(&elem, nullptr);
+    elem.getParent()->replaceChild(&elem, nullptr);
     enqueueNodeForDeletion(&elem);
   }
 }
@@ -741,7 +741,7 @@ void CompileTimeExpressionSimplifier::visit(While &elem) {
   auto conditionValue = dynamic_cast<LiteralBool *>(elem.getCondition());
   if (conditionValue!=nullptr && !conditionValue->getValue()) {
     // While is never executed: remove While-loop including contained statements
-    elem.getOnlyParent()->replaceChild(&elem, nullptr);
+    elem.getParent()->replaceChild(&elem, nullptr);
     enqueueNodeForDeletion(&elem);
     return;
   }
@@ -951,7 +951,7 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
 
       // Then, we replace elem with the unrolled Block.
       // This is mostly so that code that looks for parents works correctly
-      elem.getOnlyParent()->replaceChild(&elem, unrolledBlock);
+      elem.getParent()->replaceChild(&elem, unrolledBlock);
 
       // Cleanup the Block we just inserted, in case it's empty/has NULL stmts left
       cleanUpBlock(*unrolledBlock);
@@ -986,7 +986,7 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
 //  blockEmbeddingLoops->addChild(forLoopInitializer);
 //
 //  // replace this For-loop in its parent node by the new block and move the For-loop into the block
-//  elem.getOnlyParent()->replaceChild(&elem, blockEmbeddingLoops);
+//  elem.getParent()->replaceChild(&elem, blockEmbeddingLoops);
 //  blockEmbeddingLoops->addChild(&elem);
 //
 //  // create copies to allow reverting changes made by visiting nodes
@@ -1422,7 +1422,7 @@ std::set<VarAssignm *> CompileTimeExpressionSimplifier::emitVariableAssignment(S
 
     // replace all occurrences with a new Var(temp_...) node
     for (auto &o: occurrences) {
-      auto p = o->getOnlyParent();
+      auto p = o->getParent();
       auto n = new Variable(temp_id);
       p->replaceChild(o, n);
     }
@@ -1450,11 +1450,9 @@ std::set<VarAssignm *> CompileTimeExpressionSimplifier::emitVariableAssignments(
 
 void CompileTimeExpressionSimplifier::enqueueNodeForDeletion(AbstractNode *node) {
 
-  for (auto &p: node->getParentsNonNull()) {
-    auto pc = p->getChildrenNonNull();
-    if (std::find(pc.begin(), pc.end(), node)!=pc.end()) {
-      throw std::invalid_argument("Cannot enqueue a Node for deletion if it is still linked in parent");
-    }
+  auto pc = node->getParent()->getChildrenNonNull();
+  if (std::find(pc.begin(), pc.end(), node)!=pc.end()) {
+    throw std::invalid_argument("Cannot enqueue a Node for deletion if it is still linked in parent");
   }
 
   for (auto &n : node->getDescendants()) {
@@ -1492,11 +1490,10 @@ void CompileTimeExpressionSimplifier::cleanUpBlock(Block &elem) {
   // Since some children might have replaced themselves with nullptr, let's collect only the valid children
   auto newChildren = elem.getChildrenNonNull();
   if (newChildren.empty()
-      && !elem.getParentsNonNull().empty()) { //sometimes, e.g. in loop unrolling, a block might not yet have a parent!
+      && elem.hasParent()) { //sometimes, e.g. in loop unrolling, a block might not yet have a parent!
     // Block is empty => remove it from parents
-    for (auto &p: elem.getParentsNonNull()) {
-      p->replaceChild(&elem, nullptr);
-    }
+    elem.getParent()->replaceChild(&elem, nullptr);
+
     // mark for deletion
     enqueueNodeForDeletion(&elem);
   } else {

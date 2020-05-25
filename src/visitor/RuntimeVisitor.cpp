@@ -75,7 +75,7 @@ void RuntimeVisitor::visit(MatrixElementRef &elem) {
     expr->accept(*ev);
     auto evalResult = ev->getResults().front();
     if (auto evalResultAsLInt = dynamic_cast<LiteralInt *>(evalResult)) {
-      expr->getOnlyParent()->replaceChild(expr, evalResultAsLInt);
+      expr->getParent()->replaceChild(expr, evalResultAsLInt);
       return evalResultAsLInt->getValue();
     } else {
       throw std::runtime_error("MatrixElementRef row and column indices must evaluate to LiteralInt!");
@@ -515,7 +515,7 @@ void RuntimeVisitor::visit(Variable &elem) {
     }
   } else {
     // TODO: Retrieve value from EvaluationVisitor's map (getVarValue).
-    elem.getOnlyParent()->replaceChild(&elem, ev->getVarValue(elem.getIdentifier())->clone(true));
+    elem.getParent()->replaceChild(&elem, ev->getVarValue(elem.getIdentifier())->clone(true));
   }
 }
 

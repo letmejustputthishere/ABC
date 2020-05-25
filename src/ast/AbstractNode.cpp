@@ -91,7 +91,7 @@ void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd,
   // these actions are to be performed after a node was added to the list of children
   auto doInsertPostAction = [&](AbstractNode *childToAdd) {
     // add a back reference to the child as parent
-    if (childToAdd!=nullptr) childToAdd->addParent(this, false);
+    if (childToAdd!=nullptr) childToAdd->setParent(this);
   };
 
   // if this nodes accepts an infinite number of children, pre-filling the slots does not make any sense -> skip it
@@ -132,7 +132,7 @@ void AbstractNode::removeChild(AbstractNode *child, bool removeBackreference) {
   auto it = std::find(children.begin(), children.end(), child);
   if (it!=children.end()) {
     if (removeBackreference) {
-      (*it)->removeParent(this, false);
+      (*it)->removeParent(this);
     }
     // if the node supports an infinite number of children (getMaxNumberChildren() == -1), we can delete the node from
     // the children list, otherwise we just overwrite the slot with a nullptr
@@ -146,30 +146,22 @@ void AbstractNode::removeChild(AbstractNode *child, bool removeBackreference) {
 
 void AbstractNode::isolateNode() {
   for (auto &p : getParentsNonNull()) p->removeChild(this, false);
-  for (auto &c : getChildrenNonNull()) c->removeParent(this, false);
+  for (auto &c : getChildrenNonNull()) c->removeParent(this);
   removeChildren();
   removeParents();
 }
 
-const std::vector<AbstractNode *> &AbstractNode::getParents() const {
-  return parents;
-}
-
-void AbstractNode::addParent(AbstractNode *parentToAdd, bool addBackreference) {
-  parents.push_back(parentToAdd);
-  if (addBackreference) {
-    for (auto &p : getParentsNonNull()) {
-      p->addChild(this, false);
-    }
+void AbstractNode::setParent(AbstractNode *newParent) {
+  parents.push_back(newParent);
+  for (auto &p : getParentsNonNull()) {
+    p->addChild(this, false);
   }
 }
 
-void AbstractNode::removeParent(AbstractNode *parentToBeRemoved, bool removeBackreference) {
+void AbstractNode::removeParent(AbstractNode *parentToBeRemoved) {
   auto it = std::find(parents.begin(), parents.end(), parentToBeRemoved);
   if (it!=parents.end()) {
-    if (removeBackreference) {
-      (*it)->removeChild(this, false);
-    }
+    (*it)->removeChild(this, false);
     parents.erase(it);
   }
 }
@@ -227,11 +219,10 @@ std::vector<AbstractNode *> AbstractNode::getAncestors() {
   while (!processQueue.empty()) {
     auto curNode = processQueue.front();
     processQueue.pop();
-    auto nextNodes = curNode->getParents();
-    std::for_each(nextNodes.begin(), nextNodes.end(), [&](AbstractNode *node) {
-      result.insert(node);
-      processQueue.push(node);
-    });
+    auto nextNode = curNode->getParent();
+    result.insert(nextNode);
+    processQueue.push(nextNode);
+
   }
   return std::vector<AbstractNode *>(result.begin(), result.end());
 }
@@ -252,9 +243,11 @@ std::vector<AbstractNode *> AbstractNode::getDescendants() {
 }
 
 bool AbstractNode::hasParent(AbstractNode *parentNode) {
-  return std::any_of(getParents().begin(),
-                     getParents().end(),
-                     [&parentNode](AbstractNode *p) { return (p==parentNode); });
+  return getParent()==parentNode;
+}
+
+bool AbstractNode::hasParent() {
+  return getParent()!=nullptr;
 }
 
 int AbstractNode::countChildrenNonNull() const {
@@ -292,12 +285,12 @@ void AbstractNode::replaceChild(AbstractNode *originalChild, AbstractNode *newCh
   children[std::distance(children.begin(), pos)] = newChild;
 
   // remove edge: originalChild -> currentNode
-  originalChild->removeParent(this, false);
+  originalChild->removeParent(this);
 
   // add edges: newChildToBeAdded -> currentNode but before detach any existing parents from this child node
   if (newChild!=nullptr) {
     newChild->removeFromParents();
-    newChild->addParent(this, false);
+    newChild->setParent(this);
   }
 }
 
@@ -312,14 +305,14 @@ std::string AbstractNode::toString(bool) const {
   throw std::runtime_error("toString not implemented for class " + getNodeType() + ".");
 }
 
-AbstractNode *AbstractNode::getOnlyParent() {
+AbstractNode *AbstractNode::getParent() {
   auto parentsVector = getParentsNonNull();
   if (parentsVector.size() > 1) {
-    throw std::logic_error("AbstractNode::getOnlyParent() failed because node has more than one parent!");
+    throw std::logic_error("AbstractNode::getParent() failed because node has more than one parent!");
   } else if (parentsVector.empty()) {
-    throw std::logic_error("AbstractNode::getOnlyParent() failed because node does not have a parent");
+    throw std::logic_error("AbstractNode::getParent() failed because node does not have a parent");
   }
-  return this->getParentsNonNull().front();
+  return this->getParent();
 }
 
 void AbstractNode::updateClone(bool keepOriginalUniqueNodeId, const AbstractNode *originalNode) {

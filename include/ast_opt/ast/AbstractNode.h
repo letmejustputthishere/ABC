@@ -151,10 +151,6 @@ class AbstractNode {
    *  @{
    */
 
-  /// Returns a reference to the vector of parent nodes.
-  /// \return A reference to the vector of this node's parents.
-  [[nodiscard]] const std::vector<AbstractNode *> &getParents() const;
-
   /// Returns a vector of pointers to parent nodes but without those parents that are nullptr.
   /// \return A vector of non-nullptr parent nodes.
   [[nodiscard]] std::vector<AbstractNode *> getParentsNonNull() const;
@@ -164,15 +160,13 @@ class AbstractNode {
   /// \return A list of ancestor nodes.
   std::vector<AbstractNode *> getAncestors();
 
-  /// Adds a new parent to this node's list of parents.
-  /// \param parentToAdd The parent node to be added.
-  /// \param addBackreference If True, then also adds this node as child to the new parent node.
-  void addParent(AbstractNode *parentToAdd, bool addBackreference = true);
+  /// Replaces the current parent with the newParent
+  /// \param newParent The new parent node
+  void setParent(AbstractNode *newParent);
 
   /// Removes a certain parent from this node.
   /// \param parentToBeRemoved The node to be removed from this node's parents.
-  /// \param removeBackreference If True, then also removes this node from the parentToBeRemoved node's children list.
-  void removeParent(AbstractNode *parentToBeRemoved, bool removeBackreference = true);
+  void removeParent(AbstractNode *parentToBeRemoved);
 
   /// Removes this node from its parent's children list. If removeParentBackreference is True, then also removes the
   /// parents from this node's parent list.
@@ -187,10 +181,14 @@ class AbstractNode {
   /// \return True if this node has the given parentNode as parent, otherwise returns False.
   bool hasParent(AbstractNode *parentNode);
 
+  /// Checks whether this node has a  parent
+  /// \return True if this node has a parent, otherwise returns False.
+  bool hasParent();
+
   /// Returns a pointer to the only parent node. If this node has more than one parent, then a std::logic_exception is
   /// thrown.
   /// \return A pointer to the node's only parent node.
-  AbstractNode *getOnlyParent();
+  AbstractNode *getParent();
 
   /** @} */ // End of parents group
 

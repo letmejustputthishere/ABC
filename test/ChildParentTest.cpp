@@ -43,12 +43,12 @@ TEST_F(ArithmeticExprFixture, ArithmeticExprStandardConstructor) {  /* NOLINT */
   ASSERT_EQ(arithmeticExpr->getChildAtIndex(2), right);
 
   // parents
-  ASSERT_EQ(arithmeticExpr->getParents().size(), 0);
-  ASSERT_EQ(arithmeticExpr->getChildAtIndex(0)->getParents().size(), 1);
+  ASSERT_EQ(arithmeticExpr->getParent(), nullptr);
+  ASSERT_EQ(arithmeticExpr->getChildAtIndex(0)->getParent()!=nullptr, 1);
   ASSERT_TRUE(arithmeticExpr->getChildAtIndex(0)->hasParent(arithmeticExpr));
-  ASSERT_EQ(arithmeticExpr->getChildAtIndex(1)->getParents().size(), 1);
+  ASSERT_EQ(arithmeticExpr->getChildAtIndex(1)->getParent()!=nullptr, 1);
   ASSERT_TRUE(arithmeticExpr->getChildAtIndex(1)->hasParent(arithmeticExpr));
-  ASSERT_EQ(arithmeticExpr->getChildAtIndex(2)->getParents().size(), 1);
+  ASSERT_EQ(arithmeticExpr->getChildAtIndex(2)->getParent()!=nullptr, 1);
   ASSERT_TRUE(arithmeticExpr->getChildAtIndex(2)->hasParent(arithmeticExpr));
 }
 
@@ -56,7 +56,7 @@ TEST_F(ArithmeticExprFixture, ArithmeticExprEmptyConstructor) {  /* NOLINT */
   ArithmeticExpr arithmeticExpr;
   ASSERT_EQ(arithmeticExpr.getChildren().size(), 3);
   ASSERT_EQ(arithmeticExpr.countChildrenNonNull(), 0);
-  ASSERT_EQ(arithmeticExpr.getParents().size(), 0);
+  ASSERT_EQ(arithmeticExpr.getParent(), nullptr);
 }
 
 TEST_F(ArithmeticExprFixture, ArithmeticExprOperatorOnlyConstructor) {  /* NOLINT */
@@ -70,8 +70,8 @@ TEST_F(ArithmeticExprFixture, ArithmeticExprOperatorOnlyConstructor) {  /* NOLIN
   ASSERT_EQ(arithmeticExpr->getChildAtIndex(2), nullptr);
 
   // parents
-  ASSERT_EQ(arithmeticExpr->getParents().size(), 0);
-  ASSERT_EQ(arithmeticExpr->getChildAtIndex(1)->getParents().size(), 1);
+  ASSERT_EQ(arithmeticExpr->getParent(), nullptr);
+  ASSERT_EQ(arithmeticExpr->getChildAtIndex(1)->getParent()!=nullptr, 1);
   ASSERT_TRUE(arithmeticExpr->getChildAtIndex(1)->hasParent(arithmeticExpr));
 }
 
@@ -103,19 +103,19 @@ TEST_F(ArithmeticExprFixture, ArithmeticExprAddChildSuccess) {  /* NOLINT */
   EXPECT_EQ(arithmeticExpr->getChildAtIndex(2), right);
 
   // parents
-  EXPECT_EQ(newLeft->getParents().size(), 1);
-  EXPECT_EQ(newLeft->getParents().front(), arithmeticExpr);
-  EXPECT_EQ(operatorAdd->getParents().size(), 1);
-  EXPECT_EQ(operatorAdd->getParents().front(), arithmeticExpr);
-  EXPECT_EQ(right->getParents().size(), 1);
-  EXPECT_EQ(right->getParents().front(), arithmeticExpr);
+  EXPECT_EQ(newLeft->getParent()!=nullptr, 1);
+  EXPECT_EQ(newLeft->getParent(), arithmeticExpr);
+  EXPECT_EQ(operatorAdd->getParent()!=nullptr, 1);
+  EXPECT_EQ(operatorAdd->getParent(), arithmeticExpr);
+  EXPECT_EQ(right->getParent()!=nullptr, 1);
+  EXPECT_EQ(right->getParent(), arithmeticExpr);
 }
 
 TEST(ChildParentTests, Block) {  /* NOLINT */
   auto blockStatement =
       new Block(new VarAssignm("varX", new LiteralInt(22)));
   ASSERT_EQ(blockStatement->getChildren().size(), 1);
-  ASSERT_EQ(blockStatement->getParents().size(), 0);
+  ASSERT_EQ(blockStatement->getParent(), nullptr);
   ASSERT_EQ(blockStatement->getMaxNumberChildren(), -1);
 }
 
@@ -128,11 +128,11 @@ TEST(ChildParentTests, Block_addAdditionalChild) {  /* NOLINT */
   ASSERT_EQ(blockStatement->getMaxNumberChildren(), -1);
 
   ASSERT_EQ(blockStatement->getChildren().size(), 2);
-  ASSERT_EQ(blockStatement->getParents().size(), 0);
+  ASSERT_EQ(blockStatement->getParent(), nullptr);
 
-  EXPECT_EQ(blockStatement->getChildAtIndex(0)->getParents().size(), 1);
+  EXPECT_EQ(blockStatement->getChildAtIndex(0)->getParent()!=nullptr, 1);
   EXPECT_EQ(blockStatement->getChildAtIndex(0), varDecl);
-  EXPECT_EQ(blockStatement->getChildAtIndex(1)->getParents().size(), 1);
+  EXPECT_EQ(blockStatement->getChildAtIndex(1)->getParent()!=nullptr, 1);
   EXPECT_EQ(blockStatement->getChildAtIndex(1), varAssignm);
 }
 
@@ -149,10 +149,10 @@ TEST(ChildParentTests, CallStandardConstructor) {  /* NOLINT */
   ASSERT_EQ(call->getChildAtIndex(1), func);
 
   // parents
-  ASSERT_EQ(call->getParents().size(), 0);
-  ASSERT_EQ(call->getChildAtIndex(0)->getParents().size(), 1);
+  ASSERT_EQ(call->getParent(), nullptr);
+  ASSERT_EQ(call->getChildAtIndex(0)->getParent()!=nullptr, 1);
   ASSERT_TRUE(call->getChildAtIndex(0)->hasParent(call));
-  ASSERT_EQ(call->getChildAtIndex(1)->getParents().size(), 1);
+  ASSERT_EQ(call->getChildAtIndex(1)->getParent()!=nullptr, 1);
   ASSERT_TRUE(call->getChildAtIndex(1)->hasParent(call));
 }
 
@@ -168,8 +168,8 @@ TEST(ChildParentTests, CallArgumentlessConstructor) {  /* NOLINT */
   ASSERT_EQ(call->getChildAtIndex(1), func);
 
   // parents
-  ASSERT_EQ(call->getParents().size(), 0);
-  ASSERT_EQ(call->getChildAtIndex(1)->getParents().size(), 1);
+  ASSERT_EQ(call->getParent(), nullptr);
+  ASSERT_EQ(call->getChildAtIndex(1)->getParent()!=nullptr, 1);
   ASSERT_TRUE(call->getChildAtIndex(1)->hasParent(call));
 }
 
@@ -194,12 +194,12 @@ TEST(ChildParentTests, CallAddChildSuccess) {  /* NOLINT */
   EXPECT_EQ(call->getChildAtIndex(1), func);
 
   // parents
-  EXPECT_EQ(call->getParents().size(), 0);
-  EXPECT_EQ(func->getOnlyParent(), call);
+  EXPECT_EQ(call->getParent(), nullptr);
+  EXPECT_EQ(func->getParent(), call);
   auto paramList = call->getChildAtIndex(0);
-  EXPECT_EQ(paramList->getOnlyParent(), call);
-  EXPECT_EQ(paramList->getChildAtIndex(0)->getOnlyParent(), paramList);
-  EXPECT_EQ(paramList->getChildAtIndex(1)->getOnlyParent(), paramList);
+  EXPECT_EQ(paramList->getParent(), call);
+  EXPECT_EQ(paramList->getChildAtIndex(0)->getParent(), paramList);
+  EXPECT_EQ(paramList->getChildAtIndex(1)->getParent(), paramList);
 }
 
 TEST(ChildParentTests, CallExternal) {  /* NOLINT */
@@ -207,7 +207,7 @@ TEST(ChildParentTests, CallExternal) {  /* NOLINT */
 
   // using AbstractExpr
   ASSERT_EQ(callExternal->AbstractExpr::getChildren().size(), 0);
-  ASSERT_EQ(callExternal->AbstractExpr::getParents().size(), 0);
+  ASSERT_EQ(callExternal->AbstractExpr::getParent(), nullptr);
   ASSERT_EQ(callExternal->AbstractExpr::getMaxNumberChildren(), 0);
 }
 
@@ -225,13 +225,13 @@ class FunctionFixture : public ::testing::Test {
 TEST_F(FunctionFixture, FunctionAddStatement) {  /* NOLINT */
   funcComputeX->addStatement(returnStatement);
   ASSERT_EQ(funcComputeX->getChildren().size(), 2);
-  ASSERT_EQ(returnStatement->getParents().size(), 1);
+  ASSERT_EQ(returnStatement->getParent()!=nullptr, 1);
 }
 
 TEST_F(FunctionFixture, FunctionSupportedInCircuitMode) {  /* NOLINT */
   // Function is circuit-compatible, i.e., supports use of child/parent relationship
   ASSERT_EQ(funcComputeX->getChildren().size(), 2);
-  ASSERT_EQ(returnStatement->getParents().size(), 0);
+  ASSERT_EQ(returnStatement->getParent(), nullptr);
   ASSERT_EQ(funcComputeX->getMaxNumberChildren(), 2);
 }
 
@@ -263,10 +263,10 @@ TEST_F(FunctionParameterFixture, FunctionParameterStandardConstructor) {  /* NOL
   ASSERT_EQ(functionParameter->getChildAtIndex(1), variableThreshold);
 
   // parents
-  ASSERT_EQ(functionParameter->getParents().size(), 0);
-  ASSERT_EQ(functionParameter->getChildAtIndex(0)->getParents().size(), 1);
+  ASSERT_EQ(functionParameter->getParent(), nullptr);
+  ASSERT_EQ(functionParameter->getChildAtIndex(0)->getParent()!=nullptr, 1);
   ASSERT_TRUE(functionParameter->getChildAtIndex(0)->hasParent(functionParameter));
-  ASSERT_EQ(functionParameter->getChildAtIndex(1)->getParents().size(), 1);
+  ASSERT_EQ(functionParameter->getChildAtIndex(1)->getParent()!=nullptr, 1);
   ASSERT_TRUE(functionParameter->getChildAtIndex(1)->hasParent(functionParameter));
 }
 
@@ -279,10 +279,10 @@ TEST_F(FunctionParameterFixture, FunctionParameterAddChildExceptionDatatypeConst
   ASSERT_EQ(functionParameter->getChildAtIndex(1), variableThreshold);
 
   // parents
-  ASSERT_EQ(functionParameter->getParents().size(), 0);
-  ASSERT_EQ(functionParameter->getChildAtIndex(0)->getParents().size(), 1);
+  ASSERT_EQ(functionParameter->getParent(), nullptr);
+  ASSERT_EQ(functionParameter->getChildAtIndex(0)->getParent()!=nullptr, 1);
   ASSERT_TRUE(functionParameter->getChildAtIndex(0)->hasParent(functionParameter));
-  ASSERT_EQ(functionParameter->getChildAtIndex(1)->getParents().size(), 1);
+  ASSERT_EQ(functionParameter->getChildAtIndex(1)->getParent()!=nullptr, 1);
   ASSERT_TRUE(functionParameter->getChildAtIndex(1)->hasParent(functionParameter));
 }
 
@@ -309,9 +309,9 @@ TEST_F(FunctionParameterFixture, FunctionParameter_AddChildSuccess) {  /* NOLINT
   EXPECT_EQ(functionParameter->getChildAtIndex(1), variableSecret);
 
   // parents
-  EXPECT_EQ(functionParameter->getParents().size(), 0);
-  EXPECT_EQ(variableSecret->getParents().size(), 1);
-  EXPECT_EQ(variableSecret->getParents().front(), functionParameter);
+  EXPECT_EQ(functionParameter->getParent(), nullptr);
+  EXPECT_EQ(variableSecret->getParent()!=nullptr, 1);
+  EXPECT_EQ(variableSecret->getParent(), functionParameter);
   EXPECT_TRUE(variableSecret->hasParent(functionParameter));
 
   functionParameter->removeChild(datatype, false);
@@ -323,9 +323,9 @@ TEST_F(FunctionParameterFixture, FunctionParameter_AddChildSuccess) {  /* NOLINT
   EXPECT_EQ(functionParameter->getChildAtIndex(0), datatype2);
 
   // parents
-  EXPECT_EQ(functionParameter->getParents().size(), 0);
-  EXPECT_EQ(datatype2->getParents().size(), 1);
-  EXPECT_EQ(datatype2->getParents().front(), functionParameter);
+  EXPECT_EQ(functionParameter->getParent(), nullptr);
+  EXPECT_EQ(datatype2->getParent()!=nullptr, 1);
+  EXPECT_EQ(datatype2->getParent(), functionParameter);
   EXPECT_TRUE(datatype2->hasParent(functionParameter));
 }
 
@@ -349,10 +349,10 @@ TEST_F(IfStmtFixture, IfStmtThenOnlyConstructor) {  /* NOLINT */
   ASSERT_EQ(ifStmt->getChildAtIndex(1), thenBranch);
 
   // parents
-  ASSERT_EQ(ifStmt->getParents().size(), 0);
-  ASSERT_EQ(ifStmt->getChildAtIndex(0)->getParents().size(), 1);
+  ASSERT_EQ(ifStmt->getParent(), nullptr);
+  ASSERT_EQ(ifStmt->getChildAtIndex(0)->getParent()!=nullptr, 1);
   ASSERT_TRUE(ifStmt->getChildAtIndex(0)->hasParent(ifStmt));
-  ASSERT_EQ(ifStmt->getChildAtIndex(1)->getParents().size(), 1);
+  ASSERT_EQ(ifStmt->getChildAtIndex(1)->getParent()!=nullptr, 1);
   ASSERT_TRUE(ifStmt->getChildAtIndex(1)->hasParent(ifStmt));
 }
 
@@ -366,12 +366,12 @@ TEST_F(IfStmtFixture, IfStmtThenAndElseConstructor) {  /* NOLINT */
   ASSERT_EQ(ifStmt->getChildAtIndex(2), elseBranch);
 
   // parents
-  ASSERT_EQ(ifStmt->getParents().size(), 0);
-  ASSERT_EQ(ifStmt->getChildAtIndex(0)->getParents().size(), 1);
+  ASSERT_EQ(ifStmt->getParent(), nullptr);
+  ASSERT_EQ(ifStmt->getChildAtIndex(0)->getParent()!=nullptr, 1);
   ASSERT_TRUE(ifStmt->getChildAtIndex(0)->hasParent(ifStmt));
-  ASSERT_EQ(ifStmt->getChildAtIndex(1)->getParents().size(), 1);
+  ASSERT_EQ(ifStmt->getChildAtIndex(1)->getParent()!=nullptr, 1);
   ASSERT_TRUE(ifStmt->getChildAtIndex(1)->hasParent(ifStmt));
-  ASSERT_EQ(ifStmt->getChildAtIndex(2)->getParents().size(), 1);
+  ASSERT_EQ(ifStmt->getChildAtIndex(2)->getParent()!=nullptr, 1);
   ASSERT_TRUE(ifStmt->getChildAtIndex(2)->hasParent(ifStmt));
 }
 
@@ -391,7 +391,7 @@ TEST_F(IfStmtFixture, IfStmtAddChildException_TooManyChildrenAdded) {  /* NOLINT
 TEST_F(IfStmtFixture, IfStmtAddChildSuccess) {  /* NOLINT */
   auto ifStmt = new If(condition, thenBranch);
   auto newElseBranch = new Block(new VarAssignm("a", new LiteralInt(1024)));
-  ifStmt->removeChild(ifStmt->getElseBranch(),true);
+  ifStmt->removeChild(ifStmt->getElseBranch(), true);
   ifStmt->addChild(newElseBranch, true);
 
   // children
@@ -404,56 +404,56 @@ TEST_F(IfStmtFixture, IfStmtAddChildSuccess) {  /* NOLINT */
   EXPECT_EQ(ifStmt->getChildAtIndex(2), newElseBranch);
 
   // parents
-  EXPECT_EQ(condition->getParents().size(), 1);
-  EXPECT_EQ(condition->getParents().front(), ifStmt);
-  EXPECT_EQ(thenBranch->getParents().size(), 1);
-  EXPECT_EQ(thenBranch->getParents().front(), ifStmt);
-  EXPECT_EQ(newElseBranch->getParents().size(), 1);
-  EXPECT_EQ(newElseBranch->getParents().front(), ifStmt);
+  EXPECT_EQ(condition->getParent()!=nullptr, 1);
+  EXPECT_EQ(condition->getParent(), ifStmt);
+  EXPECT_EQ(thenBranch->getParent()!=nullptr, 1);
+  EXPECT_EQ(thenBranch->getParent(), ifStmt);
+  EXPECT_EQ(newElseBranch->getParent()!=nullptr, 1);
+  EXPECT_EQ(newElseBranch->getParent(), ifStmt);
 }
 
 TEST(ChildParentTests, LiteralBoolHasNoChildrenOrParents) {  /* NOLINT */
   // Literals should never have any children
   LiteralBool literalBool(true);
   ASSERT_TRUE(literalBool.getChildren().empty());
-  ASSERT_TRUE(literalBool.getParents().empty());
+  ASSERT_EQ(literalBool.getParent(), nullptr);
 
   literalBool.setValue(false);
   ASSERT_TRUE(literalBool.getChildren().empty());
-  ASSERT_TRUE(literalBool.getParents().empty());
+  ASSERT_EQ(literalBool.getParent(), nullptr);
 }
 
 TEST(ChildParentTests, LiteralFloatHasNoChildrenOrParents) {  /* NOLINT */
   // Literals should never have any children
   LiteralFloat literalFloat(true);
   ASSERT_TRUE(literalFloat.getChildren().empty());
-  ASSERT_TRUE(literalFloat.getParents().empty());
+  ASSERT_EQ(literalFloat.getParent(), nullptr);
 
   literalFloat.setValue(false);
   ASSERT_TRUE(literalFloat.getChildren().empty());
-  ASSERT_TRUE(literalFloat.getParents().empty());
+  ASSERT_EQ(literalFloat.getParent(), nullptr);
 }
 
 TEST(ChildParentTests, LiteralIntHasNoChildrenOrParents) {  /* NOLINT */
   // Literals should never have any children
   LiteralInt literalInt(33);
   ASSERT_TRUE(literalInt.getChildren().empty());
-  ASSERT_TRUE(literalInt.getParents().empty());
+  ASSERT_EQ(literalInt.getParent(), nullptr);
 
   literalInt.setValue(111);
   ASSERT_TRUE(literalInt.getChildren().empty());
-  ASSERT_TRUE(literalInt.getParents().empty());
+  ASSERT_EQ(literalInt.getParent(), nullptr);
 }
 
 TEST(ChildParentTests, LiteralStringHasNoChildrenOrParents) {  /* NOLINT */
   // Literals should never have any children
   LiteralString literalString("alpha");
   ASSERT_TRUE(literalString.getChildren().empty());
-  ASSERT_TRUE(literalString.getParents().empty());
+  ASSERT_EQ(literalString.getParent(), nullptr);
 
   literalString.setValue("beta");
   ASSERT_TRUE(literalString.getChildren().empty());
-  ASSERT_TRUE(literalString.getParents().empty());
+  ASSERT_EQ(literalString.getParent(), nullptr);
 }
 
 class LogicalExprFixture : public ::testing::Test {
@@ -483,12 +483,12 @@ TEST_F(LogicalExprFixture, LogicalExprStandardConstructor) {  /* NOLINT */
   ASSERT_EQ(logicalExpr->getChildAtIndex(2), literalIntAnother);
 
   // parents
-  ASSERT_EQ(logicalExpr->getParents().size(), 0);
-  ASSERT_EQ(logicalExpr->getChildAtIndex(0)->getParents().size(), 1);
+  ASSERT_EQ(logicalExpr->getParent(), nullptr);
+  ASSERT_EQ(logicalExpr->getChildAtIndex(0)->getParent()!=nullptr, 1);
   ASSERT_TRUE(logicalExpr->getChildAtIndex(0)->hasParent(logicalExpr));
-  ASSERT_EQ(logicalExpr->getChildAtIndex(1)->getParents().size(), 1);
+  ASSERT_EQ(logicalExpr->getChildAtIndex(1)->getParent()!=nullptr, 1);
   ASSERT_TRUE(logicalExpr->getChildAtIndex(1)->hasParent(logicalExpr));
-  ASSERT_EQ(logicalExpr->getChildAtIndex(2)->getParents().size(), 1);
+  ASSERT_EQ(logicalExpr->getChildAtIndex(2)->getParent()!=nullptr, 1);
   ASSERT_TRUE(logicalExpr->getChildAtIndex(2)->hasParent(logicalExpr));
 }
 
@@ -496,7 +496,7 @@ TEST_F(LogicalExprFixture, LogicalExprEmptyConstructor) {  /* NOLINT */
   ArithmeticExpr logicalExpr;
   ASSERT_EQ(logicalExpr.getChildren().size(), 3);
   ASSERT_EQ(logicalExpr.countChildrenNonNull(), 0);
-  ASSERT_EQ(logicalExpr.getParents().size(), 0);
+  ASSERT_EQ(logicalExpr.getParent(), nullptr);
 }
 
 TEST_F(LogicalExprFixture, LogicalExprOperatorOnlyConstructor) {  /* NOLINT */
@@ -510,8 +510,8 @@ TEST_F(LogicalExprFixture, LogicalExprOperatorOnlyConstructor) {  /* NOLINT */
   ASSERT_EQ(logicalExpr->getChildAtIndex(2), nullptr);
 
   // parents
-  ASSERT_EQ(logicalExpr->getParents().size(), 0);
-  ASSERT_EQ(logicalExpr->getChildAtIndex(1)->getParents().size(), 1);
+  ASSERT_EQ(logicalExpr->getParent(), nullptr);
+  ASSERT_EQ(logicalExpr->getChildAtIndex(1)->getParent()!=nullptr, 1);
   ASSERT_TRUE(logicalExpr->getChildAtIndex(1)->hasParent(logicalExpr));
 }
 
@@ -542,18 +542,18 @@ TEST_F(LogicalExprFixture, LogicalExprAddChildSuccess) {  /* NOLINT */
   EXPECT_EQ(logicalExpr->getChildAtIndex(2), literalBool);
 
   // parents
-  EXPECT_EQ(literalIntAnother->getParents().size(), 1);
-  EXPECT_EQ(literalIntAnother->getParents().front(), logicalExpr);
-  EXPECT_EQ(operatorGreaterEqual->getParents().size(), 1);
-  EXPECT_EQ(operatorGreaterEqual->getParents().front(), logicalExpr);
-  EXPECT_EQ(literalBool->getParents().size(), 1);
-  EXPECT_EQ(literalBool->getParents().front(), logicalExpr);
+  EXPECT_EQ(literalIntAnother->getParent()!=nullptr, 1);
+  EXPECT_EQ(literalIntAnother->getParent(), logicalExpr);
+  EXPECT_EQ(operatorGreaterEqual->getParent()!=nullptr, 1);
+  EXPECT_EQ(operatorGreaterEqual->getParent(), logicalExpr);
+  EXPECT_EQ(literalBool->getParent()!=nullptr, 1);
+  EXPECT_EQ(literalBool->getParent(), logicalExpr);
 }
 
 TEST(ChildParentTests, OperatorHasNoChildrenOrParents) {  /* NOLINT */
   Operator op(LogCompOp::GREATER_EQUAL);
   ASSERT_TRUE(op.getChildren().empty());
-  ASSERT_TRUE(op.getParents().empty());
+  ASSERT_EQ(op.getParent(), nullptr);
 }
 
 class ReturnStatementFixture : public ::testing::Test {
@@ -575,8 +575,8 @@ TEST_F(ReturnStatementFixture, ReturnStatementStandardConstructor) {  /* NOLINT 
   ASSERT_EQ(returnStatement->getChildren().front(), abstractExpr);
 
   // parent
-  ASSERT_EQ(returnStatement->getParents().size(), 0);
-  ASSERT_EQ(returnStatement->getChildAtIndex(0)->getParents().size(), 1);
+  ASSERT_EQ(returnStatement->getParent(), nullptr);
+  ASSERT_EQ(returnStatement->getChildAtIndex(0)->getParent()!=nullptr, 1);
   ASSERT_TRUE(returnStatement->getChildAtIndex(0)->hasParent(returnStatement));
 }
 
@@ -584,7 +584,7 @@ TEST_F(ReturnStatementFixture, ReturnStatementEmptyConstructor) {  /* NOLINT */
   Return returnStatement;
   ASSERT_EQ(returnStatement.getChildren().size(), 0);
   ASSERT_EQ(returnStatement.countChildrenNonNull(), 0);
-  ASSERT_EQ(returnStatement.getParents().size(), 0);
+  ASSERT_EQ(returnStatement.getParent(), nullptr);
 }
 
 TEST_F(ReturnStatementFixture, ReturnStatementAddSecondChild) {  /* NOLINT */
@@ -600,8 +600,8 @@ TEST_F(ReturnStatementFixture, ReturnStatementAddChildSuccess) {  /* NOLINT */
   EXPECT_EQ(returnStatement->getReturnExpressions().front(), abstractExprOther);
   EXPECT_EQ(returnStatement->getChildren().size(), 1);
   EXPECT_EQ(returnStatement->getChildren().front(), abstractExprOther);
-  EXPECT_EQ(abstractExprOther->getParents().size(), 1);
-  EXPECT_EQ(abstractExprOther->getParents().front(), returnStatement);
+  EXPECT_EQ(abstractExprOther->getParent()!=nullptr, 1);
+  EXPECT_EQ(abstractExprOther->getParent(), returnStatement);
 }
 
 class UnaryExprFixture : public ::testing::Test {
@@ -625,7 +625,7 @@ TEST_F(UnaryExprFixture, UnaryExprStandardConstructor) {  /* NOLINT */
   ASSERT_EQ(unaryExpr->getChildAtIndex(1), literalBoolTrue);
 
   // parents
-  ASSERT_EQ(unaryExpr->getParents().size(), 0);
+  ASSERT_EQ(unaryExpr->getParent(), nullptr);
   ASSERT_TRUE(unaryExpr->getChildAtIndex(0)->hasParent(unaryExpr));
   ASSERT_TRUE(unaryExpr->getChildAtIndex(1)->hasParent(unaryExpr));
 }
@@ -654,8 +654,8 @@ TEST_F(UnaryExprFixture, UnaryExprtion_AddChildSuccess) {  /* NOLINT */
   EXPECT_TRUE(reinterpret_cast<Operator *>(unaryExpr->getChildAtIndex(0))->equals(newOperator->getOperatorSymbol()));
 
   // parents
-  EXPECT_EQ(unaryExpr->getParents().size(), 0);
-  EXPECT_EQ(unaryExpr->getChildAtIndex(0)->getParents().size(), 1);
+  EXPECT_EQ(unaryExpr->getParent(), nullptr);
+  EXPECT_EQ(unaryExpr->getChildAtIndex(0)->getParent()!=nullptr, 1);
   EXPECT_TRUE(unaryExpr->getChildAtIndex(0)->hasParent(unaryExpr));
 }
 
@@ -678,8 +678,8 @@ TEST_F(VarAssignmFixture, VarAssignmStandardConstructor) {  /* NOLINT */
   ASSERT_EQ(varAssignm->getChildAtIndex(0), literalInt222);
 
   // parents
-  ASSERT_EQ(varAssignm->getParents().size(), 0);
-  ASSERT_EQ(varAssignm->getChildAtIndex(0)->getParents().size(), 1);
+  ASSERT_EQ(varAssignm->getParent(), nullptr);
+  ASSERT_EQ(varAssignm->getChildAtIndex(0)->getParent()!=nullptr, 1);
   ASSERT_TRUE(varAssignm->getChildAtIndex(0)->hasParent(varAssignm));
 }
 
@@ -705,8 +705,8 @@ TEST_F(VarAssignmFixture, VarAssignmAddChildSuccess) {  /* NOLINT */
   ASSERT_EQ(varAssignm->getChildAtIndex(0), newChild);
 
   // parents
-  ASSERT_EQ(varAssignm->getParents().size(), 0);
-  ASSERT_EQ(varAssignm->getChildAtIndex(0)->getParents().size(), 1);
+  ASSERT_EQ(varAssignm->getParent(), nullptr);
+  ASSERT_EQ(varAssignm->getChildAtIndex(0)->getParent()!=nullptr, 1);
   ASSERT_TRUE(varAssignm->getChildAtIndex(0)->hasParent(varAssignm));
 }
 
@@ -737,10 +737,10 @@ class VarDeclFixture : public ::testing::Test {
     ASSERT_EQ(varDeclaration->getChildAtIndex(1), expectedValue);
 
     // parents
-    ASSERT_EQ(varDeclaration->getParents().size(), 0);
-    ASSERT_EQ(varDeclaration->getChildAtIndex(0)->getParents().size(), 1);
+    ASSERT_EQ(varDeclaration->getParent(), nullptr);
+    ASSERT_EQ(varDeclaration->getChildAtIndex(0)->getParent()!=nullptr, 1);
     ASSERT_TRUE(varDeclaration->getChildAtIndex(0)->hasParent(varDeclaration));
-    ASSERT_EQ(varDeclaration->getChildAtIndex(1)->getParents().size(), 1);
+    ASSERT_EQ(varDeclaration->getChildAtIndex(1)->getParent()!=nullptr, 1);
     ASSERT_TRUE(varDeclaration->getChildAtIndex(1)->hasParent(varDeclaration));
   }
 };
@@ -787,7 +787,7 @@ TEST_F(VarDeclFixture, VarDeclStringConstructor) {  /* NOLINT */
 TEST(ChildParentTests, Variable) {  /* NOLINT */
   Variable variable("myInt");
   ASSERT_TRUE(variable.getChildren().empty());
-  ASSERT_TRUE(variable.getParents().empty());
+  ASSERT_EQ(variable.getParent(), nullptr);
 }
 
 class WhileStmtFixture : public ::testing::Test {
@@ -813,9 +813,9 @@ TEST_F(WhileStmtFixture, WhileStandardConstructor) {  /* NOLINT */
   EXPECT_EQ(whileStmt->getChildAtIndex(1), whileBlock);
 
   // parents
-  EXPECT_EQ(whileCondition->getParentsNonNull().size(), 1);
+  EXPECT_TRUE(whileCondition->hasParent());
   EXPECT_TRUE(whileCondition->hasParent(whileStmt));
-  EXPECT_EQ(whileBlock->getParentsNonNull().size(), 1);
+  EXPECT_TRUE(whileBlock->hasParent());
   EXPECT_TRUE(whileBlock->hasParent(whileStmt));
 }
 
@@ -858,14 +858,14 @@ TEST_F(ForLoopFixture, ForStmtStandardConstructor) {  /* NOLINT */
   EXPECT_EQ(forStmt->getChildAtIndex(3), forBody);
 
   // parents
-  EXPECT_EQ(forStmt->getParents().size(), 0);
-  EXPECT_EQ(forStmt->getChildAtIndex(0)->getParentsNonNull().size(), 1);
+  EXPECT_EQ(forStmt->getParent(), nullptr);
+  EXPECT_TRUE(forStmt->getChildAtIndex(0)->hasParent());
   EXPECT_TRUE(forStmt->getChildAtIndex(0)->hasParent(forStmt));
-  EXPECT_EQ(forStmt->getChildAtIndex(1)->getParentsNonNull().size(), 1);
+  EXPECT_TRUE(forStmt->getChildAtIndex(1)->hasParent());
   EXPECT_TRUE(forStmt->getChildAtIndex(1)->hasParent(forStmt));
-  EXPECT_EQ(forStmt->getChildAtIndex(2)->getParentsNonNull().size(), 1);
+  EXPECT_TRUE(forStmt->getChildAtIndex(2)->hasParent());
   EXPECT_TRUE(forStmt->getChildAtIndex(2)->hasParent(forStmt));
-  EXPECT_EQ(forStmt->getChildAtIndex(3)->getParentsNonNull().size(), 1);
+  EXPECT_TRUE(forStmt->getChildAtIndex(3)->hasParent());
   EXPECT_TRUE(forStmt->getChildAtIndex(3)->hasParent(forStmt));
 }
 
@@ -878,13 +878,13 @@ TEST_F(ForLoopFixture, ForStmtAddChildSuccess) {  /* NOLINT */
   auto forStmt = new For(forInitializer, forCondition, forUpdate, forBody);
   forStmt->removeChild(forBody);
 
-  EXPECT_EQ(forBody->getParentsNonNull().size(), 0);
+  EXPECT_TRUE(forBody->hasParent());
   EXPECT_EQ(forStmt->getChildrenNonNull().size(), 3);
 
   auto newChild = new VarAssignm("x", new ArithmeticExpr(new Variable("x"), MULTIPLICATION, new LiteralInt(2)));
   forStmt->addChild(newChild);
   EXPECT_EQ(forStmt->getChildAtIndex(3), newChild);
-  EXPECT_EQ(newChild->getParentsNonNull().size(), 1);
+  EXPECT_TRUE(newChild->hasParent());
   EXPECT_TRUE(newChild->hasParent(forStmt));
 }
 
@@ -901,10 +901,10 @@ TEST(OperatorExpr, OperatorExprStandardConstructor) {  /* NOLINT */
   EXPECT_EQ(*opExpr->getChildAtIndex(1)->castTo<LiteralInt>(), *new LiteralInt(447));
 
   // parents
-  EXPECT_EQ(opExpr->getParents().size(), 0);
-  EXPECT_EQ(opExpr->getChildAtIndex(0)->getParentsNonNull().size(), 1);
+  EXPECT_EQ(opExpr->getParent(), nullptr);
+  EXPECT_TRUE(opExpr->getChildAtIndex(0)->hasParent());
   EXPECT_TRUE(opExpr->getChildAtIndex(0)->hasParent(opExpr));
-  EXPECT_EQ(opExpr->getChildAtIndex(1)->getParentsNonNull().size(), 1);
+  EXPECT_TRUE(opExpr->getChildAtIndex(1)->hasParent());
   EXPECT_TRUE(opExpr->getChildAtIndex(1)->hasParent(opExpr));
 }
 
@@ -917,7 +917,7 @@ TEST(OperatorExpr, OperatorExprSingleArgConstructor) {  /* NOLINT */
   EXPECT_EQ(opExpr->getChildAtIndex(0), opSubtraction);
 
   // parents
-  EXPECT_EQ(opExpr->getParents().size(), 0);
-  EXPECT_EQ(opExpr->getChildAtIndex(0)->getParentsNonNull().size(), 1);
+  EXPECT_EQ(opExpr->getParent(), nullptr);
+  EXPECT_TRUE(opExpr->getChildAtIndex(0)->hasParent());
   EXPECT_TRUE(opExpr->getChildAtIndex(0)->hasParent(opExpr));
 }

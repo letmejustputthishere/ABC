@@ -30,7 +30,7 @@ int MultiplicativeDepthCalculator::getMultDepthL(AbstractNode *n) {
   }
 
   // we need to be aware whether this node (and its whole AST, hopefully) is reversed or not
-  auto nextNodesToConsider = n->isReversed ? n->getParentsNonNull() : n->getChildrenNonNull();
+  auto nextNodesToConsider = n->isReversed ? std::vector<AbstractNode*>(1,n->getParent()) : n->getChildrenNonNull();
 
   // we need to compute the multiplicative depth
   // trivial case: v is a leaf node, i.e., does not have any parent node
@@ -63,7 +63,7 @@ int MultiplicativeDepthCalculator::getReverseMultDepthR(AbstractNode *n) {
   }
 
   // we need to be aware whether this node (and its whole AST, hopefully) is reversed or not
-  auto nextNodesToConsider = n->isReversed ? n->getChildrenNonNull() : n->getParentsNonNull();
+  auto nextNodesToConsider = n->isReversed ? n->getChildrenNonNull() : std::vector<AbstractNode*>(1,n->getParent());
 
   // we need to compute the reverse multiplicative depth
   if (nextNodesToConsider.empty()) {
