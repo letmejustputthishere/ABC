@@ -14,7 +14,7 @@ Transpose::Transpose(AbstractExpr *operand) {
 }
 
 AbstractExpr *Transpose::getOperand() const {
-  return dynamic_cast<AbstractExpr *>(getChildAtIndex(0));
+  return dynamic_cast<AbstractExpr *>(children.at(0));
 }
 
 Transpose *Transpose::clone(bool keepOriginalUniqueNodeId) const {

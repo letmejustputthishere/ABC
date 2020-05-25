@@ -150,10 +150,6 @@ int AbstractNode::getMaxNumberChildren() {
   return 0;
 }
 
-AbstractNode *AbstractNode::getChildAtIndex(int idx) const {
-  return children.at(idx);
-}
-
 void AbstractNode::replaceChild(AbstractNode *originalChild, AbstractNode *newChild) {
   //TODO: Make this more efficient
   auto pos = std::find(children.begin(), children.end(), originalChild);
@@ -172,6 +168,10 @@ void AbstractNode::replaceChild(AbstractNode *originalChild, AbstractNode *newCh
     newChild->setParent(this);
   }
 }
+
+bool AbstractNode::hasChild(const AbstractNode *node) const {
+  return std::find(children.begin(), children.end(), node)!=children.end();
+};
 
 bool AbstractNode::hasParent(AbstractNode *parentNode) {
   return getParent()==parentNode;

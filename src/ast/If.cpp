@@ -28,15 +28,15 @@ std::string If::getNodeType() const {
 }
 
 AbstractExpr *If::getCondition() const {
-  return getChildAtIndex(0)->castTo<AbstractExpr>();
+  return children.at(0)->castTo<AbstractExpr>();
 }
 
 Block *If::getThenBranch() const {
-  return getChildAtIndex(1) ? getChildAtIndex(1)->castTo<Block>() : nullptr;
+  return children.at(1) ? children.at(1)->castTo<Block>() : nullptr;
 }
 
 Block *If::getElseBranch() const {
-  return getChildAtIndex(2) ? getChildAtIndex(2)->castTo<Block>() : nullptr;
+  return children.at(2) ? children.at(2)->castTo<Block>() : nullptr;
 }
 
 If::~If() = default;

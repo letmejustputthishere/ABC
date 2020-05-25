@@ -75,11 +75,11 @@ const std::string &VarDecl::getIdentifier() const {
 }
 
 Datatype *VarDecl::getDatatype() const {
-  return getChildAtIndex(0)->castTo<Datatype>();
+  return children.at(0)->castTo<Datatype>();
 }
 
 AbstractExpr *VarDecl::getInitializer() const {
-  auto initializer = getChildAtIndex(1);
+  auto initializer = children.at(1);
   if (initializer==nullptr)
     return nullptr;
   return initializer->castTo<AbstractExpr>();

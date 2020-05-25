@@ -134,10 +134,8 @@ class AbstractNode {
   /// \return An integer indicating the number of non-nullptr children nodes.
   [[nodiscard]] int countChildrenNonNull() const;
 
-  /// Returns the child at the given index.
-  /// \param idx The position of the children in the AbstractNode::children vector.
-  /// \return The child at the given index of the children vector, or a nullptr if there is no child at this position.
-  [[nodiscard]] AbstractNode *getChildAtIndex(int idx) const;
+  /// Does this node have a certain child?
+  bool hasChild(const AbstractNode* node) const;
 
   /** @} */ // End of children group
 

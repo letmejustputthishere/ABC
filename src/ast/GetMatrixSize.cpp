@@ -62,11 +62,11 @@ std::vector<Variable *> GetMatrixSize::getVariables() {
 }
 
 AbstractExpr *GetMatrixSize::getMatrixOperand() const {
-  return dynamic_cast<AbstractExpr *>(getChildAtIndex(0));
+  return dynamic_cast<AbstractExpr *>(children.at(0));
 }
 
 AbstractExpr *GetMatrixSize::getDimensionParameter() const {
-  return dynamic_cast<AbstractExpr *>(getChildAtIndex(1));
+  return dynamic_cast<AbstractExpr *>(children.at(1));
 }
 
 GetMatrixSize::~GetMatrixSize() = default;

@@ -35,11 +35,11 @@ Call::Call(std::vector<FunctionParameter *> parameterValuesForCalledFunction, Fu
 }
 
 Function *Call::getFunc() const {
-  return dynamic_cast<Function *>(getChildAtIndex(1));
+  return dynamic_cast<Function *>(children.at(1));
 }
 
 std::vector<FunctionParameter *> Call::getArguments() const {
-  return dynamic_cast<ParameterList *>(getChildAtIndex(0))->getParameters();
+  return dynamic_cast<ParameterList *>(children.at(0))->getParameters();
 }
 
 AbstractExpr *Call::clone(bool keepOriginalUniqueNodeId) const{
@@ -64,7 +64,7 @@ int Call::getMaxNumberChildren() {
 }
 
 ParameterList *Call::getParameterList() const {
-  return dynamic_cast<ParameterList *>(getChildAtIndex(0));
+  return dynamic_cast<ParameterList *>(children.at(0));
 }
 std::vector<std::string> Call::getVariableIdentifiers() {
   std::vector<std::string> results;

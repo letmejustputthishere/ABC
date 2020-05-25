@@ -55,7 +55,7 @@ void OperatorExpr::addOperand(AbstractExpr *operand) {
 
 void OperatorExpr::setOperator(Operator *op) {
   // child at index 0 is always the operator
-  auto curOperator = getChildAtIndex(0);
+  auto curOperator = children.at(0);
   replaceChild(curOperator, op);
   delete curOperator;
 }
@@ -176,7 +176,7 @@ bool OperatorExpr::isLogicalExpr() const {
 }
 
 Operator *OperatorExpr::getOperator() const {
-  return dynamic_cast<Operator *>(getChildAtIndex(0));
+  return dynamic_cast<Operator *>(children.at(0));
 }
 
 bool OperatorExpr::isArithmeticExpr() const {
@@ -214,14 +214,14 @@ AbstractExpr *OperatorExpr::getRight() const {
   if (getOperands().size() > 2) {
     throw std::logic_error("OperatorExpr::getRight() only supported for expressions with two operands!");
   }
-  return dynamic_cast<AbstractExpr *>(getChildAtIndex(2));
+  return dynamic_cast<AbstractExpr *>(children.at(2));
 }
 
 AbstractExpr *OperatorExpr::getLeft() const {
   if (getOperands().size() > 2) {
     throw std::logic_error("OperatorExpr::getLeft() only supported for expressions with two operands!");
   }
-  return dynamic_cast<AbstractExpr *>(getChildAtIndex(1));
+  return dynamic_cast<AbstractExpr *>(children.at(1));
 }
 
 void OperatorExpr::replaceChild(AbstractNode *originalChild, AbstractNode *newChildToBeAdded) {

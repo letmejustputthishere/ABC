@@ -34,7 +34,7 @@ std::string FunctionParameter::getNodeType() const {
 }
 
 AbstractExpr *FunctionParameter::getValue() const {
-  return dynamic_cast<AbstractExpr * >(getChildAtIndex(1));
+  return dynamic_cast<AbstractExpr * >(children.at(1));
 }
 
 FunctionParameter::FunctionParameter(Datatype *datatype, AbstractExpr *value) {
@@ -46,7 +46,7 @@ FunctionParameter::FunctionParameter(const std::string &datatypeEnumString, Abst
 }
 
 Datatype *FunctionParameter::getDatatype() const {
-  return dynamic_cast<Datatype * >(getChildAtIndex(0));
+  return dynamic_cast<Datatype * >(children.at(0));
 }
 
 std::vector<std::string> FunctionParameter::getVariableIdentifiers() {

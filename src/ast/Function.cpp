@@ -11,7 +11,7 @@ void Function::addParameter(FunctionParameter *param) {
   if (children.empty()) {
     addChild(new ParameterList({param}));
   } else {
-    dynamic_cast<ParameterList *>(getChildAtIndex(0))->addChild(param);
+    dynamic_cast<ParameterList *>(children.at(0))->addChild(param);
   }
 }
 
@@ -73,7 +73,7 @@ std::string Function::getNodeType() const {
 }
 
 void Function::setParameterList(ParameterList *paramsVec) {
-  if (!children.empty()) this->removeChild(getChildAtIndex(0), false);
+  if (!children.empty()) this->removeChild(children.at(0), false);
   addChild(paramsVec);
 }
 
@@ -87,15 +87,15 @@ Function *Function::clone(bool keepOriginalUniqueNodeId) const {
 
 std::vector<FunctionParameter *> Function::getParameters() const {
   return children.empty() ? std::vector<FunctionParameter *>()
-                          : dynamic_cast<ParameterList *>(getChildAtIndex(0))->getParameters();
+                          : dynamic_cast<ParameterList *>(children.at(0))->getParameters();
 }
 
 ParameterList *Function::getParameterList() const {
-  return dynamic_cast<ParameterList *>(getChildAtIndex(0));
+  return dynamic_cast<ParameterList *>(children.at(0));
 }
 
 Block *Function::getBody() const {
-  return dynamic_cast<Block *>(getChildAtIndex(1));
+  return dynamic_cast<Block *>(children.at(1));
 }
 
 Function::Function(std::string functionName,

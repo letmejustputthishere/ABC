@@ -30,7 +30,7 @@ std::string MatrixAssignm::toString(bool printChildren) const {
 }
 
 MatrixElementRef *MatrixAssignm::getAssignmTarget() const {
-  return dynamic_cast<MatrixElementRef *>(getChildAtIndex(0));
+  return dynamic_cast<MatrixElementRef *>(children.at(0));
 }
 
 std::string MatrixAssignm::getAssignmTargetString() const {
@@ -53,7 +53,7 @@ std::string MatrixAssignm::getAssignmTargetString() const {
 }
 
 AbstractExpr *MatrixAssignm::getValue() const {
-  return dynamic_cast<AbstractExpr *>(getChildAtIndex(1));
+  return dynamic_cast<AbstractExpr *>(children.at(1));
 }
 
 AbstractNode *MatrixAssignm::clone(bool keepOriginalUniqueNodeId) const {

@@ -10,6 +10,7 @@
 #include "ast_opt/ast/Block.h"
 #include "ast_opt/ast/VarAssignm.h"
 #include "ast_opt/ast/For.h"
+#include "ast_opt/ast/If.h"
 #include "ast_opt/ast/MatrixAssignm.h"
 #include "AstTestingGenerator.h"
 #include "gtest/gtest.h"
@@ -189,21 +190,21 @@ TEST_F(SecretTaintingFixture, simpleAst_multipleStatementsTainted) { /* NOLINT *
   // VarDecl_17 + ArithmeticExpr_15 and lhs
   auto varDecl = dynamic_cast<VarDecl *>(function->getBodyStatements()[0]);
   addNodeToExpectedTaintedNodes(varDecl);
-  auto arithExpr15 = dynamic_cast<ArithmeticExpr*>(varDecl->getInitializer());
+  auto arithExpr15 = dynamic_cast<ArithmeticExpr *>(varDecl->getInitializer());
   addNodeToExpectedTaintedNodes(arithExpr15);
   addNodeToExpectedTaintedNodes(arithExpr15->getLeft());
 
   // VarAssignm_23 + expr + lhs
   auto varAssignm = dynamic_cast<VarAssignm *>(function->getBodyStatements()[1]);
   addNodeToExpectedTaintedNodes(varAssignm);
-  auto arithExpr21 = dynamic_cast<ArithmeticExpr*>(varAssignm->getValue());
+  auto arithExpr21 = dynamic_cast<ArithmeticExpr *>(varAssignm->getValue());
   addNodeToExpectedTaintedNodes(arithExpr21);
   addNodeToExpectedTaintedNodes(arithExpr21->getLeft());
 
   // Return_29 + expr + lhs
-  auto returnStmt = dynamic_cast<Return*>(function->getBodyStatements()[2]);
+  auto returnStmt = dynamic_cast<Return *>(function->getBodyStatements()[2]);
   addNodeToExpectedTaintedNodes(returnStmt);
-  auto arithExpr27 = dynamic_cast<ArithmeticExpr*>(returnStmt->getReturnExpressions()[0]);
+  auto arithExpr27 = dynamic_cast<ArithmeticExpr *>(returnStmt->getReturnExpressions()[0]);
   addNodeToExpectedTaintedNodes(arithExpr27);
   addNodeToExpectedTaintedNodes(arithExpr27->getLeft());
 
@@ -293,7 +294,7 @@ TEST_F(SecretTaintingFixture, complexAst_multipleNonSequentialStatementsTainted)
 
   // Return_56 , arith expr +  rhs
   addNodeToExpectedTaintedNodes(func->getBodyStatements().at(2));
-  auto arithExpr = dynamic_cast<ArithmeticExpr*>(func->getBodyStatements().at(2)->getChildren()[0]);
+  auto arithExpr = dynamic_cast<ArithmeticExpr *>(func->getBodyStatements().at(2)->getChildren()[0]);
   addNodeToExpectedTaintedNodes(arithExpr);
   addNodeToExpectedTaintedNodes(arithExpr->getRight());
 
@@ -358,14 +359,16 @@ TEST_F(SecretTaintingFixture, unsupportedStatement_If) {  /* NOLINT */
   expectedTaintedNodeIds.insert(function->getBody()->getUniqueNodeId());
 
   // If_21
-  expectedTaintedNodeIds.insert(function->getBody()->getChildAtIndex(1)->getUniqueNodeId());
+  auto if_21 = function->getBody()->getStatements().at(1)->castTo<If>();
+  expectedTaintedNodeIds.insert(if_21->getUniqueNodeId());
 
   // LogicalExpr_13
-  expectedTaintedNodeIds.insert(function->getBody()->getChildAtIndex(1)->getChildAtIndex(0)->getUniqueNodeId());
+  auto logicalExpr_13 = if_21->getCondition()->castTo<LogicalExpr>();
+  expectedTaintedNodeIds.insert(logicalExpr_13->getUniqueNodeId());
 
   // Variable_10
   expectedTaintedNodeIds
-      .insert(function->getBody()->getChildAtIndex(1)->getChildAtIndex(0)->getChildAtIndex(0)->getUniqueNodeId());
+      .insert(logicalExpr_13->getLeft()->getUniqueNodeId());
 
   // check tainted status
   // - make sure that the number of expected tainted nodes and the actual number of tainted nodes equals

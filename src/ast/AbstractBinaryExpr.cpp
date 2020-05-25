@@ -9,15 +9,15 @@ void AbstractBinaryExpr::setAttributes(AbstractExpr *leftOperand, Operator *oper
 }
 
 AbstractExpr *AbstractBinaryExpr::getLeft() const {
-  return dynamic_cast<AbstractExpr * >(getChildAtIndex(0));
+  return dynamic_cast<AbstractExpr * >(children[0]);
 }
 
 Operator *AbstractBinaryExpr::getOperator() const {
-  return dynamic_cast<Operator *>(getChildAtIndex(1));
+  return dynamic_cast<Operator *>(children[1]);
 }
 
 AbstractExpr *AbstractBinaryExpr::getRight() const {
-  return dynamic_cast<AbstractExpr * >(getChildAtIndex(2));
+  return dynamic_cast<AbstractExpr * >(children[2]);
 }
 
 int AbstractBinaryExpr::getMaxNumberChildren() {

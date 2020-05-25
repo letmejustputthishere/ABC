@@ -18,19 +18,19 @@ For::For(AbstractStatement *initializer,
 }
 
 Block *For::getInitializer() const {
-  return dynamic_cast<Block *>(getChildAtIndex(0));
+  return dynamic_cast<Block *>(children.at(0));
 }
 
 AbstractExpr *For::getCondition() const {
-  return dynamic_cast<AbstractExpr *>(getChildAtIndex(1));
+  return dynamic_cast<AbstractExpr *>(children.at(1));
 }
 
 Block *For::getUpdate() const {
-  return dynamic_cast<Block *>(getChildAtIndex(2));
+  return dynamic_cast<Block *>(children.at(2));
 }
 
 Block *For::getBody() const {
-  return dynamic_cast<Block *>(getChildAtIndex(3));
+  return dynamic_cast<Block *>(children.at(3));
 }
 
 void For::setAttributes(AbstractStatement *initializer,

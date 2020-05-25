@@ -19,11 +19,11 @@ void While::accept(Visitor &v) {
 }
 
 AbstractExpr *While::getCondition() const {
-  return dynamic_cast<AbstractExpr *>(getChildAtIndex(0));
+  return dynamic_cast<AbstractExpr *>(children.at(0));
 }
 
 AbstractStatement *While::getBody() const {
-  return dynamic_cast<AbstractStatement *>(getChildAtIndex(1));
+  return dynamic_cast<AbstractStatement *>(children.at(1));
 }
 
 std::string While::getNodeType() const {

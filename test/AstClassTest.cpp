@@ -2,6 +2,7 @@
 #include "ast_opt/ast/Ast.h"
 #include "ast_opt/ast/Function.h"
 #include "ast_opt/ast/ArithmeticExpr.h"
+#include "ast_opt/ast/VarAssignm.h"
 #include "gtest/gtest.h"
 
 class AstTestFixture : public ::testing::Test {
@@ -23,17 +24,17 @@ TEST_F(AstTestFixture, deleteNode_deleteSingleLeafNodeOnly) { /* NOLINT */
   auto func = dynamic_cast<Function *>(ast.getRootNode());
   ASSERT_NE(func, nullptr);
   auto arithmeticExpr =
-      dynamic_cast<ArithmeticExpr *>(func->getBodyStatements().at(0)->getChildAtIndex(1)->getChildAtIndex(2));
+      dynamic_cast<ArithmeticExpr *>(func->getBodyStatements().at(0)->castTo<VarAssignm>()->getValue());
   ASSERT_NE(arithmeticExpr, nullptr);
 
   // retrieve the deletion target -> variable of the arithmetic expression
-  auto variable = arithmeticExpr->getChildAtIndex(0);
+  auto variable = static_cast<AbstractNode*>(arithmeticExpr->getLeft());
   ASSERT_NE(variable, nullptr);
   ASSERT_EQ(variable->getParent(), arithmeticExpr);
 
   // delete node and verify deletion success
   ast.deleteNode(&variable);
-  ASSERT_EQ(arithmeticExpr->getChildAtIndex(0), nullptr);
+  ASSERT_EQ(arithmeticExpr->getLeft(), nullptr);
   ASSERT_EQ(variable, nullptr);
 }
 
@@ -41,8 +42,8 @@ TEST_F(AstTestFixture, deleteNode_deleteRecursiveSubtreeNonEmpty) { /* NOLINT */
   // retrieve the arithmetic expression of interest
   auto func = dynamic_cast<Function *>(ast.getRootNode());
   ASSERT_NE(func, nullptr);
-  auto arithmeticExprParent = func->getBodyStatements().at(0)->getChildAtIndex(1);
-  auto arithmeticExpr = dynamic_cast<ArithmeticExpr *>(arithmeticExprParent->getChildAtIndex(2));
+  auto arithmeticExprParent = func->getBodyStatements().at(0)->castTo<VarAssignm>()->getValue()->castTo<ArithmeticExpr>();
+  auto arithmeticExpr = dynamic_cast<ArithmeticExpr *>(arithmeticExprParent->getRight());
   ASSERT_NE(arithmeticExpr, nullptr);
 
   // save and check node's children
@@ -55,7 +56,7 @@ TEST_F(AstTestFixture, deleteNode_deleteRecursiveSubtreeNonEmpty) { /* NOLINT */
   ast.deleteNode(&arithmeticExprPtr, true);
   // verify that ArithmeticExpr was deleted, also from its parent
   ASSERT_EQ(arithmeticExprPtr, nullptr);
-  ASSERT_EQ(arithmeticExprParent->getChildAtIndex(2), nullptr);
+  ASSERT_EQ(arithmeticExprParent->getRight(), nullptr);
   //TODO: verify that children are deleted
 }
 
@@ -67,17 +68,17 @@ TEST_F(AstTestFixture, deleteNode_deleteRecursiveSubtreeEmpty) { /* NOLINT */
   auto func = dynamic_cast<Function *>(ast.getRootNode());
   ASSERT_NE(func, nullptr);
   auto arithmeticExpr =
-      dynamic_cast<ArithmeticExpr *>(func->getBodyStatements().at(0)->getChildAtIndex(1)->getChildAtIndex(2));
+      dynamic_cast<ArithmeticExpr *>(func->getBodyStatements().at(0)->castTo<VarAssignm>()->getValue()->castTo<ArithmeticExpr>()->getRight());
   ASSERT_NE(arithmeticExpr, nullptr);
 
   // retrieve the deletion target -> variable of the arithmetic expression
-  auto variable = arithmeticExpr->getChildAtIndex(0);
+  auto variable = static_cast<AbstractNode*>(arithmeticExpr->getLeft());
   ASSERT_NE(variable, nullptr);
   ASSERT_EQ(variable->getParent(), arithmeticExpr);
 
   // delete node and verify deletion success
   ast.deleteNode(&variable, true);
-  ASSERT_EQ(arithmeticExpr->getChildAtIndex(0), nullptr);
+  ASSERT_EQ(arithmeticExpr->getLeft(), nullptr);
   ASSERT_EQ(variable, nullptr);
 }
 
@@ -88,8 +89,8 @@ TEST_F(AstTestFixture, deleteNode_ChildrenExisting) { /* NOLINT */
   // retrieve the arithmetic expression of interest
   auto func = dynamic_cast<Function *>(ast.getRootNode());
   ASSERT_NE(func, nullptr);
-  auto arithmeticExprParent = func->getBodyStatements().at(0)->getChildAtIndex(1);
-  auto arithmeticExpr = dynamic_cast<ArithmeticExpr *>(arithmeticExprParent->getChildAtIndex(2));
+  auto arithmeticExprParent = func->getBodyStatements().at(0)->castTo<VarAssignm>()->getValue()->castTo<ArithmeticExpr>();
+  auto arithmeticExpr = dynamic_cast<ArithmeticExpr *>(arithmeticExprParent->getRight());
   ASSERT_NE(arithmeticExpr, nullptr);
 
   // save and check node's children
@@ -106,7 +107,7 @@ TEST_F(AstTestFixture, deleteNode_ChildrenExisting) { /* NOLINT */
 
   // verify that ArithmeticExpr was not deleted, also from its parent
   ASSERT_NE(arithmeticExprPtr, nullptr);
-  ASSERT_EQ(arithmeticExprParent->getChildAtIndex(2), arithmeticExpr);
+  ASSERT_TRUE(arithmeticExprParent->hasChild(arithmeticExpr));
   // verify that children are deleted
   ASSERT_EQ(arithmeticExpr->countChildrenNonNull(), arithmeticExprNumChildren);
 }

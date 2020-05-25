@@ -11,7 +11,7 @@ Rotate::Rotate(AbstractExpr *vector, int rotationFactor) {
 Rotate::Rotate() = default;
 
 AbstractExpr *Rotate::getRotationFactor() const {
-  return dynamic_cast<AbstractExpr *>(getChildAtIndex(1));
+  return dynamic_cast<AbstractExpr *>(children.at(1));
 }
 
 int Rotate::getMaxNumberChildren() {
@@ -35,7 +35,7 @@ AbstractNode *Rotate::cloneFlat() {
 }
 
 AbstractExpr *Rotate::getOperand() const {
-  return dynamic_cast<AbstractExpr *>(getChildAtIndex(0));
+  return dynamic_cast<AbstractExpr *>(children.at(0));
 }
 
 std::string Rotate::getNodeType() const {
