@@ -27,6 +27,12 @@ class If : public AbstractStatement {
 
   [[nodiscard]] Block * getElseBranch() const;
 
+  void setCondition(AbstractExpr* newCondition);
+
+  void setThenBranch(Block* newThenBranch);
+
+  void setElseBranch(Block* newElseBranch);
+
   int getMaxNumberChildren() override;
 
   void setAttributes(AbstractExpr *condition, AbstractStatement *thenBranch, AbstractStatement *elseBranch);

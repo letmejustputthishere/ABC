@@ -47,7 +47,7 @@ class ArithmeticExpr : public AbstractBinaryExpr {
     if(children.empty()) {
       children.push_back(left);
     } else {
-      removeChild(children[0]);
+      //TODO: Remove old
       children[0] = left;
       left->setParent(this);
     }

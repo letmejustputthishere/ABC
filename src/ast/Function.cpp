@@ -81,8 +81,14 @@ std::string Function::getNodeType() const {
 }
 
 void Function::setParameterList(ParameterList *paramsVec) {
-  if (!children.empty()) this->removeChild(children.at(0), false);
-  children[0] = paramsVec;
+  if(children.empty()) {
+    children.push_back(paramsVec);
+  } else if(children[0]) {
+    //TODO: Deletion ~children[0]
+  } else {
+    // children[0] exists but is a nullptr
+    children[0] = paramsVec;
+  }
   paramsVec->setParent(this);
 }
 

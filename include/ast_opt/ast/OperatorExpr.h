@@ -25,11 +25,21 @@ class OperatorExpr : public AbstractExpr {
 
   void setOperator(Operator *op);
 
+  void addOperand(AbstractExpr *operand);
+
+  void removeOperand(AbstractExpr * operand);
+
   [[nodiscard]] Operator *getOperator() const;
 
   [[nodiscard]] std::vector<AbstractExpr *> getOperands() const;
 
-  void addOperand(AbstractExpr *operand);
+  // Methods for backwards compatibility to AbstractBinaryExpr
+
+  [[nodiscard]] AbstractExpr *getRight() const;
+
+  [[nodiscard]] AbstractExpr *getLeft() const;
+
+
 
   void setAttributes(Operator *newOperator, std::vector<AbstractExpr *> newOperands);
 
@@ -38,12 +48,6 @@ class OperatorExpr : public AbstractExpr {
   [[nodiscard]] bool isArithmeticExpr() const;
 
   [[nodiscard]] bool isUnaryExpr() const;
-
-  // Methods for backwards compatibility to AbstractBinaryExpr
-
-  [[nodiscard]] AbstractExpr *getRight() const;
-
-  [[nodiscard]] AbstractExpr *getLeft() const;
 
   OperatorExpr(AbstractExpr *lhsOperand, Operator *op, AbstractExpr *rhsOperand);
 

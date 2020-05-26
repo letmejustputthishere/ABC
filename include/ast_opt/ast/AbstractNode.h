@@ -99,22 +99,6 @@ class AbstractNode {
   void addChildren(const std::vector<AbstractNode *> &childrenToAdd,
                    std::vector<AbstractNode *>::const_iterator insertPosition);
 
-  /// Adds multiple children to the node's list of children at the position (or more precisely, before) indicated by
-  /// the passed node  of the children vector. If addBackReference is True then also updates the
-  /// child's list of parent nodes for each of the added children.
-  /// \param childrenToAdd A vector of nodes to be added as children to this node.
-  /// \param insertBeforeNode The node (must be a children of this node) that is used to determine the insert
-  /// position of the children to be added.
-  /// \throws std::runtime_error if the given node (insertBeforeNode) could not be found.
-  void addChildren(const std::vector<AbstractNode *> &childrenToAdd, AbstractNode *insertBeforeNode);
-
-  /// Removes the given child from the list of children. If getMaxNumberChildren() returns -1 (i.e., this node supports
-  /// an inifinite number of children, then the respective child is simply deleted. In any other case, the child node is
-  /// overwritten by -1 such that the order of other children is preserved.
-  /// \param child The child to be removed from this node's children.
-  /// \param removeBackreference If True, then also removes this node from the children's list of parent nodes.
-  void removeChild(AbstractNode *child, bool removeBackreference = true);
-
   /// Removes all children from this node. Note: Does not update the child's parent.
   void removeChildren();
 

@@ -250,7 +250,7 @@ std::vector<std::string> OperatorExpr::getVariableIdentifiers() {
 }
 
 std::vector<Variable *> OperatorExpr::getVariables() {
-  std::vector<Variable*> result;
+  std::vector<Variable *> result;
   for (auto &expr : getOperands()) {
     auto vec = expr->getVariables();
     if (!vec.empty()) {
@@ -258,4 +258,18 @@ std::vector<Variable *> OperatorExpr::getVariables() {
     }
   }
   return result;
+}
+
+void OperatorExpr::removeOperand(AbstractExpr *operand) {
+  auto it = std::find(children.begin(), children.end(), operand);
+  if (it!=children.end()) {
+    (*it)->removeFromParent();
+    // if the node supports an infinite number of children (getMaxNumberChildren() == -1), we can delete the node from
+    // the children list, otherwise we just overwrite the slot with a nullptr
+    if (this->getMaxNumberChildren()!=-1) {
+      *it = nullptr;
+    } else {
+      children.erase(it);
+    }
+  }
 }

@@ -50,15 +50,6 @@ std::vector<AbstractNode *> AbstractNode::getChildrenNonNull() const {
   return childrenFiltered;
 }
 
-void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd, AbstractNode *insertBeforeNode) {
-  auto it = std::find(children.begin(), children.end(), insertBeforeNode);
-  if (it==children.end()) {
-    throw std::runtime_error("addChildren failed: Could not find node given as parameter insertBeforeNode "
-                             "that is required to determine insert position.");
-  }
-  addChildren(childrenToAdd, it);
-}
-
 void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd,
                                std::vector<AbstractNode *>::const_iterator insertPosition) {
   auto allowsInfiniteNumberOfChildren = (getMaxNumberChildren()==-1);
@@ -115,22 +106,6 @@ void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd,
 
 void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd) {
   addChildren(childrenToAdd, children.end());
-}
-
-void AbstractNode::removeChild(AbstractNode *child, bool removeBackreference) {
-  auto it = std::find(children.begin(), children.end(), child);
-  if (it!=children.end()) {
-    if (removeBackreference) {
-      (*it)->removeFromParent();
-    }
-    // if the node supports an infinite number of children (getMaxNumberChildren() == -1), we can delete the node from
-    // the children list, otherwise we just overwrite the slot with a nullptr
-    if (this->getMaxNumberChildren()!=-1) {
-      *it = nullptr;
-    } else {
-      children.erase(it);
-    }
-  }
 }
 
 void AbstractNode::removeChildren() {
@@ -194,7 +169,7 @@ void AbstractNode::setParent(AbstractNode *newParent) {
 }
 
 void AbstractNode::removeFromParent() {
-  getParent()->removeChild(this);
+ //TODO: Find way to offer this functionality?
 }
 
 void to_json(json &j, const AbstractNode &n) {

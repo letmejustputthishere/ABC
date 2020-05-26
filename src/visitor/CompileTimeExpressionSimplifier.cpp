@@ -513,7 +513,7 @@ void CompileTimeExpressionSimplifier::simplifyLogicalExpr(OperatorExpr &elem) {
     if (knownOperand->isEqual(new LiteralBool(false))) {
       elem.setAttributes(elem.getOperator(), {knownOperand});
     } else if (knownOperand->isEqual(new LiteralBool(true))) {
-      elem.removeChild(knownOperand);
+      elem.removeOperand(knownOperand);
     }
   } else if (logicalOperator==LOGICAL_OR) {
     // - knownOperand == true: replace whole expression by True as <anything> OR True is always True
@@ -521,12 +521,12 @@ void CompileTimeExpressionSimplifier::simplifyLogicalExpr(OperatorExpr &elem) {
     if (knownOperand->isEqual(new LiteralBool(true))) {
       elem.setAttributes(elem.getOperator(), {knownOperand});
     } else if (knownOperand->isEqual(new LiteralBool(false))) {
-      elem.removeChild(knownOperand);
+      elem.removeOperand(knownOperand);
     }
   } else if (logicalOperator==LOGICAL_XOR && knownOperand->isEqual(new LiteralBool(false))) {
     // - knownOperand == false: remove False from the expression as <anything> XOR False always depends on <False>
     // - knownOperand == true [not implemented]: rewrite <anything> XOR True to !<anything>
-    elem.removeChild(knownOperand);
+    elem.removeOperand(knownOperand);
   }
 }
 
@@ -640,13 +640,13 @@ void CompileTimeExpressionSimplifier::visit(If &elem) {
       if (elem.getElseBranch()!=nullptr) {
         auto elseBranch = elem.getElseBranch();
         // we also unlink it from the If statement such that it will not be visited
-        elem.removeChild(elseBranch, true);
+        elem.setElseBranch(nullptr);
         enqueueNodeForDeletion(elseBranch);
       }
     } else {  // the Else-branch is always executed
       // recursively remove the Then-branch (always exists)
       auto then = elem.getThenBranch();
-      elem.removeChild(then);
+      elem.setThenBranch(nullptr);
       enqueueNodeForDeletion(then);
       // negate the condition and delete the conditions stored value (is now invalid)
       auto condition = elem.getCondition();
@@ -654,7 +654,7 @@ void CompileTimeExpressionSimplifier::visit(If &elem) {
       auto newCondition = new OperatorExpr(new Operator(UnaryOp::NEGATION), {condition});
       // replace the If statement's Then branch by the Else branch
       auto newThen = elem.getElseBranch();
-      elem.removeChild(elem.getElseBranch(), true); //necessary to avoid double parent link
+      elem.setElseBranch(nullptr); //necessary to avoid double parent link
       elem.setAttributes(newCondition, newThen, nullptr);
     }
 

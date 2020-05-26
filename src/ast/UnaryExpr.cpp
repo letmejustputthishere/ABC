@@ -72,3 +72,8 @@ std::vector<std::string> UnaryExpr::getVariableIdentifiers() {
 std::vector<Variable *> UnaryExpr::getVariables() {
   return getRight()->getVariables();
 }
+void UnaryExpr::setOperator(Operator *newOperator) {
+    //TODO remove old
+    children[0] = newOperator;
+    newOperator->setParent(this);
+}

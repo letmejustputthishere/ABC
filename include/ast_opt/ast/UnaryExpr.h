@@ -17,6 +17,8 @@ class UnaryExpr : public AbstractExpr {
 
   [[nodiscard]] Operator *getOperator() const;
 
+  void setOperator(Operator* newOperator);
+
   [[nodiscard]] AbstractExpr *getRight() const;
 
   [[nodiscard]] std::string getNodeType() const override;

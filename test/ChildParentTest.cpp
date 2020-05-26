@@ -269,7 +269,7 @@ TEST_F(FunctionParameterFixture, FunctionParameterAddChildExceptionDatatypeConst
 TEST_F(FunctionParameterFixture, FunctionParameter_AddChildSuccess) {  /* NOLINT */
   auto functionParameter = new FunctionParameter(datatype, variableThreshold);
 
-  functionParameter->removeChild(variableThreshold);
+  functionParameter->setAttributes(functionParameter->getDatatype(), nullptr);
   functionParameter->setAttributes(functionParameter->getDatatype(), variableSecret);
 
   // children
@@ -282,7 +282,7 @@ TEST_F(FunctionParameterFixture, FunctionParameter_AddChildSuccess) {  /* NOLINT
   EXPECT_EQ(variableSecret->getParent(), functionParameter);
   EXPECT_TRUE(variableSecret->hasParent(functionParameter));
 
-  functionParameter->removeChild(datatype);
+  functionParameter->setAttributes(nullptr, functionParameter->getValue());
   functionParameter->setAttributes(datatype2, functionParameter->getValue());
 
   // children
@@ -345,7 +345,7 @@ TEST_F(IfStmtFixture, IfStmtThenAndElseConstructor) {  /* NOLINT */
 TEST_F(IfStmtFixture, IfStmtAddChildSuccess) {  /* NOLINT */
   auto ifStmt = new If(condition, thenBranch);
   auto newElseBranch = new Block(new VarAssignm("a", new LiteralInt(1024)));
-  ifStmt->removeChild(ifStmt->getElseBranch());
+  ifStmt->setElseBranch(nullptr);
   ifStmt->setAttributes(ifStmt->getCondition(), ifStmt->getThenBranch(), newElseBranch);
 
   // children
@@ -569,7 +569,7 @@ TEST_F(UnaryExprFixture, UnaryExprStandardConstructor) {  /* NOLINT */
 TEST_F(UnaryExprFixture, UnaryExprtion_AddChildSuccess) {  /* NOLINT */
   auto unaryExpr = new UnaryExpr(opSymbNegation, literalBoolTrue);
 
-  unaryExpr->removeChild(unaryExpr->getOperator(), false);
+  unaryExpr->setOperator(nullptr);
   auto newOperator = new Operator(UnaryOp::NEGATION);
   unaryExpr->setAttributes(UnaryOp::NEGATION, unaryExpr->getRight());
 
@@ -787,7 +787,7 @@ TEST_F(ForLoopFixture, ForStmtStandardConstructor) {  /* NOLINT */
 
 TEST_F(ForLoopFixture, ForStmtAddChildSuccess) {  /* NOLINT */
   auto forStmt = new For(forInitializer, forCondition, forUpdate, forBody);
-  forStmt->removeChild(forBody);
+  forStmt->setBody(nullptr);
 
   EXPECT_TRUE(forBody->hasParent());
   EXPECT_EQ(forStmt->getChildrenNonNull().size(), 3);

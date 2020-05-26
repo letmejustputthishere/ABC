@@ -78,3 +78,22 @@ void If::setAttributes(AbstractExpr *condition, AbstractStatement *thenBranch, A
 std::string If::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
 }
+
+void If::setCondition(AbstractExpr *newCondition) {
+  //TODO: Delete old
+  newCondition->setParent(this);
+  children[0] = newCondition;
+}
+
+void If::setThenBranch(Block *newThenBranch) {
+  //TODO: Delete old
+  newThenBranch->setParent(this);
+  children[1] = newThenBranch;
+}
+
+void If::setElseBranch(Block *newElseBranch) {
+  //TODO: Delete old
+  newElseBranch->setParent(this);
+  children[2] = newElseBranch;
+
+}
