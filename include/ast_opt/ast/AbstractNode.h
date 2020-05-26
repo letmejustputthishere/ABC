@@ -67,6 +67,10 @@ class AbstractNode {
 
   /// Returns a vector of pointers to children nodes but without those children that are nullptr.
   /// \return A vector of non-nullptr children.
+  [[nodiscard]] std::vector<AbstractNode *> getChildrenNonNull();
+
+  /// Returns a vector of pointers to children nodes but without those children that are nullptr.
+  /// \return A vector of non-nullptr children.
   [[nodiscard]] std::vector<const AbstractNode *> getChildrenNonNull() const;
 
   /// Returns all the descendants nodes of the current node, i.e., the children of the children and the children of

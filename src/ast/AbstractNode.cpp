@@ -49,6 +49,15 @@ std::vector<const AbstractNode *> AbstractNode::getChildrenNonNull() const {
   return childrenFiltered;
 }
 
+std::vector<AbstractNode *> AbstractNode::getChildrenNonNull() {
+  std::vector<AbstractNode *> childrenFiltered;
+  auto children = getChildren();
+  if (children.empty()) return childrenFiltered;
+  std::copy_if(children.begin(), children.end(), std::back_inserter(childrenFiltered),
+               [](AbstractNode *n) { return n!=nullptr; });
+  return childrenFiltered;
+}
+
 int AbstractNode::countChildrenNonNull() const {
   return std::count_if(getChildren().begin(), getChildren().end(), [](const AbstractNode *n) { return n!=nullptr; });
 }
