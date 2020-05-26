@@ -1357,7 +1357,9 @@ void CompileTimeExpressionSimplifier::emitVariableDeclaration(ScopedVariable var
   }
 
   // passing position in children vector is req. to prepend the new VarAssignm (i.e., as new first child of parent)
-  parent->addChildren({newVarDeclaration}, parent->getChildren().begin());
+  auto parentAsBlock = parent->castTo<Block>();
+  //TODO: Solve prepending invalidation issues/maybe not there because whenever we NULL something we leave a slot for re-insertion?
+  parentAsBlock->addStatement({newVarDeclaration});
   emittedVariableDeclarations.emplace(variableToEmit, new EmittedVariableData(newVarDeclaration));
 }
 

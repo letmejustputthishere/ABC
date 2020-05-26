@@ -52,8 +52,9 @@ std::vector<AbstractNode *> AbstractNode::getChildrenNonNull() const {
   return childrenFiltered;
 }
 
-void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd,
-                               std::vector<AbstractNode *>::const_iterator insertPosition) {
+void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd) {
+  auto insertPosition = children.end();
+
   auto allowsInfiniteNumberOfChildren = (getMaxNumberChildren()==-1);
 
   // check whether the number of children to be added does not exceed the number available children spots
@@ -104,10 +105,6 @@ void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd,
                                  + " without overwriting an existing one. Consider removing an existing child first.");
     }
   }
-}
-
-void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd) {
-  addChildren(childrenToAdd, children.end());
 }
 
 void AbstractNode::removeChildren() {

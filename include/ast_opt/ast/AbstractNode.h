@@ -78,14 +78,6 @@ class AbstractNode {
   /// \param childrenToAdd A vector of nodes to be added as children to this node.
   void addChildren(const std::vector<AbstractNode *> &childrenToAdd);
 
-  /// Adds multiple children to the node's list of children at the position (or more precisely, before) indicated by
-  /// the passed insertPosition iterator of the children vector. If addBackReference is True then also updates the
-  /// child's list of parent nodes for each of the added children.
-  /// \param childrenToAdd A vector of nodes to be added as children to this node.
-  /// \param insertPosition The position before which the new nodes should be added to.
-  void addChildren(const std::vector<AbstractNode *> &childrenToAdd,
-                   std::vector<AbstractNode *>::const_iterator insertPosition);
-
   /// Removes all children from this node. Note: Does not update the child's parent.
   void removeChildren();
 
