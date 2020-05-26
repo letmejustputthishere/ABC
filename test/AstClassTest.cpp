@@ -107,7 +107,7 @@ TEST_F(AstTestFixture, deleteNode_ChildrenExisting) { /* NOLINT */
 
   // verify that ArithmeticExpr was not deleted, also from its parent
   ASSERT_NE(arithmeticExprPtr, nullptr);
-  ASSERT_TRUE(arithmeticExprParent->hasChild(arithmeticExpr));
+  ASSERT_EQ(arithmeticExprParent->getRight(),arithmeticExpr );
   // verify that children are deleted
   ASSERT_EQ(arithmeticExpr->countChildrenNonNull(), arithmeticExprNumChildren);
 }

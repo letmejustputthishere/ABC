@@ -91,9 +91,6 @@ class AbstractNode {
   /// \return An integer indicating the number of non-nullptr children nodes.
   [[nodiscard]] int countChildrenNonNull() const;
 
-  /// Does this node have a certain child?
-  bool hasChild(const AbstractNode *node) const;
-
   /** @} */ // End of children group
 
   /** @defgroup parents Methods for handling Parents

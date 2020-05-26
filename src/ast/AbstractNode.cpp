@@ -137,10 +137,6 @@ void AbstractNode::replaceChild(AbstractNode *originalChild, AbstractNode *newCh
     newChild->removeFromParent();
     newChild->setParent(this);
   }
-}
-
-bool AbstractNode::hasChild(const AbstractNode *node) const {
-  return std::find(children.begin(), children.end(), node)!=children.end();
 };
 
 bool AbstractNode::hasParent(AbstractNode *parentNode) {
