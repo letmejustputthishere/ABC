@@ -388,7 +388,7 @@ class Matrix : public AbstractMatrix {
     // it's sufficient to call the copy constructor that creates a copy of all primitives (int, float, etc.)
     return new Matrix<T>(*this);
   }
-  const std::vector<AbstractNode *> &getChildren() const override;
+  std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
 
 };
@@ -620,7 +620,7 @@ template<>
 bool Matrix<AbstractExpr *>::containsAbstractExprs();
 
 template<typename T>
-const std::vector<AbstractNode *> &Matrix<T>::getChildren() const {
+std::vector<AbstractNode *> Matrix<T>::getChildren()  {
   //TODO IMPLEMENT
   return {};
 }

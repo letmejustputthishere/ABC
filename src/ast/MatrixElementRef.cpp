@@ -128,7 +128,7 @@ std::string MatrixElementRef::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
 }
 
-const std::vector<AbstractNode *> &MatrixElementRef::getChildren() const {
+std::vector<AbstractNode *> MatrixElementRef::getChildren()  {
   //TODO IMPLEMENT
   return {};
 }

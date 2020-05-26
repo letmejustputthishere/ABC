@@ -43,7 +43,7 @@ class GetMatrixSize : public AbstractExpr {
   std::vector<std::string> getVariableIdentifiers() override;
 
   std::vector<Variable *> getVariables() override;
-  const std::vector<AbstractNode *> &getChildren() const override;
+  std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
 };
 

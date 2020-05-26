@@ -55,7 +55,7 @@ class AbstractLiteral : public AbstractExpr {
 
   std::vector<Variable *> getVariables() override;
 
-  const std::vector<AbstractNode *> &getChildren() const override;
+  std::vector<AbstractNode *> getChildren() override;
 
   void removeChildren() override;
 

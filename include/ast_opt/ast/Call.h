@@ -38,7 +38,7 @@ class Call : public AbstractExpr {
 
   std::vector<Variable *> getVariables() override;
   AbstractBinaryExpr *contains(AbstractBinaryExpr *aexpTemplate, AbstractExpr *excludedSubtree) override;
-  const std::vector<AbstractNode *> &getChildren() const override;
+  std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
 };
 

@@ -569,10 +569,8 @@ AbstractLiteral *Operator::applyOperator(std::vector<const AbstractLiteral *> op
     throw std::logic_error("Operator::apply failed because AbstractLiterals are of unknown type.");
   }
 }
-const std::vector<AbstractNode *> &Operator::getChildren() const {
-  //TODO: Memory leak
-  auto p = new std::vector<AbstractNode *>();
-  return *p;
+std::vector<AbstractNode *> Operator::getChildren()  {
+  return {}; // has no node children
 }
 void Operator::removeChildren() {
   //This node has no AbstractNode children, so nothing to do

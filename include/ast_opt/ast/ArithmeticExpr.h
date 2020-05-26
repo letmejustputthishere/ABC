@@ -51,7 +51,7 @@ class ArithmeticExpr : public AbstractBinaryExpr {
 
   void setOperator(Operator *newOperator) override;
   void setRight(AbstractExpr *newRight) override;
-  const std::vector<AbstractNode *> &getChildren() const override;
+  std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
   AbstractExpr *getLeft() const override;
   Operator *getOperator() const override;

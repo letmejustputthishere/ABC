@@ -51,7 +51,7 @@ class Function : public AbstractStatement {
   int getMaxNumberChildren() override;
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
-  const std::vector<AbstractNode *> &getChildren() const override;
+  std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
 };
 

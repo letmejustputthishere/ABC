@@ -23,7 +23,9 @@ class Block : public AbstractStatement {
 
   [[nodiscard]] std::string getNodeType() const override;
 
-  [[nodiscard]] std::vector<AbstractStatement *> getStatements() const;
+  [[nodiscard]] std::vector<AbstractStatement *> getStatements();
+
+  [[nodiscard]] std::vector<const AbstractStatement *> getStatements() const;
 
   int getMaxNumberChildren() override;
 
@@ -31,9 +33,11 @@ class Block : public AbstractStatement {
 
   bool isEqual(AbstractStatement *otherBlockStatement) override;
 
-  void addStatement(AbstractStatement* stmt);
+  void addStatement(AbstractStatement *stmt);
 
-  const std::vector<AbstractNode *> &getChildren() const override;
+  std::vector<AbstractNode *> getChildren() override;
+
+  std::vector<const AbstractNode *> getChildren() const override;
   void removeChildren() override;
 };
 

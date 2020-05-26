@@ -47,7 +47,7 @@ class Datatype : public AbstractNode {
 
   [[nodiscard]] nlohmann::json toJson() const override;
 
-  const std::vector<AbstractNode *> &getChildren() const override;
+  std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
 
 };

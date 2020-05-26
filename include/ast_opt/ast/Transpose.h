@@ -32,7 +32,7 @@ class Transpose : public AbstractExpr {
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
   [[nodiscard]] AbstractExpr *getOperand() const;
-  const std::vector<AbstractNode *> &getChildren() const override;
+  std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
 };
 

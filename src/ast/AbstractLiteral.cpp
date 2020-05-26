@@ -58,7 +58,7 @@ std::vector<Variable *> AbstractLiteral::getVariables() {
   // Literals never contain Variables
   return std::vector<Variable *>();
 }
-const std::vector<AbstractNode *> &AbstractLiteral::getChildren() const {
+std::vector<AbstractNode *> AbstractLiteral::getChildren()  {
   //TODO: MEMORY LEAK
   auto p = new std::vector<AbstractNode *>(1,matrix);
   return *p;

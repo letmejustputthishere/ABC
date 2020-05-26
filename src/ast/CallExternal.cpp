@@ -67,7 +67,7 @@ const std::vector<FunctionParameter *> &CallExternal::getArguments() const {
   return arguments;
 }
 
-const std::vector<AbstractNode *> &CallExternal::getChildren() const {
+std::vector<AbstractNode *> CallExternal::getChildren()  {
   //TODO IMPLEMENT
   return {};
 }

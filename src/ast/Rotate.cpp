@@ -94,7 +94,7 @@ bool Rotate::isEqual(AbstractExpr *other) {
   return false;
 }
 
-const std::vector<AbstractNode *> &Rotate::getChildren() const {
+std::vector<AbstractNode *> Rotate::getChildren()  {
   return children;
 }
 void Rotate::removeChildren() {

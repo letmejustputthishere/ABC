@@ -41,7 +41,7 @@ class For : public AbstractStatement {
   [[nodiscard]] json toJson() const override;
 
   bool isEqual(AbstractStatement *other) override;
-  const std::vector<AbstractNode *> &getChildren() const override;
+  std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
 };
 

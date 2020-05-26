@@ -81,7 +81,7 @@ void Return::addReturnExpr(AbstractExpr *returnExpr) {
   returnExpr->setParent(this);
 }
 
-const std::vector<AbstractNode *> &Return::getChildren() const {
+std::vector<AbstractNode *> Return::getChildren()  {
   return std::vector<AbstractNode *>(returnExpressions.begin(), returnExpressions.end());
 }
 void Return::removeChildren() {

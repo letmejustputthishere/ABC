@@ -43,7 +43,7 @@ class LogicalExpr : public AbstractBinaryExpr {
   void setLeft(AbstractExpr *newleft) override;
   void setOperator(Operator *newOperator) override;
   void setRight(AbstractExpr *newRight) override;
-  const std::vector<AbstractNode *> &getChildren() const override;
+  std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
   Operator *getOperator() const override;
   AbstractExpr *getRight() const override;

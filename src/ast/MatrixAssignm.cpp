@@ -83,7 +83,7 @@ bool MatrixAssignm::isEqual(AbstractStatement *as) {
   return false;
 }
 
-const std::vector<AbstractNode *> &MatrixAssignm::getChildren() const {
+std::vector<AbstractNode *> MatrixAssignm::getChildren()  {
   //TODO IMPLEMENT
   return {};
 }

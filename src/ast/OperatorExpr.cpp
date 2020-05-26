@@ -268,7 +268,7 @@ void OperatorExpr::removeOperand(AbstractExpr *operand) {
   }
 }
 
-const std::vector<AbstractNode *> &OperatorExpr::getChildren() const {
+std::vector<AbstractNode *> OperatorExpr::getChildren()  {
   //TODO: RETURN SOMETHING USEFUL
   return {};
 }

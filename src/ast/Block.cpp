@@ -33,11 +33,20 @@ std::string Block::getNodeType() const {
   return "Block";
 }
 
-std::vector<AbstractStatement *> Block::getStatements() const {
+std::vector<AbstractStatement *> Block::getStatements() {
   std::vector<AbstractStatement *> stmts;
   stmts.reserve(countChildrenNonNull());
   for (auto c : getChildren()) {
     stmts.emplace_back(dynamic_cast<AbstractStatement *>(c));
+  }
+  return stmts;
+}
+
+std::vector<const AbstractStatement *> Block::getStatements() const {
+  std::vector<const AbstractStatement *> stmts;
+  stmts.reserve(countChildrenNonNull());
+  for (auto c : getChildren()) {
+    stmts.emplace_back(dynamic_cast<const AbstractStatement *>(c));
   }
   return stmts;
 }
@@ -85,8 +94,12 @@ void Block::addStatement(AbstractStatement *stmt) {
     stmt->setParent(this);
   }
 }
-const std::vector<AbstractNode *> &Block::getChildren() const {
+std::vector<AbstractNode *> Block::getChildren() {
   return children;
+}
+
+std::vector<const AbstractNode *> Block::getChildren() const {
+  return std::vector<const AbstractNode*>(children.begin(),children.end());
 }
 
 void Block::removeChildren() {

@@ -79,7 +79,7 @@ void UnaryExpr::setOperator(Operator *newOperator) {
   newOperator->setParent(this);
 }
 
-const std::vector<AbstractNode *> &UnaryExpr::getChildren() const {
+std::vector<AbstractNode *> UnaryExpr::getChildren()  {
  //TODO IMPLEMENT
  return {};
 }

@@ -127,7 +127,7 @@ std::string VarDecl::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {identifier});
 }
 
-const std::vector<AbstractNode *> &VarDecl::getChildren() const {
+std::vector<AbstractNode *> VarDecl::getChildren()  {
   //TODO IMPLEMENT
   return {};
 }

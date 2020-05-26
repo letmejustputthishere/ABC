@@ -39,7 +39,7 @@ class Variable : public AbstractExpr {
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
   std::vector<Variable *> getVariables() override;
-  const std::vector<AbstractNode *> &getChildren() const override;
+  std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
 };
 

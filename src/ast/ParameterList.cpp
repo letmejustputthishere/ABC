@@ -37,13 +37,8 @@ void ParameterList::addParameter(FunctionParameter *param) {
   parameters.push_back(param);
   param->setParent(this);
 }
-const std::vector<AbstractNode *> &ParameterList::getChildren() const {
-  std::vector<AbstractNode*> v;
-  v.reserve(parameters.size());
-  for(auto &p : parameters) {
-    v.push_back(p);
-  }
-  return v;
+std::vector<AbstractNode *> ParameterList::getChildren()  {
+  return std::vector<AbstractNode*>(parameters.begin(),parameters.end());
 }
 void ParameterList::removeChildren() {
 //TODO removal

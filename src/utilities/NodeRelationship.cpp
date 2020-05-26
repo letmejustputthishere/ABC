@@ -98,7 +98,7 @@ bool NodeRelationship::areEqualGraphs(GraphNode *rootNodeOther) const {
   return qOther.empty();
 }
 
-const std::vector<GraphNode *> &NodeRelationship::getChildren() const {
+const std::vector<GraphNode *> &NodeRelationship::getChildren() const{
   return children;
 }
 

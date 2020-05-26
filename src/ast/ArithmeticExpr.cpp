@@ -51,8 +51,7 @@ void ArithmeticExpr::setRight(AbstractExpr *newRight) {
   if (newRight) newRight->setParent(this);
 
 }
-const std::vector<AbstractNode *> &ArithmeticExpr::getChildren() const {
-  //TODO returns temp
+std::vector<AbstractNode *> ArithmeticExpr::getChildren()  {
   return {left, op, right};
 }
 void ArithmeticExpr::removeChildren() {

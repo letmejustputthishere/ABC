@@ -46,7 +46,7 @@ int While::getMaxNumberChildren() {
   return 2;
 }
 
-const std::vector<AbstractNode *> &While::getChildren() const {
+std::vector<AbstractNode *> While::getChildren()  {
   //TODO IMPLEMENT
   return {};
 }

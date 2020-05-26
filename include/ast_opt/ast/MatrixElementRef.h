@@ -43,7 +43,7 @@ class MatrixElementRef : public AbstractExpr {
   [[nodiscard]] AbstractExpr *getColumnIndex() const;
 
   void setAttributes(AbstractExpr *elementContainingMatrix, AbstractExpr *rowIndex, AbstractExpr *columnIndex);
-  const std::vector<AbstractNode *> &getChildren() const override;
+  std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
 };
 

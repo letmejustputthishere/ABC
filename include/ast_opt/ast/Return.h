@@ -34,7 +34,7 @@ class Return : public AbstractStatement {
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
   bool isEqual(AbstractStatement *as) override;
-  const std::vector<AbstractNode *> &getChildren() const override;
+  std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
 
  protected:

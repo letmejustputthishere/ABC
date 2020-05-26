@@ -50,7 +50,7 @@ std::vector<const AbstractNode *> AbstractNode::getChildrenNonNull() const {
 }
 
 int AbstractNode::countChildrenNonNull() const {
-  return std::count_if(getChildren().begin(), getChildren().end(), [](AbstractNode *n) { return n!=nullptr; });
+  return std::count_if(getChildren().begin(), getChildren().end(), [](const AbstractNode *n) { return n!=nullptr; });
 }
 
 int AbstractNode::getMaxNumberChildren() {
@@ -182,7 +182,7 @@ std::vector<AbstractNode *> AbstractNode::getDescendants() {
 std::vector<const AbstractNode *> AbstractNode::getDescendants() const {
   // use a set to avoid duplicates as there may be common descendants between this node and any of the node's children
   std::set<const AbstractNode *> result;
-  std::queue<const  AbstractNode *> processQueue{{this}};
+  std::queue<const AbstractNode *> processQueue{{this}};
   while (!processQueue.empty()) {
     auto curNode = processQueue.front();
     processQueue.pop();
@@ -200,5 +200,9 @@ AbstractNode::~AbstractNode() = default;
 
 std::string AbstractNode::toString(bool) const {
   throw std::runtime_error("toString not implemented for class " + getNodeType() + ".");
+}
+std::vector<const AbstractNode *> AbstractNode::getChildren() const {
+  //TODO?
+  return {};
 }
 

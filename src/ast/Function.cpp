@@ -138,7 +138,7 @@ std::string Function::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {getName()});
 }
 
-const std::vector<AbstractNode *> &Function::getChildren() const {
+std::vector<AbstractNode *> Function::getChildren()  {
   //TODO IMPLEMENT
   return {};
 }

@@ -82,8 +82,8 @@ std::string Datatype::getNodeType() const {
 void Datatype::accept(Visitor &v) {
   v.visit(*this);
 }
-const std::vector<AbstractNode *> &Datatype::getChildren() const {
-  return {};
+std::vector<AbstractNode *> Datatype::getChildren()  {
+  return {}; //has no node children
 }
 void Datatype::removeChildren() {
   //do nothing, has no node children

@@ -34,7 +34,7 @@ class MatrixAssignm : public AbstractStatement {
   [[nodiscard]] AbstractExpr *getValue() const;
 
   [[nodiscard]] std::string getAssignmTargetString() const;
-  const std::vector<AbstractNode *> &getChildren() const override;
+  std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
 };
 
