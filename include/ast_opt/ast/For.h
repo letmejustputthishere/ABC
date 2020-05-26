@@ -15,7 +15,7 @@ class For : public AbstractStatement {
 
   void accept(Visitor &v) override;
 
-  AbstractNode *clone(bool keepOriginalUniqueNodeId) const override;
+  For *clone() const override;
 
   void setAttributes(AbstractStatement *initializer,
                      AbstractExpr *condition,

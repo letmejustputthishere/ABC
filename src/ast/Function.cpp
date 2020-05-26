@@ -92,11 +92,10 @@ void Function::setParameterList(ParameterList *paramsVec) {
   paramsVec->setParent(this);
 }
 
-Function *Function::clone(bool keepOriginalUniqueNodeId) const {
-  auto clonedParams = getParameterList() ? getParameterList()->clone(keepOriginalUniqueNodeId) : nullptr;
-  auto clonedBody = getBody() ? getBody()->clone(keepOriginalUniqueNodeId) : nullptr;
+Function *Function::clone() const {
+  auto clonedParams = getParameterList() ? getParameterList()->clone() : nullptr;
+  auto clonedBody = getBody() ? getBody()->clone() : nullptr;
   auto clonedNode = new Function(this->getName(), clonedParams, clonedBody);
-  clonedNode->updateClone(keepOriginalUniqueNodeId, this);
   return clonedNode;
 }
 

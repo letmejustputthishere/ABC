@@ -34,7 +34,7 @@ class Rotate : public AbstractExpr {
 
   void accept(Visitor &v) override;
 
-  Rotate *clone(bool keepOriginalUniqueNodeId) const override;
+  Rotate *clone() const override;
 
   void setAttributes(AbstractExpr *pExpr, AbstractExpr *rotationFactor);
 

@@ -21,7 +21,7 @@ class MatrixAssignm : public AbstractStatement {
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  AbstractNode *clone(bool keepOriginalUniqueNodeId) const override;
+  MatrixAssignm *clone() const override;
 
   [[nodiscard]] json toJson() const override;
 

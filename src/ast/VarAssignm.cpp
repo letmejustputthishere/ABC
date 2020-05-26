@@ -55,11 +55,8 @@ void VarAssignm::setAttribute(AbstractExpr *assignmentValue) {
   addChildren({assignmentValue});
 }
 
-VarAssignm *VarAssignm::clone(bool keepOriginalUniqueNodeId) const {
-  auto clonedNode = new VarAssignm(this->getIdentifier(),
-                                   this->getValue()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>());
-  clonedNode->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedNode;
+VarAssignm *VarAssignm::clone() const {
+  return new VarAssignm(this->getIdentifier(), this->getValue()->clone());
 }
 
 std::string VarAssignm::toString(bool printChildren) const {

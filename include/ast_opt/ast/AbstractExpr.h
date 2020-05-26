@@ -43,7 +43,7 @@ class AbstractExpr : public AbstractNode {
 
   AbstractExpr() = default;
 
-  AbstractExpr *clone(bool keepOriginalUniqueNodeId) const override = 0;
+  AbstractExpr *clone() const override = 0;
 };
 
 std::ostream &operator<<(std::ostream &outs, const AbstractExpr &obj);

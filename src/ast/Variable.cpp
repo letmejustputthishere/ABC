@@ -56,8 +56,6 @@ std::string Variable::toString(bool printChildren) const {
 
 Variable::~Variable() = default;
 
-Variable *Variable::clone(bool keepOriginalUniqueNodeId) const {
-  auto clonedNode = new Variable(getIdentifier());
-  clonedNode->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedNode;
+Variable *Variable::clone() const {
+  return new Variable(getIdentifier());
 }

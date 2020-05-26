@@ -20,7 +20,7 @@ class MatrixElementRef : public AbstractExpr {
 
   void accept(Visitor &v) override;
 
-  AbstractExpr *clone(bool keepOriginalUniqueNodeId) const override;
+  MatrixElementRef *clone() const override;
 
   [[nodiscard]] json toJson() const override;
 

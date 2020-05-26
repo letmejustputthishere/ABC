@@ -28,13 +28,7 @@ class AbstractNode {
   /// Clones a node recursively, i.e., by including all of its children.
   /// \param keepOriginalUniqueNodeId Specifies whether to keep all of the unique node IDs of the original nodes.
   /// \return A clone of the node including clones of all of its children.
-  [[nodiscard]] virtual AbstractNode *clone(bool keepOriginalUniqueNodeId) const = 0;
-
-  /// Method that updates a cloned node. Must be called within each derived clone() method.
-  /// \param keepOriginalUniqueNodeId Determines whether to replace the cloned node's unique node ID by the ID of the
-  ///        original node.
-  /// \param originalNode The node of which the cloned node is based on.
-  void updateClone(bool keepOriginalUniqueNodeId, const AbstractNode *originalNode);
+  [[nodiscard]] virtual AbstractNode *clone() const = 0;
 
   /// Casts a node to type T which must be the specific derived class of the node to cast successfully.
   /// \tparam T The derived class of the node object.

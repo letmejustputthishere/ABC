@@ -44,14 +44,12 @@ std::vector<AbstractStatement *> Block::getStatements() const {
   return stmts;
 }
 
-Block *Block::clone(bool keepOriginalUniqueNodeId) const {
+Block *Block::clone() const {
   std::vector<AbstractStatement *> clonedStatements;
   for (auto &statement : this->getStatements()) {
-    clonedStatements.push_back(statement->clone(keepOriginalUniqueNodeId)->castTo<AbstractStatement>());
+    clonedStatements.push_back(statement->clone());
   }
-  auto clonedNode = clonedStatements.empty() ? new Block() : new Block(clonedStatements);
-  clonedNode->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedNode;
+  return clonedStatements.empty() ? new Block() : new Block(clonedStatements);
 }
 
 AbstractNode *Block::cloneFlat() {

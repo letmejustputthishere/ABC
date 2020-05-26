@@ -16,6 +16,8 @@ class AbstractStatement : public AbstractNode {
   virtual AbstractBinaryExpr *contains(AbstractBinaryExpr *aexpTemplate, ArithmeticExpr *excludedSubtree);
 
   virtual bool isEqual(AbstractStatement *as);
+
+  virtual AbstractStatement* clone() const override = 0;
 };
 
 std::ostream &operator<<(std::ostream &outs, const AbstractStatement &obj);

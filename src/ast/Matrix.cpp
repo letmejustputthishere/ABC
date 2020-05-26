@@ -421,12 +421,12 @@ json Matrix<std::string>::toJson() const {
 // - Matrix<AbstractExpr*>
 
 template<>
-Matrix<AbstractExpr *> *Matrix<AbstractExpr *>::clone(bool keepOriginalUniqueNodeId) const {
+Matrix<AbstractExpr *> *Matrix<AbstractExpr *>::clone() const {
   std::vector<std::vector<AbstractExpr *>> clonedMatrix(dim.numRows, std::vector<AbstractExpr *>(dim.numColumns));
   // we need to clone each AbstractExpr contained in this matrix
   for (int i = 0; i < values.size(); ++i) {
     for (int j = 0; j < values[i].size(); ++j) {
-      clonedMatrix[i][j] = values[i][j]->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>();
+      clonedMatrix[i][j] = values[i][j]->clone();
     }
   }
   return new Matrix<AbstractExpr *>(clonedMatrix);

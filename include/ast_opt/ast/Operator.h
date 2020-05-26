@@ -97,7 +97,7 @@ class Operator : public AbstractNode {
 
   ~Operator() override;
 
-  Operator *clone(bool keepOriginalUniqueNodeId) const override;
+  Operator *clone() const override;
 
   [[nodiscard]] bool equals(ArithmeticOp op) const;
 

@@ -65,11 +65,11 @@ class VariableValue {
 
   /// Create directly
   VariableValue(Datatype dtype, AbstractExpr *varValue)
-      : datatype(std::move(dtype)), value(varValue ? varValue->clone(false)->castTo<AbstractExpr>() : nullptr) {};
+      : datatype(std::move(dtype)), value(varValue ? varValue->clone()->castTo<AbstractExpr>() : nullptr) {};
 
   /// Copy constructor
   VariableValue(const VariableValue &vv)
-      : datatype(vv.datatype), value(vv.value ? vv.value->clone(false)->castTo<AbstractExpr>() : nullptr) {};
+      : datatype(vv.datatype), value(vv.value ? vv.value->clone()->castTo<AbstractExpr>() : nullptr) {};
 
   /// Move constructor
   VariableValue(VariableValue &&vv)  noexcept : datatype(std::move(vv.datatype)), value(std::move(vv.value)) {};
@@ -78,7 +78,7 @@ class VariableValue {
   VariableValue &operator=(const VariableValue &other) {
     datatype = other.datatype;
     if (other.value) {
-      value = std::unique_ptr<AbstractExpr>(other.value->clone(false)->castTo<AbstractExpr>());
+      value = std::unique_ptr<AbstractExpr>(other.value->clone()->castTo<AbstractExpr>());
     }
     return *this;
   };
@@ -88,7 +88,7 @@ class VariableValue {
 
   /// Creates a copy of the value!
   AbstractExpr *getValue() const {
-    return value ? value->clone(false)->castTo<AbstractExpr>() : nullptr;
+    return value ? value->clone()->castTo<AbstractExpr>() : nullptr;
   }
 
   Datatype getDatatype() {
@@ -96,7 +96,7 @@ class VariableValue {
   }
 
   void setValue(AbstractExpr *val) {
-    value = std::unique_ptr<AbstractExpr>(val->clone(false)->castTo<AbstractExpr>());
+    value = std::unique_ptr<AbstractExpr>(val->clone()->castTo<AbstractExpr>());
   }
 
   // Datatype is fixed, therefore no way to change this

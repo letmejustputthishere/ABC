@@ -13,7 +13,7 @@ class If : public AbstractStatement {
 
   ~If() override;
 
-  If *clone(bool keepOriginalUniqueNodeId) const override;
+  If *clone() const override;
 
   [[nodiscard]] json toJson() const override;
 

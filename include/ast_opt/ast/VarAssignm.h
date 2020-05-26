@@ -14,7 +14,7 @@ class VarAssignm : public AbstractStatement {
 
   ~VarAssignm() override;
 
-  VarAssignm *clone(bool keepOriginalUniqueNodeId) const override;
+  VarAssignm *clone() const override;
 
   [[nodiscard]] json toJson() const override;
 

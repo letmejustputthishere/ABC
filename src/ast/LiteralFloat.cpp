@@ -69,10 +69,8 @@ bool LiteralFloat::supportsDatatype(Datatype &datatype) {
   return datatype.getType()==Types::FLOAT;
 }
 
-LiteralFloat *LiteralFloat::clone(bool keepOriginalUniqueNodeId) const {
-  auto clonedNode = new LiteralFloat(matrix->clone(keepOriginalUniqueNodeId));
-  clonedNode->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedNode;
+LiteralFloat *LiteralFloat::clone() const {
+  return new LiteralFloat(matrix->clone());
 }
 
 bool LiteralFloat::isEqual(AbstractExpr *other) {

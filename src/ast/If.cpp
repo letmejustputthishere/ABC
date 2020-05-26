@@ -41,12 +41,10 @@ Block *If::getElseBranch() const {
 
 If::~If() = default;
 
-If *If::clone(bool keepOriginalUniqueNodeId) const {
-  auto clonedNode = new If(getCondition()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>(),
-                           getThenBranch()->clone(keepOriginalUniqueNodeId)->castTo<AbstractStatement>(),
-                           getElseBranch()->clone(keepOriginalUniqueNodeId)->castTo<AbstractStatement>());
-  clonedNode->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedNode;
+If *If::clone() const {
+  return new If(getCondition()->clone(),
+                getThenBranch()->clone(),
+                getElseBranch()->clone());
 }
 int If::getMaxNumberChildren() {
   return 3;

@@ -15,7 +15,7 @@ class Transpose : public AbstractExpr {
 
   void accept(Visitor &v) override;
 
-  Transpose *clone(bool keepOriginalUniqueNodeId) const override;
+  Transpose *clone() const override;
 
   [[nodiscard]] json toJson() const override;
 

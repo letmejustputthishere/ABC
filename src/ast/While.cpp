@@ -30,11 +30,8 @@ std::string While::getNodeType() const {
   return "While";
 }
 
-While *While::clone(bool keepOriginalUniqueNodeId) const {
-  auto clonedWhile = new While(getCondition()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>(),
-                               getBody()->clone(false)->castTo<AbstractStatement>());
-  clonedWhile->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedWhile;
+While *While::clone() const {
+  return new While(getCondition()->clone(), getBody()->clone());
 }
 
 void While::setAttributes(AbstractExpr *loopCondition, AbstractStatement *loopBody) {

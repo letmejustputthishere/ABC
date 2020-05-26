@@ -232,7 +232,7 @@ class Matrix : public AbstractMatrix {
   }
 
   Matrix<T> *rotate(int rotationFactor, bool inPlace) override {
-    Matrix<T> *matrixToRotate = inPlace ? this : clone(false);
+    Matrix<T> *matrixToRotate = inPlace ? this : clone();
     if (matrixToRotate->getDimensions().equals(1, -1)) {  // a row vector
       auto &vec = matrixToRotate->values[0];
       std::rotate(vec.begin(), computeRotationTarget(vec.begin(), vec.size(), rotationFactor), vec.end());
@@ -384,7 +384,7 @@ class Matrix : public AbstractMatrix {
     dim = newDim;
   }
 
-  Matrix<T> *clone(bool keepOriginalUniqueNodeId) const override {
+  Matrix<T> *clone() const override {
     // it's sufficient to call the copy constructor that creates a copy of all primitives (int, float, etc.)
     return new Matrix<T>(*this);
   }
@@ -591,7 +591,7 @@ template<>
 json Matrix<std::string>::toJson() const;
 
 template<>
-Matrix<AbstractExpr *> *Matrix<AbstractExpr *>::clone(bool keepOriginalUniqueNodeId) const;
+Matrix<AbstractExpr *> *Matrix<AbstractExpr *>::clone() const;
 
 template<>
 void Matrix<AbstractExpr *>::addElementToStringStream(AbstractExpr *elem, std::stringstream &s);

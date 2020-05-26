@@ -51,13 +51,11 @@ std::vector<AbstractExpr *> Return::getReturnExpressions() const {
   return vec;
 }
 
-Return *Return::clone(bool keepOriginalUniqueNodeId) const {
+Return *Return::clone() const {
   std::vector<AbstractExpr *> returnValues;
   for (auto &child : getReturnExpressions())
-    returnValues.push_back(child->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>());
-  auto clonedNode = new Return(returnValues);
-  clonedNode->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedNode;
+    returnValues.push_back(child->clone());
+  return new Return(returnValues);
 }
 
 std::string Return::toString(bool printChildren) const {

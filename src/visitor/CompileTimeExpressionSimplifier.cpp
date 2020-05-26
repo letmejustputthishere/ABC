@@ -65,7 +65,7 @@ void CompileTimeExpressionSimplifier::visit(Rotate &elem) {
     // we need a AbstractLiteral to be able to perform the rotation
     if (auto valAsAbstractLiteral = dynamic_cast<AbstractLiteral *>(val)) {
       // clone the AbstractLiteral (including its value)
-      auto clonedVal = valAsAbstractLiteral->clone(false)->castTo<AbstractLiteral>();
+      auto clonedVal = valAsAbstractLiteral->clone()->castTo<AbstractLiteral>();
       // perform rotation on the cloned literal
       clonedVal->getMatrix()->rotate(getKnownValue(elem.getRotationFactor())->castTo<LiteralInt>()->getValue(), true);
       // replace this Rotate node by a new node containing the rotated operand
@@ -84,7 +84,7 @@ void CompileTimeExpressionSimplifier::visit(Transpose &elem) {
     // we need a AbstractLiteral to be able to perform the rotation
     if (auto valAsAbstractLiteral = dynamic_cast<AbstractLiteral *>(val)) {
       // clone the AbstractLiteral (including its value)
-      auto clonedVal = valAsAbstractLiteral->clone(false)->castTo<AbstractLiteral>();
+      auto clonedVal = valAsAbstractLiteral->clone()->castTo<AbstractLiteral>();
       // perform transpose on the cloned literal
       clonedVal->getMatrix()->transpose(true);
       // replace this Rotate node by a new node containing the rotated operand
@@ -321,7 +321,7 @@ void CompileTimeExpressionSimplifier::visit(Variable &elem) {
   // if we know the variable's value (i.e., its value is either any subtype of AbstractLiteral or an AbstractExpr if
   // this is a symbolic value that defines on other variables), we can replace this variable node by its value
   if (auto value = variableValues.getVariableValueDeclaredInThisOrOuterScope(elem.getIdentifier(), curScope)) {
-    if (elem.hasParent()) elem.getParent()->replaceChild(&elem, value->clone(false));
+    if (elem.hasParent()) elem.getParent()->replaceChild(&elem, value->clone());
   }
 }
 
@@ -568,7 +568,7 @@ void CompileTimeExpressionSimplifier::visit(Call &elem) {
         auto nodeAsVariable = dynamic_cast<Variable *>(node);
         if (nodeAsVariable!=nullptr && varReplacementMap.count(nodeAsVariable->getIdentifier()) > 0) {
           node->getParent()->replaceChild(node,
-                                          varReplacementMap.at(nodeAsVariable->getIdentifier())->clone(false));
+                                          varReplacementMap.at(nodeAsVariable->getIdentifier())->clone());
         }
       }
 
@@ -910,7 +910,7 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
 
       // BODY
       if (elem.getBody()) {
-        Block *clonedBody = elem.getBody()->clone(false);
+        Block *clonedBody = elem.getBody()->clone();
         clonedBody->accept(loopCTES);
 
         // If there are any stmts left, transfer them to the unrolledBlock
@@ -924,7 +924,7 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
 
       // UPDATE
       if (elem.getUpdate()) {
-        Block *clonedUpdate = elem.getUpdate()->clone(false);
+        Block *clonedUpdate = elem.getUpdate()->clone();
         clonedUpdate->accept(loopCTES);
         // If there are any stmts left, transfer them to the unrolledBlock
         for (auto &s: clonedUpdate->getStatements()) {
@@ -1042,7 +1042,7 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
 //    }
 //    // temporarily add the condition such that the variables are replaced (e.g., i < 6 -> i+1 < 6 -> i+2 < 6 -> ...)
 //    // we use a Return statement here as it does not write anything into the variableValues map
-//    auto retStmt = new Return(elem.getCondition()->clone(false)->castTo<AbstractExpr>());
+//    auto retStmt = new Return(elem.getCondition()->clone());
 //    tempReturnStmts.push_back(retStmt);
 //    unrolledForLoopBody->addChild(retStmt);
 //
@@ -1190,8 +1190,7 @@ AbstractExpr *CompileTimeExpressionSimplifier::getKnownValue(AbstractNode *node)
     auto val = variableValues.getVariableValueDeclaredInThisOrOuterScope(nodeAsVariable->getIdentifier(), curScope);
     if (val!=nullptr) {
       // return a clone of the variable's value
-      auto pNode = val->clone(false);
-      return dynamic_cast<AbstractExpr *>(pNode);
+      return val->clone();
     }
   }
   // in any other case: throw an error
@@ -1231,20 +1230,20 @@ AbstractExpr *CompileTimeExpressionSimplifier::generateIfDependentValue(
     // return a cloned copy of trueValue because we cannot directly create a new object (e.g., LiteralInt) as we do
     // not exactly know which subtype of AbstractLiteral trueValue has
     // return "0" (where 0 is of the respective input type)
-    return trueValue->clone(false)->castTo<AbstractExpr>();
+    return trueValue->clone();
   }
 
   // check if exactly one of both values are null
   if (trueValueIsNull) {
     // factorIsFalse = [1-ifStatementCondition]
     auto factorIsFalse = new OperatorExpr(new Operator(ArithmeticOp::SUBTRACTION),
-                                          {new LiteralInt(1), condition->clone(false)->castTo<AbstractExpr>()});
+                                          {new LiteralInt(1), condition->clone()});
     // case: trueValue == 0 && falseValue != 0 => value is 0 if the condition is True
     // -> return (1-b)*falseValue
     return new OperatorExpr(new Operator(MULTIPLICATION), {factorIsFalse, falseValue});
   } else if (falseValueIsNull) {
     // factorIsTrue = ifStatementCondition
-    auto factorIsTrue = condition->clone(false)->castTo<AbstractExpr>();
+    auto factorIsTrue = condition->clone();
     // case: trueValue != 0 && falseValue == 0 => value is 0 if the condition is False
     // -> return condition * trueValue
     return new OperatorExpr(new Operator(ArithmeticOp::MULTIPLICATION), {factorIsTrue, trueValue});
@@ -1253,22 +1252,22 @@ AbstractExpr *CompileTimeExpressionSimplifier::generateIfDependentValue(
   // default case: trueValue != 0 && falseValue != 0 => value is changed in both branches of If statement
   // -> return condition*trueValue + (1-b)*falseValue.
   // factorIsTrue = ifStatementCondition
-  auto factorIsTrue = condition->clone(false)->castTo<AbstractExpr>();
+  auto factorIsTrue = condition->clone();
   // factorIsFalse = [1-ifStatementCondition]
   auto factorIsFalse = new OperatorExpr(new Operator(ArithmeticOp::SUBTRACTION),
-                                        {new LiteralInt(1), condition->clone(false)->castTo<AbstractExpr>()});
+                                        {new LiteralInt(1), condition->clone()});
   return new OperatorExpr(
       new Operator(ArithmeticOp::ADDITION),
       {new OperatorExpr(new Operator(ArithmeticOp::MULTIPLICATION),
-                        {factorIsTrue, trueValue->clone(false)->castTo<AbstractExpr>()}),
+                        {factorIsTrue, trueValue->clone()}),
        new OperatorExpr(new Operator(ArithmeticOp::MULTIPLICATION),
-                        {factorIsFalse, falseValue->clone(false)->castTo<AbstractExpr>()})});
+                        {factorIsFalse, falseValue->clone()})});
 }
 
 void CompileTimeExpressionSimplifier::appendVectorToMatrix(const std::string &variableIdentifier, int posIndex,
                                                            AbstractLiteral *matrixRowOrColumn) {
   auto pMatrix = matrixRowOrColumn->getMatrix();
-  AbstractMatrix *vec = pMatrix->clone(false);
+  AbstractMatrix *vec = pMatrix->clone();
 
   auto var = variableValues.getVariableEntryDeclaredInThisOrOuterScope(variableIdentifier, curScope);
 //  if (iterator->second->value==nullptr) {
@@ -1305,7 +1304,7 @@ void CompileTimeExpressionSimplifier::setMatrixVariableValue(const std::string &
   AbstractExpr *valueToStore = nullptr;
   if (matrixElementValue!=nullptr) {
     // clone the given value and detach it from its parent
-    valueToStore = matrixElementValue->clone(false)->castTo<AbstractExpr>();
+    valueToStore = matrixElementValue->clone();
     valueToStore->removeFromParent();
   }
 
@@ -1351,7 +1350,7 @@ void CompileTimeExpressionSimplifier::emitVariableDeclaration(ScopedVariable var
   if (varAsLiteral!=nullptr && !varAsLiteral->getMatrix()->getDimensions().equals(1, 1)) {
     newVarDeclaration = new VarDecl(variableToEmit.getIdentifier(),
                                     new Datatype(varValue.getDatatype()),
-                                    varValue.getValue()->clone(false));
+                                    varValue.getValue()->clone());
   } else {
     Datatype *d = new Datatype(varValue.getDatatype());
     newVarDeclaration = new VarDecl(variableToEmit.getIdentifier(), d);
@@ -1438,7 +1437,7 @@ std::set<VarAssignm *> CompileTimeExpressionSimplifier::emitVariableAssignment(S
 
   auto newVarAssignm = new VarAssignm(variableToEmit.getIdentifier(),
                                       variableValues.getVariableValue(variableToEmit).getValue()
-                                          ->clone(false)->castTo<AbstractExpr>());
+                                          ->clone());
   // add a reference in the list of the associated VarDecl
   emittedVariableDeclarations.at(variableToEmit)->addVarAssignm(newVarAssignm);
   // add a reference to link from this VarAssignm to the associated VarDecl

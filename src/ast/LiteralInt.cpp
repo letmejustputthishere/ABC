@@ -68,10 +68,8 @@ std::string LiteralInt::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {matrix->toString()});
 }
 
-LiteralInt *LiteralInt::clone(bool keepOriginalUniqueNodeId) const {
-  auto clonedNode = new LiteralInt(matrix->clone(keepOriginalUniqueNodeId));
-  clonedNode->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedNode;
+LiteralInt *LiteralInt::clone() const {
+  return new LiteralInt(matrix->clone());
 }
 
 bool LiteralInt::isEqual(AbstractExpr *other) {

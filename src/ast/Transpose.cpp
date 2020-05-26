@@ -18,10 +18,8 @@ AbstractExpr *Transpose::getOperand() const {
   return dynamic_cast<AbstractExpr *>(children.at(0));
 }
 
-Transpose *Transpose::clone(bool keepOriginalUniqueNodeId) const {
-  auto clonedNode = new Transpose(getOperand()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>());
-  clonedNode->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedNode;
+Transpose *Transpose::clone() const {
+  return new Transpose(getOperand()->clone());
 }
 
 json Transpose::toJson() const {

@@ -55,11 +55,8 @@ std::vector<std::string> FunctionParameter::getVariableIdentifiers() {
 std::vector<Variable *> FunctionParameter::getVariables() {
   return getValue()->getVariables();
 }
-FunctionParameter *FunctionParameter::clone(bool keepOriginalUniqueNodeId) const {
-  auto clonedNode = new FunctionParameter(this->getDatatype()->clone(keepOriginalUniqueNodeId)->castTo<Datatype>(),
-                                          this->getValue()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>());
-  clonedNode->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedNode;
+FunctionParameter *FunctionParameter::clone() const {
+  return new FunctionParameter(this->getDatatype()->clone(), this->getValue()->clone());
 }
 
 int FunctionParameter::getMaxNumberChildren() {

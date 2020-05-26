@@ -58,7 +58,7 @@ struct VarValuesEntry {
 
   VarValuesEntry &operator=(const VarValuesEntry &other) {
     ctxt = new Ciphertext(*other.ctxt);
-    expr = other.expr->clone(false)->castTo<AbstractExpr>();
+    expr = other.expr->clone();
     return *this;
   }
 

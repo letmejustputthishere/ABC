@@ -46,9 +46,8 @@ void Rotate::accept(Visitor &v) {
   v.visit(*this);
 }
 
-Rotate *Rotate::clone(bool keepOriginalUniqueNodeId) const {
-  return new Rotate(getOperand()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>(),
-                    getRotationFactor()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>());
+Rotate *Rotate::clone() const {
+  return new Rotate(getOperand()->clone(), getRotationFactor()->clone());
 }
 
 void Rotate::setAttributes(AbstractExpr *pExpr, AbstractExpr *rotationFactor) {

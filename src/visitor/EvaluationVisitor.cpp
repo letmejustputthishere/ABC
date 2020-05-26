@@ -273,7 +273,7 @@ void EvaluationVisitor::visit(Rotate &elem) {
   if (rotationFactor==nullptr || operand==nullptr) return;
 
   // rotate the Literal in-place by using a copy of the operand
-  auto clonedOperand = operand->clone(false)->castTo<AbstractLiteral>();
+  auto clonedOperand = operand->clone()->castTo<AbstractLiteral>();
   clonedOperand->getMatrix()->rotate(rotationFactor->getValue(), true);
   results.push({clonedOperand});
 }
@@ -281,7 +281,7 @@ void EvaluationVisitor::visit(Rotate &elem) {
 void EvaluationVisitor::visit(Transpose &elem) {
   // visit the operand: we need to evaluate it as it can be an expression itself, e.g., transpose([1,2,3]+[2,3,1])
   elem.getOperand()->accept(*this);
-  auto operand = getOnlyEvaluationResult(results.top())->clone(false)->castTo<AbstractLiteral>();
+  auto operand = getOnlyEvaluationResult(results.top())->clone()->castTo<AbstractLiteral>();
   results.pop();
   // rotate the cloned Literal in-place
   operand->getMatrix()->transpose(true);

@@ -24,7 +24,7 @@ class LiteralBool : public AbstractLiteral {
 
   ~LiteralBool() override;
 
-  LiteralBool *clone(bool keepOriginalUniqueNodeId) const override;
+  LiteralBool *clone() const override;
 
   [[nodiscard]] json toJson() const override;
 

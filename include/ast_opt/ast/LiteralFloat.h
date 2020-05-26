@@ -25,7 +25,7 @@ class LiteralFloat : public AbstractLiteral {
 
   ~LiteralFloat() override;
 
-  LiteralFloat *clone(bool keepOriginalUniqueNodeId) const override;
+  LiteralFloat *clone() const override;
 
   [[nodiscard]] float getValue() const;
 

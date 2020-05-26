@@ -23,13 +23,10 @@ AbstractNode *LogicalExpr::cloneFlat() {
   return clonedLexp;
 }
 
-LogicalExpr *LogicalExpr::clone(bool keepOriginalUniqueNodeId) const {
-  auto clonedLogicalExpr =
-      new LogicalExpr(getLeft()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>(),
-                      getOperator()->clone(keepOriginalUniqueNodeId)->castTo<Operator>(),
-                      getRight()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>());
-  clonedLogicalExpr->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedLogicalExpr;
+LogicalExpr *LogicalExpr::clone() const {
+  return new LogicalExpr(getLeft()->clone(),
+                         getOperator()->clone(),
+                         getRight()->clone());
 }
 
 std::string LogicalExpr::toString(bool printChildren) const {

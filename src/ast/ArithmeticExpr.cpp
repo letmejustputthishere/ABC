@@ -24,12 +24,10 @@ std::string ArithmeticExpr::getNodeType() const {
 
 ArithmeticExpr::~ArithmeticExpr() = default;
 
-ArithmeticExpr *ArithmeticExpr::clone(bool keepOriginalUniqueNodeId) const {
-  auto clonedNode = new ArithmeticExpr(this->getLeft()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>(),
-                                       this->getOperator()->clone(keepOriginalUniqueNodeId)->castTo<Operator>(),
-                                       this->getRight()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>());
-  clonedNode->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedNode;
+ArithmeticExpr *ArithmeticExpr::clone() const {
+  return new ArithmeticExpr(this->getLeft()->clone(),
+                            this->getOperator()->clone(),
+                            this->getRight()->clone());
 }
 std::string ArithmeticExpr::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});

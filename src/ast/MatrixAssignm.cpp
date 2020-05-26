@@ -56,13 +56,8 @@ AbstractExpr *MatrixAssignm::getValue() const {
   return dynamic_cast<AbstractExpr *>(children.at(1));
 }
 
-AbstractNode *MatrixAssignm::clone(bool keepOriginalUniqueNodeId) const {
-  auto clonedMatrixAssigm = new MatrixAssignm(
-      getAssignmTarget()->clone(keepOriginalUniqueNodeId)->castTo<MatrixElementRef>(),
-      getValue()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>());
-
-  clonedMatrixAssigm->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedMatrixAssigm;
+MatrixAssignm *MatrixAssignm::clone() const {
+  return new MatrixAssignm(getAssignmTarget()->clone(), getValue()->clone());
 }
 
 json MatrixAssignm::toJson() const {

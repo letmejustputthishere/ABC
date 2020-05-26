@@ -36,14 +36,12 @@ void MatrixElementRef::accept(Visitor &v) {
   v.visit(*this);
 }
 
-AbstractExpr *MatrixElementRef::clone(bool keepOriginalUniqueNodeId) const {
-  auto clonedNode = new MatrixElementRef(
-      getOperand()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>(),
-      getRowIndex()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>(),
+MatrixElementRef *MatrixElementRef::clone() const {
+  return new MatrixElementRef(
+      getOperand()->clone(),
+      getRowIndex()->clone(),
       getColumnIndex()==nullptr ? nullptr :
-      getColumnIndex()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>());
-  clonedNode->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedNode;
+      getColumnIndex()->clone());
 }
 
 json MatrixElementRef::toJson() const {

@@ -42,7 +42,7 @@ void RuntimeVisitor::visit(For &elem) {
   if (elem.getInitializer()!=nullptr) elem.getInitializer()->accept(*ev);
   for (; conditionIsTrue();) {
     // note: create clones that have the same uniqueNodeId as otherwise the secret tainting IDs won't match anymore
-    auto clonedBlock = elem.getBody()->clone(true);
+    auto clonedBlock = elem.getBody()->clone();
     clonedBlock->accept(*this);
     delete clonedBlock;
     if (elem.getUpdate()!=nullptr) elem.getUpdate()->accept(*ev);
@@ -152,7 +152,7 @@ void RuntimeVisitor::visit(MatrixAssignm &elem) {
   if (visitingForEvaluation==ANALYSIS) {
     // after the analysis pass the MatrixAssignm's value will already be modified (e.g., MatrixElementRef indices
     // replaced by LiteralInts) thus we only make this copy while visiting this node for the first time
-    lastVisitedStatement = elem.clone(true)->castTo<AbstractStatement>();
+    lastVisitedStatement = elem.clone()->castTo<AbstractStatement>();
   }
 
   // visit the right-hand side of the MatrixAssignm
@@ -515,7 +515,7 @@ void RuntimeVisitor::visit(Variable &elem) {
     }
   } else {
     // TODO: Retrieve value from EvaluationVisitor's map (getVarValue).
-    elem.getParent()->replaceChild(&elem, ev->getVarValue(elem.getIdentifier())->clone(true));
+    elem.getParent()->replaceChild(&elem, ev->getVarValue(elem.getIdentifier())->clone());
   }
 }
 

@@ -34,7 +34,7 @@ class GetMatrixSize : public AbstractExpr {
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  AbstractExpr *clone(bool keepOriginalUniqueNodeId) const override;
+  GetMatrixSize *clone() const override;
 
   [[nodiscard]] AbstractExpr *getMatrixOperand() const;
 

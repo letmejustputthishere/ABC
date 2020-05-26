@@ -252,6 +252,3 @@ std::string AbstractNode::toString(bool) const {
   throw std::runtime_error("toString not implemented for class " + getNodeType() + ".");
 }
 
-void AbstractNode::updateClone(bool keepOriginalUniqueNodeId, const AbstractNode *originalNode) {
-  if (keepOriginalUniqueNodeId) setUniqueNodeId(originalNode->getUniqueNodeId());
-}

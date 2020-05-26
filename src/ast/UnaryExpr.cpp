@@ -42,12 +42,10 @@ void UnaryExpr::setAttributes(UnaryOp op, AbstractExpr *expr) {
   addChildren(nodesToBeAdded);
 }
 
-UnaryExpr *UnaryExpr::clone(bool keepOriginalUniqueNodeId) const {
+UnaryExpr *UnaryExpr::clone() const {
   try {
-    auto clonedNode = new UnaryExpr(std::get<UnaryOp>(this->getOperator()->getOperatorSymbol()),
-                                    this->getRight()->clone(keepOriginalUniqueNodeId)->castTo<AbstractExpr>());
-    clonedNode->updateClone(keepOriginalUniqueNodeId, this);
-    return clonedNode;
+    return new UnaryExpr(std::get<UnaryOp>(this->getOperator()->getOperatorSymbol()),
+                         this->getRight()->clone());
   } catch (std::bad_variant_access &exc) {
     throw std::runtime_error(
         "Failed to clone UnaryExpr - unexpected Operator encountered! Expected operator of Enum UnaryOp.");
@@ -73,7 +71,7 @@ std::vector<Variable *> UnaryExpr::getVariables() {
   return getRight()->getVariables();
 }
 void UnaryExpr::setOperator(Operator *newOperator) {
-    //TODO remove old
-    children[0] = newOperator;
-    newOperator->setParent(this);
+  //TODO remove old
+  children[0] = newOperator;
+  newOperator->setParent(this);
 }

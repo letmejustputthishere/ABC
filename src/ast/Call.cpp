@@ -42,16 +42,12 @@ std::vector<FunctionParameter *> Call::getArguments() const {
   return dynamic_cast<ParameterList *>(children.at(0))->getParameters();
 }
 
-AbstractExpr *Call::clone(bool keepOriginalUniqueNodeId) const{
+Call *Call::clone() const {
   std::vector<FunctionParameter *> clonedArgs;
   for (auto &arg : getArguments()) {
-    clonedArgs.push_back(arg->clone(keepOriginalUniqueNodeId)->castTo<FunctionParameter>());
+    clonedArgs.push_back(arg->clone());
   }
-  auto clonedNode = static_cast<AbstractExpr *>(
-      new Call(clonedArgs, this->getFunc()->clone(keepOriginalUniqueNodeId)->castTo<Function>()));
-
-  clonedNode->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedNode;
+  return new Call(clonedArgs, this->getFunc()->clone());
 }
 
 void Call::setAttributes(std::vector<FunctionParameter *> functionCallParameters, Function *functionToBeCalled) {
@@ -68,9 +64,9 @@ ParameterList *Call::getParameterList() const {
 }
 std::vector<std::string> Call::getVariableIdentifiers() {
   std::vector<std::string> results;
-  for(auto &fp : getArguments()) {
+  for (auto &fp : getArguments()) {
     auto vec = fp->getVariableIdentifiers();
-    if(!vec.empty()) {
+    if (!vec.empty()) {
       results.insert(results.end(), vec.begin(), vec.end());
     }
   }
@@ -78,10 +74,10 @@ std::vector<std::string> Call::getVariableIdentifiers() {
 }
 
 std::vector<Variable *> Call::getVariables() {
-  std::vector<Variable*> results;
-  for(auto &fp : getArguments()) {
+  std::vector<Variable *> results;
+  for (auto &fp : getArguments()) {
     auto vec = fp->getVariables();
-    if(!vec.empty()) {
+    if (!vec.empty()) {
       results.insert(results.end(), vec.begin(), vec.end());
     }
   }

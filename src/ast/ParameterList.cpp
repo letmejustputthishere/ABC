@@ -9,14 +9,13 @@ void ParameterList::accept(Visitor &v) {
   v.visit(*this);
 }
 
-ParameterList *ParameterList::clone(bool keepOriginalUniqueNodeId) const {
+ParameterList *ParameterList::clone() const {
   auto childrenCopy = children;
   for (auto &c: childrenCopy) {
-    c = c->clone(keepOriginalUniqueNodeId);
+    c = c->clone();
   }
   auto clonedNode = new ParameterList();
   clonedNode->addChildren(childrenCopy);
-  clonedNode->updateClone(keepOriginalUniqueNodeId, this);
   return clonedNode;
 }
 

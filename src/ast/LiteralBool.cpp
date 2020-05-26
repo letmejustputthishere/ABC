@@ -66,10 +66,8 @@ bool LiteralBool::supportsDatatype(Datatype &datatype) {
   return datatype.getType()==Types::BOOL;
 }
 
-LiteralBool *LiteralBool::clone(bool keepOriginalUniqueNodeId) const {
-  auto clonedNode = new LiteralBool(matrix->clone(keepOriginalUniqueNodeId));
-  clonedNode->updateClone(keepOriginalUniqueNodeId, this);
-  return clonedNode;
+LiteralBool *LiteralBool::clone() const {
+  return new LiteralBool(matrix->clone());
 }
 
 bool LiteralBool::isEqual(AbstractExpr *other) {

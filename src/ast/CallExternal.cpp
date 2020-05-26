@@ -34,13 +34,12 @@ std::string CallExternal::getNodeType() const {
   return "CallExternal";
 }
 
-AbstractExpr *CallExternal::clone(bool keepOriginalUniqueNodeId) const {
+CallExternal *CallExternal::clone() const {
   std::vector<FunctionParameter *> args;
   for (auto &fp : this->getArguments()) {
-    args.push_back(fp->clone(keepOriginalUniqueNodeId)->castTo<FunctionParameter>());
+    args.push_back(fp->clone());
   }
-  auto clonedCallExt = new CallExternal(getFunctionName(), args);
-  return clonedCallExt;
+  return new CallExternal(getFunctionName(), args);
 }
 std::vector<std::string> CallExternal::getVariableIdentifiers() {
   std::vector<std::string> results;
@@ -54,7 +53,7 @@ std::vector<std::string> CallExternal::getVariableIdentifiers() {
 }
 
 std::vector<Variable *> CallExternal::getVariables() {
-  std::vector<Variable*> results;
+  std::vector<Variable *> results;
   for (auto &fp : getArguments()) {
     auto vec = fp->getVariables();
     if (!vec.empty()) {
