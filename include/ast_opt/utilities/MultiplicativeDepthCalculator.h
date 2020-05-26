@@ -33,24 +33,24 @@ class MultiplicativeDepthCalculator {
   /// [Aubry, P. et al.: Faster Homomorphic Encryption Is Not Enough: Improved Heuristic for Multiplicative Depth
   ///  Minimization of Boolean Circuits. (2019)].
   /// \return The multiplicative depth of the current node.
-  int getMultDepthL(AbstractNode *n);
+  int getMultDepthL(const AbstractNode *n);
 
   /// Determine the value of this node for computing the multiplicative depth and reverse multiplicative depth,
   /// getMultDepthL() and getReverseMultDepthR(), respectively.
   /// \return Returns 1 iff this node is a LogicalExpr containing an AND operator, otherwise 0.
-  static int depthValue(AbstractNode *n);
+  static int depthValue(const AbstractNode *n);
 
   /// Calculates the reverse multiplicative depth based on the definition given in
   /// [Aubry, P. et al.: Faster Homomorphic Encryption Is Not Enough: Improved Heuristic for Multiplicative Depth
   ///  Minimization of Boolean Circuits. (2019)].
   /// \return The reverse multiplicative depth of the current node.
-  int getReverseMultDepthR(AbstractNode *n);
+  int getReverseMultDepthR(const AbstractNode *n);
 
   void precomputeMultDepths(Ast &ast);
 
   int getMaximumMultiplicativeDepth();
 
-  DepthMapEntry getInitialDepthOrNull(AbstractNode *node);
+  DepthMapEntry getInitialDepthOrNull(const AbstractNode *node);
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_UTILITIES_MULTIPLICATIVEDEPTHCALCULATOR_H_

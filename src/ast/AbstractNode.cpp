@@ -40,13 +40,12 @@ void AbstractNode::resetNodeIdCounter() {
   AbstractNode::nodeIdCounter = 0;
 }
 
-
-std::vector<AbstractNode *> AbstractNode::getChildrenNonNull() const {
-  std::vector<AbstractNode *> childrenFiltered;
+std::vector<const AbstractNode *> AbstractNode::getChildrenNonNull() const {
+  std::vector<const AbstractNode *> childrenFiltered;
   auto children = getChildren();
   if (children.empty()) return childrenFiltered;
   std::copy_if(children.begin(), children.end(), std::back_inserter(childrenFiltered),
-               [](AbstractNode *n) { return n!=nullptr; });
+               [](const AbstractNode *n) { return n!=nullptr; });
   return childrenFiltered;
 }
 
@@ -103,10 +102,10 @@ void AbstractNode::setParent(AbstractNode *newParent) {
 }
 
 void AbstractNode::removeFromParent() {
-  if(!parent) {
+  if (!parent) {
     throw std::logic_error("Cannot remove node from parent, since node does not have a parent!");
   } else {
-   throw std::runtime_error("NOT IMPLEMENTED");
+    throw std::runtime_error("NOT IMPLEMENTED");
   }
 }
 
@@ -170,12 +169,31 @@ std::vector<AbstractNode *> AbstractNode::getDescendants() {
   while (!processQueue.empty()) {
     auto curNode = processQueue.front();
     processQueue.pop();
-    for (auto &node : curNode->getChildrenNonNull()) {
-      result.insert(node);
-      processQueue.push(node);
+    for (auto &node : curNode->getChildren()) {
+      if (node) {
+        result.insert(node);
+        processQueue.push(node);
+      }
     }
   }
   return std::vector<AbstractNode *>(result.begin(), result.end());
+}
+
+std::vector<const AbstractNode *> AbstractNode::getDescendants() const {
+  // use a set to avoid duplicates as there may be common descendants between this node and any of the node's children
+  std::set<const AbstractNode *> result;
+  std::queue<const  AbstractNode *> processQueue{{this}};
+  while (!processQueue.empty()) {
+    auto curNode = processQueue.front();
+    processQueue.pop();
+    for (auto &node : curNode->getChildren()) {
+      if (node) {
+        result.insert(node);
+        processQueue.push(node);
+      }
+    }
+  }
+  return std::vector<const AbstractNode *>(result.begin(), result.end());
 }
 
 AbstractNode::~AbstractNode() = default;

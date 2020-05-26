@@ -42,11 +42,11 @@ class Ast {
 
   virtual void accept(Visitor &v);
 
-  std::vector<AbstractLiteral *>
-  evaluateAst(const std::unordered_map<std::string, AbstractLiteral *> &paramValues, bool printResult = false);
+  std::vector<const AbstractLiteral *>
+  evaluateAst(const std::unordered_map<std::string, const AbstractLiteral *> &paramValues, bool printResult = false);
 
-  std::vector<AbstractLiteral *>
-  evaluateCircuit(const std::unordered_map<std::string, AbstractLiteral *> &paramValues, bool printResult = false);
+  std::vector<const AbstractLiteral *>
+  evaluateCircuit(const std::unordered_map<std::string, const AbstractLiteral *> &paramValues, bool printResult = false);
 
   /// Checks whether the AST (more specifically, all of the AST's edges) are reversed.
   /// \return True iff all edges of the AST are reversed, otherwise false.
@@ -54,12 +54,12 @@ class Ast {
 
   /// Traverses the tree in BFS-style and collects all the nodes of the AST.
   /// \return A list of all nodes reachable from the AST's root node.
-  [[nodiscard]] std::set<AbstractNode *> getAllNodes() const;
+  [[nodiscard]] std::set<const AbstractNode *> getAllNodes() const;
 
   /// Traverses the tree in BFS-style and collects all the nodes of the AST for that the predicate returns True.
   /// \param predicate A function that takes a AbstractNode* and returns True if this node should be returned, otherwise False.
   /// \return A list of all nodes reachable from the AST's root node.
-  std::set<AbstractNode *> getAllNodes(const std::function<bool(AbstractNode *)> &predicate) const;
+  std::set<const AbstractNode *> getAllNodes(const std::function<bool(const AbstractNode *)> &predicate) const;
 
   /// Deletes a node from the AST.
   /// \param node The node to delete from the AST.

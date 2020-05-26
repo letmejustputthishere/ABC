@@ -11,7 +11,7 @@
 
 class EvaluationVisitor : public Visitor {
  private:
-  typedef std::vector<AbstractLiteral *> result_t;
+  typedef std::vector<const AbstractLiteral *> result_t;
 
   /// Determines whether getResults should also print the results to stdout.
   bool flagPrintResult{false};
@@ -25,20 +25,20 @@ class EvaluationVisitor : public Visitor {
   /// \param evaluationResult The vector of AbstractLiteral pointers to be tested.
   /// \return The single AbstractLiteral pointer, otherwise throws an exception.
   /// \throws std::logic_error if more than one element is in the vector of AbstractLiteral pointers.
-  static AbstractLiteral *getOnlyEvaluationResult(std::vector<AbstractLiteral *> evaluationResult);
+  static const AbstractLiteral *getOnlyEvaluationResult(const std::vector<const AbstractLiteral *> &evaluationResult);
 
   /// This map stores the variables values and serves as lookup table and central storage during the evaluation process.
   /// - std::string: The variable identifier.
   /// - AbstractLiteral*: The evaluated value of the variable.
-  std::unordered_map<std::string, AbstractLiteral *> variableValuesForEvaluation;
+  std::unordered_map<std::string, const AbstractLiteral *> variableValuesForEvaluation;
 
   /// Updates the value of the variable identified by a given identifier variableIdentifier, by a new value (newValue).
   /// \param variableIdentifier The variable to be updated.
   /// \param newValue The new value to be assigned to the variable.
-  void updateVarValue(const std::string &variableIdentifier, AbstractLiteral *newValue);
+  void updateVarValue(const std::string &variableIdentifier, const AbstractLiteral *newValue);
 
  public:
-  explicit EvaluationVisitor(std::unordered_map<std::string, AbstractLiteral *> funcCallParameterValues);
+  explicit EvaluationVisitor(std::unordered_map<std::string, const AbstractLiteral *> funcCallParameterValues);
 
   EvaluationVisitor();
 
@@ -102,7 +102,7 @@ class EvaluationVisitor : public Visitor {
 
   void visit(GetMatrixSize &elem) override;
 
-  const std::vector<AbstractLiteral *> &getResults();
+  const std::vector<const AbstractLiteral *> &getResults();
 
   void setFlagPrintResult(bool printResult);
 
@@ -113,10 +113,10 @@ class EvaluationVisitor : public Visitor {
   /// Returns the value in variableValuesForEvaluation for a given variable identifier.
   /// \param variableIdentifier The identifier of which the value should be determined.
   /// \return The variable's value.
-  AbstractLiteral *getVarValue(const std::string &variableIdentifier);
+  const AbstractLiteral *getVarValue(const std::string &variableIdentifier);
 
   template<typename T, typename U>
-  Matrix<T> *evaluateAbstractExprMatrix(EvaluationVisitor &ev, AbstractMatrix &mx);
+  Matrix<T> *evaluateAbstractExprMatrix(EvaluationVisitor &ev, const AbstractMatrix &mx);
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_VISITOR_EVALUATIONVISITOR_H_

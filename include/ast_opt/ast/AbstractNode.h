@@ -63,12 +63,17 @@ class AbstractNode {
 
   /// Returns a vector of pointers to children nodes but without those children that are nullptr.
   /// \return A vector of non-nullptr children.
-  [[nodiscard]] std::vector<AbstractNode *> getChildrenNonNull() const;
+  [[nodiscard]] std::vector<const AbstractNode *> getChildrenNonNull() const;
 
   /// Returns all the descendants nodes of the current node, i.e., the children of the children and the children of
   /// their children et cetera.
   /// \return A list of descendant nodes.
   std::vector<AbstractNode *> getDescendants();
+
+  /// Returns all the descendants nodes of the current node, i.e., the children of the children and the children of
+  /// their children et cetera.
+  /// \return A list of descendant nodes.
+  std::vector<const AbstractNode *> getDescendants() const;
 
   /// Removes all children from this node. Note: Does not update the child's parent.
   virtual void removeChildren() = 0;

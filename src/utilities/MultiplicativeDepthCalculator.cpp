@@ -5,23 +5,23 @@
 #include "ast_opt/ast/LogicalExpr.h"
 #include "ast_opt/ast/Variable.h"
 
-int MultiplicativeDepthCalculator::depthValue(AbstractNode *n) {
-  if (auto lexp = dynamic_cast<LogicalExpr *>(n)) {
+int MultiplicativeDepthCalculator::depthValue(const AbstractNode *n) {
+  if (auto lexp = dynamic_cast<const LogicalExpr *>(n)) {
     // the multiplicative depth considers logical AND nodes only
     return (lexp->getOperator()!=nullptr && lexp->getOperator()->equals(LogCompOp::LOGICAL_AND));
   }
   return 0;
 }
 
-DepthMapEntry MultiplicativeDepthCalculator::getInitialDepthOrNull(AbstractNode *node) {
-  auto nodeAsVar = dynamic_cast<Variable *>(node);
+DepthMapEntry MultiplicativeDepthCalculator::getInitialDepthOrNull(const AbstractNode *node) {
+  auto nodeAsVar = dynamic_cast<const Variable *>(node);
   if (nodeAsVar!=nullptr && initialMultiplicativeDepths.count(nodeAsVar->getIdentifier()) > 0) {
     return initialMultiplicativeDepths.at(nodeAsVar->getIdentifier());
   }
   return DepthMapEntry(0, 0);
 }
 
-int MultiplicativeDepthCalculator::getMultDepthL(AbstractNode *n) {
+int MultiplicativeDepthCalculator::getMultDepthL(const AbstractNode *n) {
   // check if we have calculated the multiplicative depth previously
   if (!multiplicativeDepths.empty()) {
     auto it = multiplicativeDepths.find(n->getUniqueNodeId());
@@ -54,7 +54,7 @@ int MultiplicativeDepthCalculator::getMultDepthL(AbstractNode *n) {
   return max;
 }
 
-int MultiplicativeDepthCalculator::getReverseMultDepthR(AbstractNode *n) {
+int MultiplicativeDepthCalculator::getReverseMultDepthR(const AbstractNode *n) {
   // check if we have calculated the reverse multiplicative depth previously
   if (!multiplicativeDepthsReversed.empty()) {
     auto it = multiplicativeDepthsReversed.find(n->getUniqueNodeId());
@@ -63,7 +63,7 @@ int MultiplicativeDepthCalculator::getReverseMultDepthR(AbstractNode *n) {
   }
 
   // we need to be aware whether this node (and its whole AST, hopefully) is reversed or not
-  auto nextNodesToConsider = std::vector<AbstractNode*>(1,n->getParent());
+  auto nextNodesToConsider = std::vector<const AbstractNode*>(1,n->getParent());
 
   // we need to compute the reverse multiplicative depth
   if (nextNodesToConsider.empty()) {

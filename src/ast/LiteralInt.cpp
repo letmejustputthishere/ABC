@@ -21,7 +21,7 @@ json LiteralInt::toJson() const {
   return j;
 }
 
-bool LiteralInt::supportsDatatype(Datatype &datatype) {
+bool LiteralInt::supportsDatatype(const Datatype &datatype) const {
   return datatype.getType()==Types::INT;
 }
 
@@ -52,7 +52,7 @@ bool LiteralInt::operator!=(const LiteralInt &rhs) const {
 }
 
 void LiteralInt::addLiteralValue(std::string identifier,
-                                 std::unordered_map<std::string, AbstractLiteral *> &paramsMap) {
+                                 std::unordered_map<std::string, const AbstractLiteral *> &paramsMap) {
   paramsMap.emplace(identifier, this);
 }
 

@@ -35,7 +35,7 @@ void RuntimeVisitor::visit(For &elem) {
     // visit the condition's expression
     elem.getCondition()->accept(*ev);
     // get the expression's evaluation result
-    auto cond = *dynamic_cast<LiteralBool *>(ev->getResults().front());
+    auto cond = *dynamic_cast<const LiteralBool *>(ev->getResults().front());
     return cond==LiteralBool(true);
   };
 
@@ -74,8 +74,8 @@ void RuntimeVisitor::visit(MatrixElementRef &elem) {
     // if row index is not a literal: evaluate expression
     expr->accept(*ev);
     auto evalResult = ev->getResults().front();
-    if (auto evalResultAsLInt = dynamic_cast<LiteralInt *>(evalResult)) {
-      expr->getParent()->replaceChild(expr, evalResultAsLInt);
+    if (auto evalResultAsLInt = dynamic_cast<const LiteralInt *>(evalResult)) {
+      expr->getParent()->replaceChild(expr, evalResultAsLInt->clone());
       return evalResultAsLInt->getValue();
     } else {
       throw std::runtime_error("MatrixElementRef row and column indices must evaluate to LiteralInt!");
@@ -104,7 +104,11 @@ void RuntimeVisitor::visit(MatrixElementRef &elem) {
 
 RuntimeVisitor::RuntimeVisitor(std::unordered_map<std::string, AbstractLiteral *> funcCallParameterValues)
     : visitingForEvaluation(ANALYSIS) {
-  ev = new EvaluationVisitor(std::move(funcCallParameterValues));
+  std::unordered_map<std::string, const AbstractLiteral *> m;
+  for (auto &i : funcCallParameterValues) {
+    m.insert(i);
+  }
+  ev = new EvaluationVisitor(std::move(m));
 }
 
 void RuntimeVisitor::registerMatrixAccess(const std::string &variableIdentifier, int rowIndex, int columnIndex) {
@@ -385,7 +389,7 @@ void RuntimeVisitor::visit(FunctionParameter &elem) {
     // transform the function parameter's value (need to be passed to RuntimeVisitor's constructor) from Matrix<int>
     // or Matrix<float> to Matrix<double> as ciphertexts currently only support Matrix<double>
     std::vector<double> mx;
-    auto value = ev->getVarValue(var->getIdentifier());
+    auto value = ev->getVarValue(var->getIdentifier())->clone();
     if (auto lint = dynamic_cast<LiteralInt *>(value)) {
       mx = transformToDoubleVector<int>(lint->getMatrix());
     } else if (auto lfloat = dynamic_cast<LiteralFloat *>(value)) {

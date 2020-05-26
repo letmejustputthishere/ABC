@@ -128,7 +128,7 @@ void SecretTaintingVisitor::visit(FunctionParameter &elem) {
     addTaintedVariableIdentifiers(varIdentifiers.begin(), varIdentifiers.end());
     // taint the Variable objects
     for (auto &child : elem.getChildrenNonNull()) {
-      auto childAsVariable = dynamic_cast<Variable *>(child);
+      auto childAsVariable = dynamic_cast<const Variable *>(child);
       if (childAsVariable!=nullptr
           && std::count(varIdentifiers.begin(), varIdentifiers.end(), childAsVariable->getIdentifier()) > 0) {
         addTaintedNode(child);
@@ -261,7 +261,7 @@ void SecretTaintingVisitor::addTaintedNodes(std::vector<AbstractNode *> nodesToA
                  });
 }
 
-void SecretTaintingVisitor::addTaintedNode(AbstractNode *n) {
+void SecretTaintingVisitor::addTaintedNode(const AbstractNode *n) {
   taintedNodes.insert(n->getUniqueNodeId());
 }
 

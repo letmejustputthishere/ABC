@@ -5,13 +5,8 @@
 #include "ast_opt/ast/VarDecl.h"
 
 json Block::toJson() const {
-  std::vector<AbstractStatement *> stmts;
-  stmts.reserve(countChildrenNonNull());
-  for (auto c : getChildrenNonNull()) {
-    stmts.push_back(dynamic_cast<AbstractStatement *>(c));
-  }
   json j = {{"type", getNodeType()},
-            {"statements", stmts}};
+            {"statements", getStatements()}};
   return j;
 }
 
@@ -25,7 +20,7 @@ Block::Block(std::vector<AbstractStatement *> statements) {
                            "If this is intended, use the parameter-less constructor instead.");
   }
   children = std::vector<AbstractNode *>(statements.begin(), statements.end());
-  for(auto &c: children) {
+  for (auto &c: children) {
     c->setParent(this);
   }
 }
@@ -41,7 +36,7 @@ std::string Block::getNodeType() const {
 std::vector<AbstractStatement *> Block::getStatements() const {
   std::vector<AbstractStatement *> stmts;
   stmts.reserve(countChildrenNonNull());
-  for (auto c : getChildrenNonNull()) {
+  for (auto c : getChildren()) {
     stmts.emplace_back(dynamic_cast<AbstractStatement *>(c));
   }
   return stmts;

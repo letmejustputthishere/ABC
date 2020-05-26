@@ -28,7 +28,7 @@ struct DotVertex {
   std::string multDepthString;
 
   // a reference to the node this DotVertex represents
-  AbstractNode *node{};
+  const AbstractNode *node{};
 
   void buildDetailsString() {
     std::string str = node->toString(false);
@@ -54,13 +54,13 @@ struct DotVertex {
   }
 
   std::string getFillColor() {
-    auto lexp = dynamic_cast<LogicalExpr *>(node);
+    auto lexp = dynamic_cast<const LogicalExpr *>(node);
     if (lexp==nullptr) return fillColor;
     return (lexp->getOperator()!=nullptr && lexp->getOperator()->equals(LogCompOp::LOGICAL_AND)) ? "red" : fillColor;
   }
 
   std::string getShape() {
-    return (dynamic_cast<AbstractStatement *>(node)!=nullptr ? "rect" : shape);
+    return (dynamic_cast<const AbstractStatement *>(node)!=nullptr ? "rect" : shape);
   }
 
   std::string getMultDepthsString() {
@@ -83,7 +83,7 @@ struct DotVertex {
   }
 
  public:
-  DotVertex(AbstractNode *node, bool showMultDepth, MultiplicativeDepthCalculator *mdc, bool showDetails) : node(node) {
+  DotVertex(const AbstractNode *node, bool showMultDepth, MultiplicativeDepthCalculator *mdc, bool showDetails) : node(node) {
     // show multiplicative depth in the tree nodes depending on parameter showMultDepth
     if (showMultDepth) buildMultDepthsString(*mdc);
     // show extra information if this node is a leaf node
@@ -110,7 +110,7 @@ struct DotEdge {
   std::string lhsArrow;
   std::string rhsArrow;
 
-  static std::string buildCommaSeparatedList(std::vector<AbstractNode *> vec) {
+  static std::string buildCommaSeparatedList(const std::vector<const AbstractNode *> &vec) {
     std::stringstream outputStr;
     for (auto ci = vec.begin(); ci!=vec.end(); ++ci) {
       outputStr << (*ci)->getUniqueNodeId();
@@ -129,7 +129,7 @@ struct DotEdge {
   }
 
  public:
-  DotEdge(AbstractNode *n) {
+  DotEdge(const AbstractNode *n) {
     lhsArrow = n->getUniqueNodeId();
     rhsArrow = buildCommaSeparatedList(n->getChildrenNonNull());
   }
@@ -166,11 +166,11 @@ class DotPrinter {
 
   DotPrinter &setMultiplicativeDepthsCalculator(MultiplicativeDepthCalculator &multiplicativeDepthCalculator);
 
-  std::string getDotFormattedString(AbstractNode *n);
+  std::string getDotFormattedString(const AbstractNode *n);
 
   void printAsDotFormattedGraph(Ast &ast);
 
-  void printAllReachableNodes(AbstractNode *pNode);
+  void printAllReachableNodes(const AbstractNode *pNode);
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_UTILITIES_DOTPRINTER_H_

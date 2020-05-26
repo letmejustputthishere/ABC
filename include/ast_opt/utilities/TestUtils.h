@@ -83,8 +83,8 @@ struct EvalPrinter {
     }
   }
 
-  void printEvaluationResults(const std::vector<AbstractLiteral *> &resultExpected,
-                              const std::vector<AbstractLiteral *> &resultRewrittenAst) {
+  void printEvaluationResults(const std::vector<const AbstractLiteral *> &resultExpected,
+                              const std::vector<const AbstractLiteral *> &resultRewrittenAst) {
     if (flagPrintEvaluationResult) {
       std::cout << "( ";
       for (auto &result : resultExpected) std::cout << result << ", ";
@@ -113,11 +113,16 @@ static void astOutputComparer(Ast &unmodifiedAst, Ast &rewrittenAst, unsigned in
   for (int i = 0; i < numTestRuns; i++) {
     // generate new parameter values
     rng.randomizeValues(evalParams);
+    std::unordered_map<std::string, const AbstractLiteral *> evalParamsNew;
+    evalParamsNew.reserve(evalParams.size());
+    for(auto &p : evalParams) {
+      evalParamsNew.insert(p);
+    }
 
     // evaluate both ASTs with previously generated params using the appropriate evaluate function for ASTs or circuits
-    std::vector<AbstractLiteral *> resultExpected, resultRewrittenAst;
-    resultExpected = unmodifiedAst.evaluateAst(evalParams, false);
-    resultRewrittenAst = rewrittenAst.evaluateAst(evalParams, false);
+    std::vector<const AbstractLiteral *> resultExpected, resultRewrittenAst;
+    resultExpected = unmodifiedAst.evaluateAst(evalParamsNew, false);
+    resultRewrittenAst = rewrittenAst.evaluateAst(evalParamsNew, false);
 
 
     // result plausability check
@@ -149,6 +154,12 @@ static void circuitOutputComparer(Ast &unmodifiedAst,
   auto isLiteralBool = [](const auto &mapEntry) {
     return (dynamic_cast<LiteralBool *>(mapEntry.second)!=nullptr);
   };
+
+  std::unordered_map<std::string, const AbstractLiteral *> evalParamsNew;
+  evalParamsNew.reserve(evalParams.size());
+  for(auto &p : evalParams) {
+    evalParamsNew.insert(p);
+  }
 
   // Check if we can perform exhaustive testing. We need to fall-back to randomized testing if:
   // - not all evalParams are LiteralBool (<=> there exists parameter other than type LiteralBool)
@@ -207,8 +218,8 @@ static void circuitOutputComparer(Ast &unmodifiedAst,
     // as long as there are combinations of input parameters we have not tested yet -> continue
     while (literalBoolCombinationGen.hasNextAndUpdate()) {
       // perform evaluation of both ASTs using current parameter set
-      auto resultExpected = unmodifiedAst.evaluateCircuit(evalParams, false);
-      auto resultRewrittenAst = rewrittenAst.evaluateCircuit(evalParams, false);
+      auto resultExpected = unmodifiedAst.evaluateCircuit(evalParamsNew, false);
+      auto resultRewrittenAst = rewrittenAst.evaluateCircuit(evalParamsNew, false);
 
       // result plausability check
       if (resultExpected.size()!=resultRewrittenAst.size())

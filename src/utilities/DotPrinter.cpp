@@ -30,15 +30,15 @@ DotPrinter::setMultiplicativeDepthsCalculator(MultiplicativeDepthCalculator &mul
   return *this;
 }
 
-std::string DotPrinter::getDotFormattedString(AbstractNode *n) {
+std::string DotPrinter::getDotFormattedString(const AbstractNode *n) {
   std::stringstream finalString;
 
   auto vec = n->getChildrenNonNull();
 
   // define criteria when to print node details
   auto printNodeDetailsCriterion = (vec.empty()    // if node is a tree leaf
-      || dynamic_cast<VarDecl *>(n)!=nullptr       // if node is a VarDecl (needed for the variable identifier)
-      || dynamic_cast<VarAssignm *>(n)!=nullptr);  // if node is a VarAssignm (needed for the variable identifier)
+      || dynamic_cast<const VarDecl *>(n)!=nullptr       // if node is a VarDecl (needed for the variable identifier)
+      || dynamic_cast<const VarAssignm *>(n)!=nullptr);  // if node is a VarAssignm (needed for the variable identifier)
   finalString << DotVertex(n, this->showMultDepth, this->mdc, printNodeDetailsCriterion)
       .buildVertexString(this->indentationCharacter);
 
@@ -52,22 +52,22 @@ std::string DotPrinter::getDotFormattedString(AbstractNode *n) {
 
 void DotPrinter::printAsDotFormattedGraph(Ast &ast) {
   *outputStream << "digraph D {" << std::endl;
-  std::deque<std::pair<AbstractNode *, int>> q;
+  std::deque<std::pair<const AbstractNode *, int>> q;
   q.emplace_back(ast.getRootNode(), 1);
   while (!q.empty()) {
     auto curNode = q.front().first;
     auto il = q.front().second;
     q.pop_front();
     *outputStream << getDotFormattedString(curNode);
-    auto nodes = (ast.isReversed()) ? std::vector<AbstractNode *>(1, curNode->getParent()) : curNode->getChildrenNonNull();
+    auto nodes = (ast.isReversed()) ? std::vector<const AbstractNode *>(1, curNode->getParent()) : curNode->getChildrenNonNull();
     for (auto &n : nodes) q.emplace_front(n, il + 1);
   }
   *outputStream << "}" << std::endl;
 }
 
-void DotPrinter::printAllReachableNodes(AbstractNode *pNode) {
-  std::set<AbstractNode *> printedNodes;
-  std::queue<AbstractNode *> q{{pNode}};
+void DotPrinter::printAllReachableNodes(const AbstractNode *pNode) {
+  std::set<const AbstractNode *> printedNodes;
+  std::queue<const AbstractNode *> q{{pNode}};
   while (!q.empty()) {
     auto curNode = q.front();
     q.pop();

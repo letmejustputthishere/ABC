@@ -25,7 +25,7 @@ class Dimension {
 
   friend std::ostream &operator<<(std::ostream &os, const Dimension &dimension);
 
-  bool isValidAccess(int row, int column);
+  bool isValidAccess(int row, int column) const;
 
   [[nodiscard]] bool equals(int rows, int columns) const;
 

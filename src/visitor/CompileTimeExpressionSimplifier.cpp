@@ -1176,7 +1176,11 @@ std::vector<AbstractLiteral *> CompileTimeExpressionSimplifier::evaluateNodeRecu
   node->accept(evalVisitor);
 
   // retrieve and return results
-  return evalVisitor.getResults();
+  std::vector<AbstractLiteral *> clonedres;
+  for (auto &r :evalVisitor.getResults()) {
+    clonedres.emplace_back(r->clone());
+  }
+  return clonedres;
 }
 
 AbstractExpr *CompileTimeExpressionSimplifier::getKnownValue(AbstractNode *node) {
@@ -1497,7 +1501,7 @@ void CompileTimeExpressionSimplifier::enteredForLoop() {
 
 void CompileTimeExpressionSimplifier::cleanUpBlock(Block &elem) {
   // Since some children might have replaced themselves with nullptr, let's collect only the valid children
-  auto newChildren = elem.getChildrenNonNull();
+  auto newChildren = elem.getChildren();
   if (newChildren.empty()
       && elem.hasParent()) { //sometimes, e.g. in loop unrolling, a block might not yet have a parent!
     // Block is empty => remove it from parents

@@ -234,37 +234,37 @@ bool Matrix<std::string>::isScalar() const {
 // - Matrix<AbstractExpr*>
 
 template<>
-AbstractExpr *Matrix<int>::getElementAt(int row, int column) {
+AbstractExpr *Matrix<int>::getElementAt(int row, int column) const {
   boundCheckMatrixAccess(row, column);
   return new LiteralInt(values[row][column]);
 }
 
 template<>
-AbstractExpr *Matrix<float>::getElementAt(int row, int column) {
+AbstractExpr *Matrix<float>::getElementAt(int row, int column) const {
   boundCheckMatrixAccess(row, column);
   return new LiteralFloat(values[row][column]);
 }
 
 template<>
-AbstractExpr *Matrix<bool>::getElementAt(int row, int column) {
+AbstractExpr *Matrix<bool>::getElementAt(int row, int column) const {
   boundCheckMatrixAccess(row, column);
   return new LiteralBool(values[row][column]);
 }
 
 template<>
-AbstractExpr *Matrix<double>::getElementAt(int row, int column) {
+AbstractExpr *Matrix<double>::getElementAt(int row, int column) const {
   boundCheckMatrixAccess(row, column);
   return new LiteralFloat(values[row][column]);
 }
 
 template<>
-AbstractExpr *Matrix<std::string>::getElementAt(int row, int column) {
+AbstractExpr *Matrix<std::string>::getElementAt(int row, int column) const {
   boundCheckMatrixAccess(row, column);
   return new LiteralString(values[row][column]);
 }
 
 template<>
-AbstractExpr *Matrix<AbstractExpr *>::getElementAt(int row, int column) {
+AbstractExpr *Matrix<AbstractExpr *>::getElementAt(int row, int column) const {
   boundCheckMatrixAccess(row, column);
   return values[row][column];
 }

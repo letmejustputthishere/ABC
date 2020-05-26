@@ -33,8 +33,8 @@ Ast::~Ast() {
   delete rootNode;
 }
 
-std::vector<AbstractLiteral *>
-Ast::evaluateCircuit(const std::unordered_map<std::string, AbstractLiteral *> &paramValues, bool printResult) {
+std::vector<const AbstractLiteral *>
+Ast::evaluateCircuit(const std::unordered_map<std::string, const AbstractLiteral *> &paramValues, bool printResult) {
   // ensure that circuit is not reversed
   if (isReversed()) {
     throw std::invalid_argument(
@@ -43,19 +43,19 @@ Ast::evaluateCircuit(const std::unordered_map<std::string, AbstractLiteral *> &p
 
   // go through all nodes and collect all identifiers of Variable nodes
   std::set<std::string> varIdentifiersReqValue;
-  auto isVariableNode = [](AbstractNode *node) { return dynamic_cast<Variable *>(node)!=nullptr; };
+  auto isVariableNode = [](const AbstractNode *node) { return dynamic_cast<const Variable *>(node)!=nullptr; };
   for (auto &node : getAllNodes(isVariableNode)) {
-    varIdentifiersReqValue.insert(node->castTo<Variable>()->getIdentifier());
+    varIdentifiersReqValue.insert(dynamic_cast<const Variable *>(node)->getIdentifier());
   }
 
   // Remove those variable identifiers from variableIdentifiersRequiringValue that are defined using a VarDecl in
   // the circuit -> those do not need a value.
-  auto isVarDeclNode = [](AbstractNode *node) { return dynamic_cast<VarDecl *>(node)!=nullptr; };
+  auto isVarDeclNode = [](const AbstractNode *node) { return dynamic_cast<const VarDecl *>(node)!=nullptr; };
   for (auto &node : getAllNodes(isVarDeclNode)) {
     // find the element that does not need a value in varIdentifiersReqValue
     auto iterator = std::find(varIdentifiersReqValue.begin(),
                               varIdentifiersReqValue.end(),
-                              node->castTo<VarDecl>()->getVarTargetIdentifier());
+                              dynamic_cast<const VarDecl *>(node)->getVarTargetIdentifier());
     // if an element was found -> delete it
     if (iterator!=varIdentifiersReqValue.end()) varIdentifiersReqValue.erase(iterator);
   }
@@ -84,8 +84,8 @@ Ast::evaluateCircuit(const std::unordered_map<std::string, AbstractLiteral *> &p
   return ev.getResults();
 }
 
-std::vector<AbstractLiteral *>
-Ast::evaluateAst(const std::unordered_map<std::string, AbstractLiteral *> &paramValues, bool printResult) {
+std::vector<const AbstractLiteral *>
+Ast::evaluateAst(const std::unordered_map<std::string, const AbstractLiteral *> &paramValues, bool printResult) {
   // ensure that the root node is a Function
   auto func = dynamic_cast<Function *>(this->getRootNode());
   if (!func) {
@@ -95,7 +95,7 @@ Ast::evaluateAst(const std::unordered_map<std::string, AbstractLiteral *> &param
 
   // A helper function that returns the variable's value of paramValues, if the variable exists in the map, otherwise
   // returns a nullptr.
-  auto getVarValue = [&paramValues](const std::string &variableIdentifier) -> AbstractLiteral * {
+  auto getVarValue = [&paramValues](const std::string &variableIdentifier) -> const AbstractLiteral * {
     auto it = paramValues.find(variableIdentifier);
     return (it==paramValues.end()) ? nullptr : it->second;
   };
@@ -147,15 +147,15 @@ Ast::Ast(const Ast &otherAst, bool keepOriginalUniqueNodeId) : rootNode(nullptr)
 
 Ast::Ast(const Ast &otherAst) : Ast(otherAst, false) {}
 
-std::set<AbstractNode *> Ast::getAllNodes() const {
+std::set<const AbstractNode *> Ast::getAllNodes() const {
   return getAllNodes(nullptr);
 }
 
-std::set<AbstractNode *> Ast::getAllNodes(const std::function<bool(AbstractNode *)> &predicate) const {
+std::set<const AbstractNode *> Ast::getAllNodes(const std::function<bool(const AbstractNode *)> &predicate) const {
   // the result set of all nodes in the AST
-  std::set<AbstractNode *> allNodes{};
+  std::set<const AbstractNode *> allNodes{};
   // the nodes still required to be processed
-  std::queue<AbstractNode *> nodesToCheck{{getRootNode()}};
+  std::queue<const AbstractNode *> nodesToCheck{{getRootNode()}};
   // continue while there are still unprocessed nodes
   while (!nodesToCheck.empty()) {
     // deque next node to process
@@ -178,9 +178,11 @@ void Ast::deleteNode(AbstractNode **node, bool deleteSubtreeRecursively) {
   // handle the node's children
   if (deleteSubtreeRecursively) {
     // if deleteSubtreeRecursively is set, we need to delete all children first
-    for (auto &c : nodePtr->getChildrenNonNull()) {
-      deleteNode(&c, deleteSubtreeRecursively);
-    }
+    //TODO: IMPLEMENT DELETION
+    throw std::logic_error("Ast::deleteNode currently not implemented.");
+    //    for (auto &c : nodePtr->getChildren()) {
+    //      if (c) deleteNode(&c, deleteSubtreeRecursively);
+    //    }
   } else if (!nodePtr->getChildrenNonNull().empty()) {
     // if deleteSubtreesRecursively is not set but there are children, we cannot continue.
     // probably the user's intention was not to delete the whole subtree.

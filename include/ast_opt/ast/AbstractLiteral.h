@@ -33,11 +33,11 @@ class AbstractLiteral : public AbstractExpr {
   bool operator!=(const AbstractLiteral &rhs) const;
 
   virtual void addLiteralValue(std::string identifier,
-                               std::unordered_map<std::string, AbstractLiteral *> &paramsMap) = 0;
+                               std::unordered_map<std::string, const AbstractLiteral *> &paramsMap) = 0;
 
   virtual void setRandomValue(RandLiteralGen &rlg) = 0;
 
-  virtual bool supportsDatatype(Datatype &datatype) = 0;
+  virtual bool supportsDatatype(const Datatype &datatype) const = 0;
 
   virtual bool isNull() = 0;
 
@@ -58,6 +58,8 @@ class AbstractLiteral : public AbstractExpr {
   const std::vector<AbstractNode *> &getChildren() const override;
 
   void removeChildren() override;
+
+  AbstractLiteral *clone() const override = 0;
 
 };
 

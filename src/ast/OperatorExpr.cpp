@@ -87,9 +87,9 @@ void OperatorExpr::setAttributes(Operator *newOperator, std::vector<AbstractExpr
   // operands before adding them
   if (newOperands.size() >= 2 && (getOperator()->isCommutative() || getOperator()->isLeftAssociative())) {
     // a vector of the operands to be finally added to this OperatorExpr
-    std::vector<AbstractExpr *> simplifiedAbstractExprs;
+    std::vector<const AbstractExpr *> simplifiedAbstractExprs;
     // a vector containing those operands that can be aggregated (AbstractLiterals)
-    std::vector<AbstractLiteral *> tempAggregator;
+    std::vector<const AbstractLiteral *> tempAggregator;
 
     if (getOperator()->isCommutative()) {
       // if operator is commutative: collect all known operands from current OperatorExpr, independent of their position
@@ -202,13 +202,6 @@ bool OperatorExpr::isEqual(AbstractExpr *other) {
 }
 
 std::vector<AbstractExpr *> OperatorExpr::getOperands() const {
-  std::vector<AbstractExpr *> operands;
-  // ++children.begin() because operands start from index 1
-  auto cs = getChildrenNonNull();
-  std::transform(++cs.begin(), cs.end(), std::back_inserter(operands),
-                 [](AbstractNode *node) -> AbstractExpr * {
-                   return node->castTo<AbstractExpr>();
-                 });
   return operands;
 }
 

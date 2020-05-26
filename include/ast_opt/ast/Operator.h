@@ -46,52 +46,52 @@ class Operator : public AbstractNode {
 
   [[nodiscard]] bool equals(OpSymbolVariant op) const;
 
-  AbstractLiteral *applyOperator(AbstractLiteral *lhs, AbstractLiteral *rhs);
+  AbstractLiteral *applyOperator(const AbstractLiteral *lhs, const AbstractLiteral *rhs);
 
-  AbstractLiteral *applyOperator(AbstractLiteral *rhs);
+  AbstractLiteral *applyOperator(const AbstractLiteral *rhs);
 
   template<typename A>
-  AbstractLiteral *applyOperator(A *lhs, AbstractLiteral *rhs);
+  AbstractLiteral *applyOperator(const A *lhs, const AbstractLiteral *rhs);
 
-  AbstractLiteral *applyOperator(LiteralInt *lhs, LiteralInt *rhs);
+  AbstractLiteral *applyOperator(const LiteralInt *lhs, const LiteralInt *rhs);
 
-  AbstractLiteral *applyOperator(LiteralBool *lhs, LiteralBool *rhs);
+  AbstractLiteral *applyOperator(const LiteralBool *lhs, const LiteralBool *rhs);
 
-  AbstractLiteral *applyOperator(LiteralInt *lhs, LiteralBool *rhs);
+  AbstractLiteral *applyOperator(const LiteralInt *lhs, const LiteralBool *rhs);
 
-  AbstractLiteral *applyOperator(LiteralBool *lhs, LiteralInt *rhs);
+  AbstractLiteral *applyOperator(const LiteralBool *lhs, const LiteralInt *rhs);
 
-  AbstractLiteral *applyOperator(LiteralString *lhs, LiteralString *rhs);
+  AbstractLiteral *applyOperator(const LiteralString *lhs, const LiteralString *rhs);
 
-  static AbstractLiteral *applyOperator(LiteralBool *lhs, LiteralString *rhs);
+  static AbstractLiteral *applyOperator(const LiteralBool *lhs, const LiteralString *rhs);
 
-  static AbstractLiteral *applyOperator(LiteralString *lhs, LiteralBool *rhs);
+  static AbstractLiteral *applyOperator(const LiteralString *lhs, const LiteralBool *rhs);
 
-  static AbstractLiteral *applyOperator(LiteralInt *lhs, LiteralString *rhs);
+  static AbstractLiteral *applyOperator(const LiteralInt *lhs, const LiteralString *rhs);
 
-  static AbstractLiteral *applyOperator(LiteralString *lhs, LiteralInt *rhs);
+  static AbstractLiteral *applyOperator(const LiteralString *lhs, const LiteralInt *rhs);
 
-  AbstractLiteral *applyOperator(LiteralInt *rhs);
+  AbstractLiteral *applyOperator(const LiteralInt *rhs);
 
-  AbstractLiteral *applyOperator(LiteralBool *rhs);
+  AbstractLiteral *applyOperator(const LiteralBool *rhs);
 
-  AbstractLiteral *applyOperator(LiteralString *rhs);
+  AbstractLiteral *applyOperator(const LiteralString *rhs);
 
-  AbstractLiteral *applyOperator(LiteralFloat *lhs, LiteralFloat *rhs);
+  AbstractLiteral *applyOperator(const LiteralFloat *lhs, const LiteralFloat *rhs);
 
-  AbstractLiteral *applyOperator(LiteralFloat *lhs, LiteralInt *rhs);
+  AbstractLiteral *applyOperator(const LiteralFloat *lhs, const LiteralInt *rhs);
 
-  AbstractLiteral *applyOperator(LiteralInt *lhs, LiteralFloat *rhs);
+  AbstractLiteral *applyOperator(const LiteralInt *lhs, const LiteralFloat *rhs);
 
-  AbstractLiteral *applyOperator(LiteralFloat *lhs, LiteralBool *rhs);
+  AbstractLiteral *applyOperator(const LiteralFloat *lhs, const LiteralBool *rhs);
 
-  AbstractLiteral *applyOperator(LiteralBool *lhs, LiteralFloat *rhs);
+  AbstractLiteral *applyOperator(const LiteralBool *lhs, const LiteralFloat *rhs);
 
-  static AbstractLiteral *applyOperator(LiteralFloat *lhs, LiteralString *rhs);
+  static AbstractLiteral *applyOperator(const LiteralFloat *lhs, const LiteralString *rhs);
 
-  static AbstractLiteral *applyOperator(LiteralString *lhs, LiteralFloat *rhs);
+  static AbstractLiteral *applyOperator(const LiteralString *lhs, const LiteralFloat *rhs);
 
-  AbstractLiteral *applyOperator(LiteralFloat *rhs);
+  AbstractLiteral *applyOperator(const LiteralFloat *rhs);
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
@@ -135,14 +135,14 @@ class Operator : public AbstractNode {
   }
 
   template<typename abstractType, typename primitiveType>
-  std::vector<primitiveType> convert(std::vector<AbstractLiteral *> operands) {
+  std::vector<primitiveType> convert(std::vector<const AbstractLiteral *> operands) {
     std::vector<primitiveType> vec;
     std::transform(operands.begin(), operands.end(), std::back_inserter(vec),
-                   [](AbstractLiteral *lit) { return lit->castTo<abstractType>()->getValue(); });
+                   [](const AbstractLiteral *lit) { return dynamic_cast<const abstractType*>(lit)->getValue(); });
     return vec;
   }
 
-  AbstractLiteral *applyOperator(std::vector<AbstractLiteral *> operands);
+  AbstractLiteral *applyOperator(std::vector<const AbstractLiteral *> operands);
 
   AbstractLiteral *applyOperator(std::vector<int> operands);
 

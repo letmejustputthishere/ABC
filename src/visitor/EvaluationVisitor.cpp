@@ -27,14 +27,14 @@
 #include "ast_opt/ast/GetMatrixSize.h"
 #include "ast_opt/utilities/Scope.h"
 
-EvaluationVisitor::EvaluationVisitor(std::unordered_map<std::string, AbstractLiteral *> funcCallParameterValues)
-    : variableValuesForEvaluation(std::move(funcCallParameterValues)) {
+EvaluationVisitor::EvaluationVisitor(std::unordered_map<std::string, const AbstractLiteral *> funcCallParameterValues)
+    : variableValuesForEvaluation(funcCallParameterValues) {
 }
 
 EvaluationVisitor::EvaluationVisitor() = default;
 
 void EvaluationVisitor::visit(AbstractNode &elem) {
-  results.push(std::vector<AbstractLiteral *>());
+  results.push(std::vector<const AbstractLiteral *>());
 }
 
 void EvaluationVisitor::visit(AbstractExpr &elem) {
@@ -57,7 +57,7 @@ void EvaluationVisitor::visit(ArithmeticExpr &elem) {
 }
 
 void EvaluationVisitor::visit(OperatorExpr &elem) {
-  std::vector<AbstractLiteral *> evaluatedOperand;
+  std::vector<const AbstractLiteral *> evaluatedOperand;
   // evaluate each of the operands as they can consist of nested expressions (instead of AbstractLiterals)
   for (auto &operand : elem.getOperands()) {
     operand->accept(*this);
@@ -88,7 +88,7 @@ void EvaluationVisitor::visit(Call &elem) {
   // create vector to store parameter values for Function evaluation
   // - std::string stores the variable's identifier
   // - Literal* stores the variable's passed value (as it can be an expression too, we need to evaluate it first)
-  std::unordered_map<std::string, AbstractLiteral *> paramValues;
+  std::unordered_map<std::string, const AbstractLiteral *> paramValues;
 
   for (size_t i = 0; i < elem.getFunc()->getParameters().size(); i++) {
     // validation: make sure that datatypes in Call and Function are equal
@@ -109,7 +109,7 @@ void EvaluationVisitor::visit(Call &elem) {
 
     // variable value: retrieve the variable's value to be passed to the callee
     elem.getArguments().at(i)->getValue()->accept(*this);
-    AbstractLiteral *lit = getOnlyEvaluationResult(results.top());
+    auto lit = getOnlyEvaluationResult(results.top())->clone()->castTo<AbstractLiteral>();
     results.pop();
     // make sure that evaluate returns a Literal
     if (lit==nullptr) throw std::logic_error("There's something wrong! Evaluate should return a single Literal.");
@@ -143,7 +143,7 @@ void EvaluationVisitor::visit(FunctionParameter &elem) {
 
 void EvaluationVisitor::visit(If &elem) {
   elem.getCondition()->accept(*this);
-  auto cond = dynamic_cast<LiteralBool *>(getOnlyEvaluationResult(results.top()));
+  auto cond = dynamic_cast<const LiteralBool *>(getOnlyEvaluationResult(results.top()));
   results.pop();
   if (cond==nullptr)
     throw std::logic_error("Condition in If statement must evaluate to a LiteralBool! Cannot continue.");
@@ -156,7 +156,7 @@ void EvaluationVisitor::visit(If &elem) {
 }
 
 template<typename T, class LiteralClass>
-Matrix<T> *EvaluationVisitor::evaluateAbstractExprMatrix(EvaluationVisitor &ev, AbstractMatrix &mx) {
+Matrix<T> *EvaluationVisitor::evaluateAbstractExprMatrix(EvaluationVisitor &ev, const AbstractMatrix &mx) {
   auto mxDim = mx.getDimensions();
   std::vector<std::vector<T>> evaluatedValues(mxDim.numRows, std::vector<T>(mxDim.numColumns));
   for (int i = 0; i < mxDim.numRows; ++i) {
@@ -164,7 +164,7 @@ Matrix<T> *EvaluationVisitor::evaluateAbstractExprMatrix(EvaluationVisitor &ev, 
       mx.getElementAt(i, j)->accept(ev);
       auto result = getOnlyEvaluationResult(results.top());
       results.pop();
-      evaluatedValues[i][j] = result->castTo<LiteralClass>()->getValue();
+      evaluatedValues[i][j] = dynamic_cast<const LiteralClass *>(result)->getValue();
     }
   }
   return new Matrix<T>({evaluatedValues});
@@ -224,7 +224,7 @@ void EvaluationVisitor::visit(Operator &elem) {
 }
 
 void EvaluationVisitor::visit(Return &elem) {
-  std::vector<AbstractLiteral *> result;
+  std::vector<const AbstractLiteral *> result;
   for (auto &expr : elem.getReturnExpressions()) {
     expr->accept(*this);
     auto exprEvaluationResult = results.top();
@@ -249,13 +249,13 @@ void EvaluationVisitor::visit(GetMatrixSize &elem) {
   auto evalResult = getOnlyEvaluationResult(results.top());
   results.pop();
   // the dimension parameter of GetMatrixSize must evaluate to a LiteralInt
-  auto dimAsLiteralInt = dynamic_cast<LiteralInt *>(evalResult);
+  auto dimAsLiteralInt = dynamic_cast<const LiteralInt *>(evalResult);
   if (dimAsLiteralInt==nullptr)
     throw std::invalid_argument("GetMatrixSize requires a LiteralInt as 'requestedDimension' parameter.");
   int dim = dimAsLiteralInt->getValue();
 
   // execute the operation, i.e., retrieve the requested dimension
-  auto mx = matrix->castTo<AbstractLiteral>()->getMatrix()->getDimensions().getNthDimensionSize(dim);
+  auto mx = dynamic_cast<const AbstractLiteral *>(matrix)->getMatrix()->getDimensions().getNthDimensionSize(dim);
   results.push({new LiteralInt(mx)});
 }
 
@@ -266,7 +266,7 @@ void EvaluationVisitor::visit(Rotate &elem) {
   elem.getRotationFactor()->accept(*this);
   // check whether the rotation factor is known, otherwise we can stop right here because we cannot perform rotation if
   // the rotation factor is unknown
-  auto rotationFactor = dynamic_cast<LiteralInt *>(getOnlyEvaluationResult(results.top()));
+  auto rotationFactor = dynamic_cast<const LiteralInt *>(getOnlyEvaluationResult(results.top()));
   results.pop();
   auto operand = getOnlyEvaluationResult(results.top());
   results.pop();
@@ -301,7 +301,7 @@ void EvaluationVisitor::visit(MatrixAssignm &elem) {
   auto matrixRef = elem.getAssignmTarget();
   // row index
   matrixRef->getRowIndex()->accept(*this);
-  auto rowIdx = getOnlyEvaluationResult(results.top())->castTo<LiteralInt>()->getValue();
+  auto rowIdx = dynamic_cast<const LiteralInt *>(getOnlyEvaluationResult(results.top()))->getValue();
   results.pop();
 
   auto mx = dynamic_cast<Variable *>(matrixRef->getOperand());
@@ -313,15 +313,17 @@ void EvaluationVisitor::visit(MatrixAssignm &elem) {
     // If both row and column index are given, this MatrixAssignm assigns a single element to the matrix.
     // column index
     matrixRef->getColumnIndex()->accept(*this);
-    auto colIdx = getOnlyEvaluationResult(results.top())->castTo<LiteralInt>()->getValue();
+    auto colIdx = dynamic_cast<const LiteralInt *>(getOnlyEvaluationResult(results.top()))->getValue();
     results.pop();
     // set value val of respective matrix element
-    variableValuesForEvaluation[mx->getIdentifier()]->getMatrix()->setElementAt(rowIdx, colIdx, val);
+    auto newVar = variableValuesForEvaluation[mx->getIdentifier()]->clone();
+    newVar->getMatrix()->setElementAt(rowIdx, colIdx, val->clone());
+    variableValuesForEvaluation[mx->getIdentifier()] = newVar;
   } else {
     // If only a single index is given, this MatrixAssignm refers to a vector in its value attribute and appends
     // (or overwrites) the matrix row/column given as value.
     elem.getValue()->accept(*this);
-    auto vec = getOnlyEvaluationResult(results.top())->castTo<AbstractLiteral>();
+    auto vec = getOnlyEvaluationResult(results.top());
     variableValuesForEvaluation[mx->getIdentifier()]->getMatrix()->appendVectorAt(rowIdx, vec->getMatrix());
   }
 }
@@ -357,7 +359,7 @@ void EvaluationVisitor::visit(While &elem) {
     // visit the condition's expression
     elem.getCondition()->accept(*this);
     // get the expression's evaluation result
-    auto cond = *dynamic_cast<LiteralBool *>(getOnlyEvaluationResult(results.top()));
+    auto cond = *dynamic_cast<const LiteralBool *>(getOnlyEvaluationResult(results.top()));
     results.pop();
     return cond==LiteralBool(true);
   };
@@ -374,7 +376,7 @@ void EvaluationVisitor::visit(For &elem) {
     // visit the condition's expression
     elem.getCondition()->accept(*this);
     // get the expression's evaluation result
-    auto cond = *dynamic_cast<LiteralBool *>(getOnlyEvaluationResult(results.top()));
+    auto cond = *dynamic_cast<const LiteralBool *>(getOnlyEvaluationResult(results.top()));
     results.pop();
     return cond==LiteralBool(true);
   };
@@ -387,15 +389,15 @@ void EvaluationVisitor::visit(For &elem) {
 void EvaluationVisitor::visit(MatrixElementRef &elem) {
   // operand
   elem.getOperand()->accept(*this);
-  auto operand = dynamic_cast<AbstractLiteral *>(getOnlyEvaluationResult(results.top()));
+  auto operand = dynamic_cast<const AbstractLiteral *>(getOnlyEvaluationResult(results.top()));
   results.pop();
   // row index
   elem.getRowIndex()->accept(*this);
-  auto rowIdx = dynamic_cast<LiteralInt *>(getOnlyEvaluationResult(results.top()));
+  auto rowIdx = dynamic_cast<const LiteralInt *>(getOnlyEvaluationResult(results.top()));
   results.pop();
   // column index
   elem.getColumnIndex()->accept(*this);
-  auto columnIdx = dynamic_cast<LiteralInt *>(getOnlyEvaluationResult(results.top()));
+  auto columnIdx = dynamic_cast<const LiteralInt *>(getOnlyEvaluationResult(results.top()));
   results.pop();
   // retrieve and store the specified element
   auto matrixElement = operand->getMatrix()->getElementAt(rowIdx->getValue(), columnIdx->getValue());
@@ -406,8 +408,8 @@ void EvaluationVisitor::visit(Ast &elem) {
   Visitor::visit(elem);
 }
 
-const std::vector<AbstractLiteral *> &EvaluationVisitor::getResults() {
-  std::vector<AbstractLiteral *> *resultValues = &results.top();
+const std::vector<const AbstractLiteral *> &EvaluationVisitor::getResults() {
+  std::vector<const AbstractLiteral *> *resultValues = &results.top();
   if (!flagPrintResult) return *resultValues;
   // print result if flag 'printResult' is set
   if (resultValues->empty()) {
@@ -420,7 +422,7 @@ const std::vector<AbstractLiteral *> &EvaluationVisitor::getResults() {
   return *resultValues;
 }
 
-AbstractLiteral *EvaluationVisitor::getOnlyEvaluationResult(std::vector<AbstractLiteral *> evaluationResult) {
+const AbstractLiteral *EvaluationVisitor::getOnlyEvaluationResult(const std::vector<const AbstractLiteral *> &evaluationResult) {
   if (evaluationResult.size() > 1) {
     throw std::logic_error("Unexpected number of results returned (1 vs. "
                                + std::to_string(evaluationResult.size()) + ").");
@@ -428,14 +430,14 @@ AbstractLiteral *EvaluationVisitor::getOnlyEvaluationResult(std::vector<Abstract
   return evaluationResult.front();
 }
 
-AbstractLiteral *EvaluationVisitor::getVarValue(const std::string &variableIdentifier) {
+const AbstractLiteral *EvaluationVisitor::getVarValue(const std::string &variableIdentifier) {
   auto it = variableValuesForEvaluation.find(variableIdentifier);
   if (it==variableValuesForEvaluation.end())
     throw std::logic_error("Trying to retrieve value for variable not declared yet: " + variableIdentifier);
   return it->second;
 }
 
-void EvaluationVisitor::updateVarValue(const std::string &variableIdentifier, AbstractLiteral *newValue) {
+void EvaluationVisitor::updateVarValue(const std::string &variableIdentifier, const AbstractLiteral *newValue) {
   // use the bracket [] operator to silently overwrite any existing variable value
   variableValuesForEvaluation[variableIdentifier] = newValue;
 }

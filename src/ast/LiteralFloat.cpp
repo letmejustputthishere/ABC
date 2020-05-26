@@ -49,7 +49,7 @@ bool LiteralFloat::operator!=(const LiteralFloat &rhs) const {
 }
 
 void LiteralFloat::addLiteralValue(std::string identifier,
-                                   std::unordered_map<std::string, AbstractLiteral *> &paramsMap) {
+                                   std::unordered_map<std::string, const AbstractLiteral *> &paramsMap) {
   paramsMap.emplace(identifier, this);
 }
 
@@ -65,7 +65,7 @@ std::string LiteralFloat::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {matrix->toString()});
 }
 
-bool LiteralFloat::supportsDatatype(Datatype &datatype) {
+bool LiteralFloat::supportsDatatype(const Datatype &datatype) const {
   return datatype.getType()==Types::FLOAT;
 }
 

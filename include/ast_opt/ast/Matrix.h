@@ -94,7 +94,7 @@ class Matrix : public AbstractMatrix {
   /// Verifies that this matrix access is valid, i.e., matrix indices are within valid bounds.
   /// \param rowIndex The row index of the element to be accessed.
   /// \param columnIndex The column index of the element to be accessed.
-  void boundCheckMatrixAccess(int rowIndex, int columnIndex) {
+  void boundCheckMatrixAccess(int rowIndex, int columnIndex) const {
     if (!dim.isValidAccess(rowIndex, columnIndex)) {
       std::stringstream ss;
       ss << "Invalid matrix indices: Cannot access " << Dimension(rowIndex, columnIndex) << " ";
@@ -295,7 +295,7 @@ class Matrix : public AbstractMatrix {
     throw std::runtime_error("toJson is unimplemented for type T: " + std::string(typeid(T).name()));
   }
 
-  AbstractExpr *getElementAt(int row, int column) override {
+  AbstractExpr *getElementAt(int row, int column) const override {
     throw std::logic_error("getElementAt failed: Value in matrix is of unknown type. "
                            "Cannot determine associated AbstractLiteral subtype.");
   }
@@ -305,8 +305,8 @@ class Matrix : public AbstractMatrix {
   }
 
   void appendVectorAt(int idx, AbstractMatrix *mx) override {
-    bool isEmpty = mx->getDimensions().equals(0,0);
-    if(isEmpty) {
+    bool isEmpty = mx->getDimensions().equals(0, 0);
+    if (isEmpty) {
       throw std::invalid_argument("Cannot append empty vector");
     }
 
@@ -557,22 +557,22 @@ template<>
 AbstractMatrix *Matrix<bool>::applyUnaryOperatorComponentwise(Operator *os);
 
 template<>
-AbstractExpr *Matrix<int>::getElementAt(int row, int column);
+AbstractExpr *Matrix<int>::getElementAt(int row, int column) const;
 
 template<>
-AbstractExpr *Matrix<float>::getElementAt(int row, int column);
+AbstractExpr *Matrix<float>::getElementAt(int row, int column) const;
 
 template<>
-AbstractExpr *Matrix<double>::getElementAt(int row, int column);
+AbstractExpr *Matrix<double>::getElementAt(int row, int column) const;
 
 template<>
-AbstractExpr *Matrix<bool>::getElementAt(int row, int column);
+AbstractExpr *Matrix<bool>::getElementAt(int row, int column) const;
 
 template<>
-AbstractExpr *Matrix<std::string>::getElementAt(int row, int column);
+AbstractExpr *Matrix<std::string>::getElementAt(int row, int column) const;
 
 template<>
-AbstractExpr *Matrix<AbstractExpr *>::getElementAt(int row, int column);
+AbstractExpr *Matrix<AbstractExpr *>::getElementAt(int row, int column) const;
 
 template<>
 [[nodiscard]] json Matrix<AbstractExpr *>::toJson() const;

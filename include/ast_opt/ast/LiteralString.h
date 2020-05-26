@@ -39,7 +39,7 @@ class LiteralString : public AbstractLiteral {
 
   bool operator!=(const LiteralString &rhs) const;
 
-  void addLiteralValue(std::string identifier, std::unordered_map<std::string, AbstractLiteral *> &paramsMap) override;
+  void addLiteralValue(std::string identifier, std::unordered_map<std::string, const AbstractLiteral *> &paramsMap) override;
 
   void setValue(const std::string &newValue);
 
@@ -47,7 +47,7 @@ class LiteralString : public AbstractLiteral {
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  bool supportsDatatype(Datatype &datatype) override;
+  bool supportsDatatype(const Datatype &datatype) const override;
 
   bool isEqual(AbstractExpr *other) override;
 

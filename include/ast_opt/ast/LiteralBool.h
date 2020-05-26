@@ -38,7 +38,7 @@ class LiteralBool : public AbstractLiteral {
 
   bool operator!=(const LiteralBool &rhs) const;
 
-  void addLiteralValue(std::string identifier, std::unordered_map<std::string, AbstractLiteral *> &paramsMap) override;
+  void addLiteralValue(std::string identifier, std::unordered_map<std::string, const AbstractLiteral *> &paramsMap) override;
 
   void setRandomValue(RandLiteralGen &rlg) override;
 
@@ -46,7 +46,7 @@ class LiteralBool : public AbstractLiteral {
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  bool supportsDatatype(Datatype &datatype) override;
+  bool supportsDatatype(const Datatype &datatype) const override;
 
   void print(std::ostream &str) const override;
 

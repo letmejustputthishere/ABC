@@ -38,9 +38,9 @@ class LiteralInt : public AbstractLiteral {
 
   bool operator!=(const LiteralInt &rhs) const;
 
-  bool supportsDatatype(Datatype &datatype) override;
+  bool supportsDatatype(const Datatype &datatype) const override;
 
-  void addLiteralValue(std::string identifier, std::unordered_map<std::string, AbstractLiteral *> &paramsMap) override;
+  void addLiteralValue(std::string identifier, std::unordered_map<std::string, const AbstractLiteral *> &paramsMap) override;
 
   void setRandomValue(RandLiteralGen &rlg) override;
 

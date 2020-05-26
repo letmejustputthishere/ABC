@@ -9,8 +9,8 @@
 #include "ast_opt/ast/Block.h"
 #include "ast_opt/ast/OperatorExpr.h"
 
-AbstractNode *BatchingChecker::getLargestBatchableSubtree(AbstractExpr *expr) {
-  std::queue<AbstractNode *> processingQ({expr});
+const AbstractNode * BatchingChecker::getLargestBatchableSubtree(const AbstractExpr *expr) {
+  std::queue<const AbstractNode *> processingQ({expr});
   while (!processingQ.empty()) {
     auto curNode = processingQ.front();
     processingQ.pop();
@@ -19,15 +19,15 @@ AbstractNode *BatchingChecker::getLargestBatchableSubtree(AbstractExpr *expr) {
     // returns the largest batchable subtree that was found
     if (isBatchableSubtree(curNode)) return curNode;
     // otherwise we need to continue our search by checking all OperatorExprs on the next level
-    for (auto c : curNode->getChildrenNonNull()) { if (dynamic_cast<OperatorExpr *>(c)) processingQ.push(c); }
+    for (auto c : curNode->getChildrenNonNull()) { if (dynamic_cast<const OperatorExpr *>(c)) processingQ.push(c); }
   }
   // nullptr = no batchable subtree found
   return nullptr;
 }
 
-bool BatchingChecker::isBatchableSubtree(AbstractNode *subtreeRoot) {
-  std::vector<AbstractNode *> qReading({subtreeRoot});
-  std::vector<AbstractNode *> qWriting;
+bool BatchingChecker::isBatchableSubtree(const AbstractNode *subtreeRoot) {
+  std::vector<const AbstractNode *> qReading({subtreeRoot});
+  std::vector<const AbstractNode *> qWriting;
   int numChildrenPerNode = -1;
 
   while (!qReading.empty()) {
@@ -50,7 +50,7 @@ bool BatchingChecker::isBatchableSubtree(AbstractNode *subtreeRoot) {
     // nothing to check and this subtree is considered as batching-compatible
     if (qReading.empty() && !qWriting.empty()) {
       // compare nodes pairwise
-      AbstractNode *baseNode = qWriting.front();
+      auto baseNode = qWriting.front();
       for (auto nodeIt = std::next(qWriting.begin()); nodeIt!=qWriting.end(); ++nodeIt) {
         // check batching compatibility
         if (!isBatchingCompatible(baseNode, *nodeIt)) {
@@ -76,7 +76,7 @@ bool BatchingChecker::isBatchableSubtree(AbstractNode *subtreeRoot) {
   return qReading.empty() && qWriting.empty();
 }
 
-bool BatchingChecker::isBatchingCompatible(AbstractNode *baseNode, AbstractNode *curNode) {
+bool BatchingChecker::isBatchingCompatible(const AbstractNode *baseNode, const AbstractNode *curNode) {
   if (baseNode->getNodeType()!=curNode->getNodeType()) {
     // return true if...
     // - exactly one of both is transparent:
@@ -85,22 +85,22 @@ bool BatchingChecker::isBatchingCompatible(AbstractNode *baseNode, AbstractNode 
     //   <=> (!A != !B)
     // - one of both is a AbstractLiteral
     return (!isTransparentNode(baseNode)!=!isTransparentNode(curNode))
-        || dynamic_cast<AbstractLiteral *>(baseNode)!=nullptr
-        || dynamic_cast<AbstractLiteral *>(curNode)!=nullptr;
+        || dynamic_cast<const AbstractLiteral *>(baseNode)!=nullptr
+        || dynamic_cast<const AbstractLiteral *>(curNode)!=nullptr;
   } else {  // baseNode.type == curNode.type
     // type-specific checks
-    if (auto baseNodeAsMatrixElementRef = dynamic_cast<MatrixElementRef *>(baseNode)) {
-      auto baseNodeVar = dynamic_cast<Variable *>(baseNodeAsMatrixElementRef->getOperand());
+    if (auto baseNodeAsMatrixElementRef = dynamic_cast<const MatrixElementRef *>(baseNode)) {
+      auto baseNodeVar = dynamic_cast<const Variable *>(baseNodeAsMatrixElementRef->getOperand());
       // as baseNode's type equals curNode's type, we know that curNodeAsMatrixElementRef != nullptr
-      auto curNodeAsMatrixElementRef = dynamic_cast<MatrixElementRef *>(curNode);
-      auto curNodeVar = dynamic_cast<Variable *>(curNodeAsMatrixElementRef->getOperand());
+      auto curNodeAsMatrixElementRef = dynamic_cast<const MatrixElementRef *>(curNode);
+      auto curNodeVar = dynamic_cast<const Variable *>(curNodeAsMatrixElementRef->getOperand());
       if (baseNodeVar==nullptr || curNodeVar==nullptr) {
         throw std::runtime_error("MatrixElementRef unexpectedly does not refer to a Variable");
       }
       // check that both MatrixElementRefs refer to the same variable
       return baseNodeVar->getIdentifier()==curNodeVar->getIdentifier();
-    } else if (auto baseNodeAsOperatorExpr = dynamic_cast<OperatorExpr *>(baseNode)) {
-      auto curNodeAsOperatorExpr = dynamic_cast<OperatorExpr *>(curNode);
+    } else if (auto baseNodeAsOperatorExpr = dynamic_cast<const OperatorExpr *>(baseNode)) {
+      auto curNodeAsOperatorExpr = dynamic_cast<const OperatorExpr *>(curNode);
       // same operator
       return *baseNodeAsOperatorExpr->getOperator()==*curNodeAsOperatorExpr->getOperator()
           // same number of operands
@@ -113,19 +113,19 @@ bool BatchingChecker::isBatchingCompatible(AbstractNode *baseNode, AbstractNode 
   }
 }
 
-bool BatchingChecker::isTransparentNode(AbstractNode *node) {
+bool BatchingChecker::isTransparentNode(const AbstractNode *node) {
   // a node is considered as transparent if it is an OperatorExpr because it can be batched by expanding any other
   // expression using the neutral element e.g., a and b*2 –- can be batched as a*1 and b*2
-  return dynamic_cast<OperatorExpr *>(node)!=nullptr;
+  return dynamic_cast<const OperatorExpr *>(node)!=nullptr;
 }
 
-std::vector<AbstractNode *> BatchingChecker::getChildren(AbstractNode *node) {
-  if (auto nodeAsOperatorExpr = dynamic_cast<OperatorExpr *>(node)) {
+std::vector<const AbstractNode *> BatchingChecker::getChildren(const AbstractNode *node) {
+  if (auto nodeAsOperatorExpr = dynamic_cast<const OperatorExpr *>(node)) {
     // return the operands only as in the level before, when this OperatorExpr was added to the queue, we already
     // compared the equality of the OperatorExprs operator
     auto operands = nodeAsOperatorExpr->getOperands();
-    return std::vector<AbstractNode *>(operands.begin(), operands.end());
-  } else if (auto nodeAsMatrixElemRef = dynamic_cast<MatrixElementRef *>(node)) {
+    return std::vector<const AbstractNode *>(operands.begin(), operands.end());
+  } else if (auto nodeAsMatrixElemRef = dynamic_cast<const MatrixElementRef *>(node)) {
     // do not enqueue anything further as we do not want to consider the MatrixElementRef's indices
     return {};
   } else {
@@ -135,10 +135,10 @@ std::vector<AbstractNode *> BatchingChecker::getChildren(AbstractNode *node) {
   }
 }
 
-bool BatchingChecker::shouldBeBatched(AbstractNode *largestBatchableSubtreeRoot) {
+bool BatchingChecker::shouldBeBatched(const AbstractNode *largestBatchableSubtreeRoot) {
   auto nodesInSubtree = largestBatchableSubtreeRoot->getDescendants();
-  auto numSuitableNodes = std::count_if(nodesInSubtree.begin(), nodesInSubtree.end(), [](AbstractNode *an) {
-    auto oe = dynamic_cast<OperatorExpr *>(an);
+  auto numSuitableNodes = std::count_if(nodesInSubtree.begin(), nodesInSubtree.end(), [](const AbstractNode *an) {
+    auto oe = dynamic_cast<const OperatorExpr *>(an);
     // a node is considered worthwhile for being batched if it includes a multiplication
     return oe!=nullptr && oe->getOperator()->equals(MULTIPLICATION);
   });

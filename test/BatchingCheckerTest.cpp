@@ -20,15 +20,15 @@ TEST(BatchingChecker, laplacianAstInnerLoopsWithNonStdWeights) { /* NOLINT */
   auto func = ast.getRootNode()->castTo<Function>();
   std::vector<AbstractExpr *> statementsTopExprs;
   for (auto node : ast.getAllNodes()) {
-    if (auto ma = dynamic_cast<MatrixAssignm *>(node)) {
+    if (auto ma = dynamic_cast<const MatrixAssignm *>(node)) {
       statementsTopExprs.push_back(ma->getValue());
-    } else if (auto va = dynamic_cast<VarAssignm *>(node)) {
+    } else if (auto va = dynamic_cast<const VarAssignm *>(node)) {
       statementsTopExprs.push_back(va->getValue());
     }
   }
 
   // determine the largest batchable subtree using the found expressions
-  AbstractNode *rootOfLargestBatchableSubtree;
+  const AbstractNode *rootOfLargestBatchableSubtree;
   for (auto expr : statementsTopExprs) {
     rootOfLargestBatchableSubtree = BatchingChecker::getLargestBatchableSubtree(expr);
     if (rootOfLargestBatchableSubtree!=nullptr) break;
@@ -37,7 +37,7 @@ TEST(BatchingChecker, laplacianAstInnerLoopsWithNonStdWeights) { /* NOLINT */
   EXPECT_EQ(rootOfLargestBatchableSubtree->getNodeType(), OperatorExpr().getNodeType());
   EXPECT_EQ(rootOfLargestBatchableSubtree->countChildrenNonNull(), 10);
   EXPECT_EQ(rootOfLargestBatchableSubtree->getDescendants().size(), 142);
-  EXPECT_TRUE(rootOfLargestBatchableSubtree->castTo<OperatorExpr>()->getOperator()->equals(ADDITION));
+  EXPECT_TRUE(dynamic_cast<const OperatorExpr *>(rootOfLargestBatchableSubtree)->getOperator()->equals(ADDITION));
   EXPECT_TRUE(BatchingChecker::shouldBeBatched(rootOfLargestBatchableSubtree));
 }
 
@@ -52,15 +52,15 @@ TEST(BatchingChecker, laplacianAstFullLoopsWithStdWeights) { /* NOLINT */
   auto func = ast.getRootNode()->castTo<Function>();
   std::vector<AbstractExpr *> statementsTopExprs;
   for (auto node : ast.getAllNodes()) {
-    if (auto ma = dynamic_cast<MatrixAssignm *>(node)) {
+    if (auto ma = dynamic_cast<const MatrixAssignm *>(node)) {
       statementsTopExprs.push_back(ma->getValue());
-    } else if (auto va = dynamic_cast<VarAssignm *>(node)) {
+    } else if (auto va = dynamic_cast<const VarAssignm *>(node)) {
       statementsTopExprs.push_back(va->getValue());
     }
   }
 
   // determine the largest batchable subtree using the found expressions
-  AbstractNode *rootOfLargestBatchableSubtree;
+  const AbstractNode *rootOfLargestBatchableSubtree;
   for (auto expr : statementsTopExprs) {
     rootOfLargestBatchableSubtree = BatchingChecker::getLargestBatchableSubtree(expr);
     if (rootOfLargestBatchableSubtree!=nullptr) break;
@@ -69,6 +69,6 @@ TEST(BatchingChecker, laplacianAstFullLoopsWithStdWeights) { /* NOLINT */
   EXPECT_EQ(rootOfLargestBatchableSubtree->getNodeType(), OperatorExpr().getNodeType());
   EXPECT_EQ(rootOfLargestBatchableSubtree->countChildrenNonNull(), 3);
   EXPECT_EQ(rootOfLargestBatchableSubtree->getDescendants().size(), 12);
-  EXPECT_TRUE(rootOfLargestBatchableSubtree->castTo<OperatorExpr>()->getOperator()->equals(MULTIPLICATION));
+  EXPECT_TRUE(dynamic_cast<const OperatorExpr *>(rootOfLargestBatchableSubtree)->getOperator()->equals(MULTIPLICATION));
   EXPECT_FALSE(BatchingChecker::shouldBeBatched(rootOfLargestBatchableSubtree));
 }

@@ -80,7 +80,7 @@ class AbstractMatrix : public AbstractNode {
   /// \param row The row number of the element to be returned as a pointer.
   /// \param column The column number of the element to be returned as a pointer.
   /// \return An AbstractExpr pointer pointing to the value of the element at position (row, column).
-  virtual AbstractExpr *getElementAt(int row, int column) = 0;
+  virtual AbstractExpr *getElementAt(int row, int column) const = 0;
 
   /// Sets a new value to the matrix element at the position indicated by (row, column) parameters.
   /// \param row The row index of the element where the given value should be written to.
