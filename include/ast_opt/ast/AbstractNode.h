@@ -21,10 +21,6 @@ class AbstractNode {
   /// Virtual Destructor, force class to be abstract
   virtual ~AbstractNode() = 0;
 
-  /// Creates a flat copy of the node without including any parents or children.
-  /// \return A flat copy of this node.
-  [[nodiscard]] virtual AbstractNode *cloneFlat();
-
   /// Clones a node recursively, i.e., by including all of its children.
   /// \param keepOriginalUniqueNodeId Specifies whether to keep all of the unique node IDs of the original nodes.
   /// \return A clone of the node including clones of all of its children.

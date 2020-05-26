@@ -17,12 +17,6 @@ LogicalExpr::LogicalExpr(LogCompOp op) {
   setAttributes(nullptr, new Operator(op), nullptr);
 }
 
-AbstractNode *LogicalExpr::cloneFlat() {
-  auto clonedLexp = new LogicalExpr();
-  clonedLexp->setUniqueNodeId(this->getUniqueNodeId());
-  return clonedLexp;
-}
-
 LogicalExpr *LogicalExpr::clone() const {
   return new LogicalExpr(getLeft()->clone(),
                          getOperator()->clone(),

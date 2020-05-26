@@ -17,8 +17,6 @@ class Datatype : public AbstractNode {
  public:
   [[nodiscard]] std::string getNodeType() const override;
 
-  AbstractNode *cloneFlat() override;
-
   Datatype *clone() const override;
 
   explicit Datatype(Types di) : val(di) {}

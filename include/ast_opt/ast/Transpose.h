@@ -31,8 +31,6 @@ class Transpose : public AbstractExpr {
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  AbstractNode *cloneFlat() override;
-
   [[nodiscard]] AbstractExpr *getOperand() const;
 };
 

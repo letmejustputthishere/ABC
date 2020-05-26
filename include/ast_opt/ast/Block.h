@@ -15,8 +15,6 @@ class Block : public AbstractStatement {
 
   Block *clone() const override;
 
-  AbstractNode *cloneFlat() override;
-
   explicit Block(AbstractStatement *stat);
 
   [[nodiscard]] json toJson() const override;

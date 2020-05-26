@@ -244,10 +244,6 @@ std::vector<AbstractNode *> AbstractNode::getDescendants() {
 
 AbstractNode::~AbstractNode() = default;
 
-AbstractNode *AbstractNode::cloneFlat() {
-  throw std::runtime_error("Cannot clone an AbstractNode. Use the overridden cloneFlat instead.");
-}
-
 std::string AbstractNode::toString(bool) const {
   throw std::runtime_error("toString not implemented for class " + getNodeType() + ".");
 }

@@ -71,12 +71,6 @@ void Datatype::setEncrypted(bool isEncrypted) {
   Datatype::encrypted = isEncrypted;
 }
 
-AbstractNode *Datatype::cloneFlat() {
-  auto datatype = new Datatype(this->getType(), isEncrypted());
-  datatype->setUniqueNodeId(this->getUniqueNodeId());
-  return datatype;
-}
-
 Datatype *Datatype::clone() const {
   return new Datatype(this->getType(), isEncrypted());
 }

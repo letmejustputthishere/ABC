@@ -52,12 +52,6 @@ Block *Block::clone() const {
   return clonedStatements.empty() ? new Block() : new Block(clonedStatements);
 }
 
-AbstractNode *Block::cloneFlat() {
-  auto block = new Block();
-  block->setUniqueNodeId(this->getUniqueNodeId());
-  return block;
-}
-
 int Block::getMaxNumberChildren() {
   return -1;
 }

@@ -30,10 +30,6 @@ std::string Rotate::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
 }
 
-AbstractNode *Rotate::cloneFlat() {
-  return new Rotate();
-}
-
 AbstractExpr *Rotate::getOperand() const {
   return dynamic_cast<AbstractExpr *>(children.at(0));
 }

@@ -125,7 +125,3 @@ std::string MatrixElementRef::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
 }
 
-AbstractNode *MatrixElementRef::cloneFlat() {
-  return new MatrixElementRef(nullptr, nullptr, nullptr);
-}
-

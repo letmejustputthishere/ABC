@@ -33,8 +33,6 @@ class LogicalExpr : public AbstractBinaryExpr {
 
   [[nodiscard]] std::string getNodeType() const override;
 
-  AbstractNode *cloneFlat() override;
-
   [[nodiscard]] std::string toString(bool printChildren) const override;
 };
 

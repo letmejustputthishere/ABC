@@ -54,8 +54,4 @@ std::string Transpose::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
 }
 
-AbstractNode *Transpose::cloneFlat() {
-  return new Transpose();
-}
-
 Transpose::Transpose() = default;
