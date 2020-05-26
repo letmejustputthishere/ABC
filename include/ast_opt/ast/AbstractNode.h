@@ -10,8 +10,7 @@
 #include "ast_opt/visitor/Visitor.h"
 
 class AbstractNode {
- protected:
-
+ private:
   /// Stores the parent nodes of the current node.
   AbstractNode *parent = nullptr;
 
