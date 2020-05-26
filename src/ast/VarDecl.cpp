@@ -126,3 +126,11 @@ VarDecl *VarDecl::clone() const {
 std::string VarDecl::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {identifier});
 }
+
+const std::vector<AbstractNode *> &VarDecl::getChildren() const {
+  //TODO IMPLEMENT
+  return {};
+}
+void VarDecl::removeChildren() {
+  //TODO IMPLEMENT
+}

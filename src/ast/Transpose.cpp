@@ -55,3 +55,10 @@ std::string Transpose::toString(bool printChildren) const {
 }
 
 Transpose::Transpose() = default;
+const std::vector<AbstractNode *> &Transpose::getChildren() const {
+  //TODO IMPLEMENT
+  return {};
+}
+void Transpose::removeChildren() {
+  //TODO IMPLEMENT
+}

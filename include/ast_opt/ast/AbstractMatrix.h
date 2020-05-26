@@ -3,7 +3,12 @@
 
 #include <string>
 #include <nlohmann/json.hpp>
+#include <vector>
+#include <map>
+#include <sstream>
+#include <typeinfo>
 #include "AbstractNode.h"
+#include "ast_opt/visitor/Visitor.h"
 
 class Dimension;
 class AbstractLiteral;
@@ -110,6 +115,9 @@ class AbstractMatrix : public AbstractNode {
   bool operator!=(const AbstractMatrix &rhs) const;
 
   AbstractMatrix *clone() const override = 0;
+ protected:
+/// Stores the children nodes of the current node.
+std::vector<AbstractNode *> children{};
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_ABSTRACTMATRIX_H_

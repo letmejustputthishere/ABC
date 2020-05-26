@@ -72,3 +72,11 @@ AbstractExpr *GetMatrixSize::getDimensionParameter() const {
 }
 
 GetMatrixSize::~GetMatrixSize() = default;
+
+const std::vector<AbstractNode *> &GetMatrixSize::getChildren() const {
+  //TODO IMPLEMENT
+  return {};
+}
+void GetMatrixSize::removeChildren() {
+  //TODO IMPLEMENT
+}

@@ -3,6 +3,10 @@
 
 #include <string>
 #include <nlohmann/json.hpp>
+#include <vector>
+#include <map>
+#include <sstream>
+#include <typeinfo>
 #include "ast_opt/visitor/Visitor.h"
 #include "ast_opt/ast/AbstractNode.h"
 #include "ast_opt/ast/AbstractBinaryExpr.h"
@@ -18,6 +22,9 @@ class AbstractStatement : public AbstractNode {
   virtual bool isEqual(AbstractStatement *as);
 
   virtual AbstractStatement* clone() const override = 0;
+ protected:
+/// Stores the children nodes of the current node.
+std::vector<AbstractNode *> children{};
 };
 
 std::ostream &operator<<(std::ostream &outs, const AbstractStatement &obj);

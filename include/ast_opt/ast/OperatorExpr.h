@@ -6,6 +6,9 @@
 #include <vector>
 
 class OperatorExpr : public AbstractExpr {
+ private:
+  Operator* op;
+  std::vector<AbstractExpr*> operands;
  public:
   OperatorExpr();
 
@@ -58,6 +61,8 @@ class OperatorExpr : public AbstractExpr {
   std::vector<std::string> getVariableIdentifiers() override;
 
   std::vector<Variable *> getVariables() override;
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_OPERATOREXPR_H_

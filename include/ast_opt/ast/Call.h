@@ -8,6 +8,9 @@
 #include "AbstractStatement.h"
 
 class Call : public AbstractExpr {
+ private:
+  ParameterList * arguments;
+  Function* func;
  public:
   Call(std::vector<FunctionParameter *> parameterValuesForCalledFunction, Function *func);
 
@@ -34,6 +37,9 @@ class Call : public AbstractExpr {
   std::vector<std::string> getVariableIdentifiers() override;
 
   std::vector<Variable *> getVariables() override;
+  AbstractBinaryExpr *contains(AbstractBinaryExpr *aexpTemplate, AbstractExpr *excludedSubtree) override;
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_CALL_H_

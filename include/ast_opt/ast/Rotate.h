@@ -43,6 +43,8 @@ class Rotate : public AbstractExpr {
   std::vector<Variable *> getVariables() override;
   
   bool isEqual(AbstractExpr *other) override;
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_ROTATE_H_

@@ -388,6 +388,8 @@ class Matrix : public AbstractMatrix {
     // it's sufficient to call the copy constructor that creates a copy of all primitives (int, float, etc.)
     return new Matrix<T>(*this);
   }
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 
 };
 
@@ -617,4 +619,13 @@ void Matrix<AbstractExpr *>::replaceChild(AbstractNode *originalChild, AbstractN
 template<>
 bool Matrix<AbstractExpr *>::containsAbstractExprs();
 
+template<typename T>
+const std::vector<AbstractNode *> &Matrix<T>::getChildren() const {
+  //TODO IMPLEMENT
+  return {};
+}
+template<typename T>
+void Matrix<T>::removeChildren() {
+  //TODO IMPLEMENT
+}
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_MATRIX_H_

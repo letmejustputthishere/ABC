@@ -186,7 +186,7 @@ TEST(ChildParentTests, CallExternal) {  /* NOLINT */
   auto callExternal = new CallExternal("computeSecretKeys");
 
   // using AbstractExpr
-  ASSERT_EQ(callExternal->AbstractExpr::getChildren().size(), 0);
+  ASSERT_EQ(callExternal->getChildren().size(), 0);
   ASSERT_EQ(callExternal->AbstractExpr::getParent(), nullptr);
   ASSERT_EQ(callExternal->AbstractExpr::getMaxNumberChildren(), 0);
 }

@@ -32,6 +32,9 @@ class Block : public AbstractStatement {
   bool isEqual(AbstractStatement *otherBlockStatement) override;
 
   void addStatement(AbstractStatement* stmt);
+
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_BLOCK_H_

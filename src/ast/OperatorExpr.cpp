@@ -65,7 +65,7 @@ void OperatorExpr::setAttributes(Operator *newOperator, std::vector<AbstractExpr
   // remove any existing children (i.e., operator and operands)
   removeChildren();
   // add the operator
-  children.push_back(newOperator);
+  op = newOperator;
   newOperator->setParent(this);
 
   // The basic idea of this OperatorExpr aggregation logic can be summarized as follow:
@@ -162,18 +162,14 @@ void OperatorExpr::setAttributes(Operator *newOperator, std::vector<AbstractExpr
       }
     } // end of: else if (getOperator()->isLeftAssociative())
     // add the aggregated/simplified operands
-    std::vector<AbstractNode *> abstractExprsVec(simplifiedAbstractExprs.begin(), simplifiedAbstractExprs.end());
-    children = abstractExprsVec;
-    for(auto &c: children) {
-      c->setParent(this);
-    }
+    operands = newOperands;
+
   } else {
     // add the operands without any prior aggregation
-    std::vector<AbstractNode *> abstractExprsVec(newOperands.begin(), newOperands.end());
-    children = abstractExprsVec;
-    for(auto &c: children) {
-      c->setParent(this);
-    }
+    operands = newOperands;
+  }
+  for (auto &c: operands) {
+    c->setParent(this);
   }
 }
 
@@ -277,4 +273,13 @@ void OperatorExpr::removeOperand(AbstractExpr *operand) {
       children.erase(it);
     }
   }
+}
+
+const std::vector<AbstractNode *> &OperatorExpr::getChildren() const {
+  //TODO: RETURN SOMETHING USEFUL
+  return {};
+}
+
+void OperatorExpr::removeChildren() {
+  //TODO: Actually remove
 }

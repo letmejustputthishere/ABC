@@ -7,11 +7,17 @@ class AbstractBinaryExpr : public AbstractExpr {
  public:
   void setAttributes(AbstractExpr *leftOperand, Operator *operatore, AbstractExpr *rightOperand);
 
-  [[nodiscard]] AbstractExpr *getLeft() const;
+  [[nodiscard]] virtual AbstractExpr *getLeft() const = 0;
 
-  [[nodiscard]] Operator *getOperator() const;
+  [[nodiscard]] virtual Operator *getOperator() const = 0;
 
-  [[nodiscard]] AbstractExpr *getRight() const;
+  [[nodiscard]] virtual AbstractExpr *getRight() const = 0;
+
+  virtual void setLeft(AbstractExpr *newleft) = 0;
+
+  virtual void setOperator(Operator *newOperator) = 0;
+
+  virtual void setRight(AbstractExpr *newRight) = 0;
 
   int getMaxNumberChildren() override;
 

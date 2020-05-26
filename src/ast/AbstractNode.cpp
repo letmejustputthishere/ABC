@@ -40,21 +40,14 @@ void AbstractNode::resetNodeIdCounter() {
   AbstractNode::nodeIdCounter = 0;
 }
 
-const std::vector<AbstractNode *> &AbstractNode::getChildren() const {
-  return children;
-}
 
 std::vector<AbstractNode *> AbstractNode::getChildrenNonNull() const {
   std::vector<AbstractNode *> childrenFiltered;
+  auto children = getChildren();
   if (children.empty()) return childrenFiltered;
   std::copy_if(children.begin(), children.end(), std::back_inserter(childrenFiltered),
                [](AbstractNode *n) { return n!=nullptr; });
   return childrenFiltered;
-}
-
-void AbstractNode::removeChildren() {
-  //TODO: Unset parent in the children
-  children.clear();
 }
 
 int AbstractNode::countChildrenNonNull() const {
@@ -67,6 +60,7 @@ int AbstractNode::getMaxNumberChildren() {
 
 void AbstractNode::replaceChild(AbstractNode *originalChild, AbstractNode *newChild) {
   //TODO: Make this more efficient
+  auto children = getChildren();
   auto pos = std::find(children.begin(), children.end(), originalChild);
   if (pos==children.end()) {
     throw std::runtime_error("Could not execute AbstractNode::replaceChildren because the node to be replaced could "

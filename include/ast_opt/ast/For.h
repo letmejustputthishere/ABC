@@ -41,6 +41,8 @@ class For : public AbstractStatement {
   [[nodiscard]] json toJson() const override;
 
   bool isEqual(AbstractStatement *other) override;
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_FOR_H_

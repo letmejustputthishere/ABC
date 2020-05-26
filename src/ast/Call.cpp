@@ -52,10 +52,10 @@ Call *Call::clone() const {
 
 void Call::setAttributes(std::vector<FunctionParameter *> functionCallParameters, Function *functionToBeCalled) {
   removeChildren();
-  children = {new ParameterList(std::move(functionCallParameters)), functionToBeCalled};
-  for(auto &c: children) {
-    c->setParent(this);
-  }
+  arguments = new ParameterList(std::move(functionCallParameters));
+  if (arguments) arguments->setParent(this);
+  func = functionToBeCalled;
+  if (func) func->setParent(this);
 }
 
 int Call::getMaxNumberChildren() {
@@ -85,4 +85,14 @@ std::vector<Variable *> Call::getVariables() {
     }
   }
   return results;
+}
+AbstractBinaryExpr *Call::contains(AbstractBinaryExpr *aexpTemplate, AbstractExpr *excludedSubtree) {
+  return AbstractExpr::contains(aexpTemplate, excludedSubtree);
+}
+const std::vector<AbstractNode *> &Call::getChildren() const {
+  //TODO IMPLEMENT
+  return {};
+}
+void Call::removeChildren() {
+  //TODO IMPLEMENT
 }

@@ -57,7 +57,7 @@ void Rotate::setAttributes(AbstractExpr *pExpr, AbstractExpr *rotationFactor) {
   }
   removeChildren();
   children = {pExpr, rotationFactor};
-  for(auto &c: children) {
+  for (auto &c: children) {
     c->setParent(this);
   }
 }
@@ -92,4 +92,11 @@ bool Rotate::isEqual(AbstractExpr *other) {
         && getRotationFactor()->isEqual(otherAsRotate->getRotationFactor());
   }
   return false;
+}
+
+const std::vector<AbstractNode *> &Rotate::getChildren() const {
+  return children;
+}
+void Rotate::removeChildren() {
+  children.clear();
 }

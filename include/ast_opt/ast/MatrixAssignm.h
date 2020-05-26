@@ -34,6 +34,8 @@ class MatrixAssignm : public AbstractStatement {
   [[nodiscard]] AbstractExpr *getValue() const;
 
   [[nodiscard]] std::string getAssignmTargetString() const;
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_MATRIXASSIGNM_H_

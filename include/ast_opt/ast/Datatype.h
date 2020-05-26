@@ -47,6 +47,9 @@ class Datatype : public AbstractNode {
 
   [[nodiscard]] nlohmann::json toJson() const override;
 
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
+
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_INCLUDE_UTILITIES_DATATYPE_H_

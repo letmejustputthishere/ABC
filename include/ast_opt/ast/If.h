@@ -6,6 +6,10 @@
 #include <string>
 
 class If : public AbstractStatement {
+ private:
+  AbstractExpr *condition;
+  Block *thenBranch;
+  Block *elseBranch;
  public:
   If(AbstractExpr *condition, AbstractStatement *thenBranch);
 
@@ -23,21 +27,24 @@ class If : public AbstractStatement {
 
   [[nodiscard]] AbstractExpr *getCondition() const;
 
-  [[nodiscard]] Block * getThenBranch() const;
+  [[nodiscard]] Block *getThenBranch() const;
 
-  [[nodiscard]] Block * getElseBranch() const;
+  [[nodiscard]] Block *getElseBranch() const;
 
-  void setCondition(AbstractExpr* newCondition);
+  void setCondition(AbstractExpr *newCondition);
 
-  void setThenBranch(Block* newThenBranch);
+  void setThenBranch(Block *newThenBranch);
 
-  void setElseBranch(Block* newElseBranch);
+  void setElseBranch(Block *newElseBranch);
 
   int getMaxNumberChildren() override;
 
   void setAttributes(AbstractExpr *condition, AbstractStatement *thenBranch, AbstractStatement *elseBranch);
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
+
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_IF_H_

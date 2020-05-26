@@ -6,6 +6,9 @@
 #include "Datatype.h"
 
 class FunctionParameter : public AbstractExpr {
+ private:
+  Datatype * datatype;
+  AbstractExpr * value;
  public:
   FunctionParameter(Datatype *datatype, AbstractExpr *value);
 
@@ -40,6 +43,8 @@ class FunctionParameter : public AbstractExpr {
   std::vector<Variable *> getVariables() override;
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 };
 
 /// Defines the JSON representation to be used for vector<FunctionParameter> objects.

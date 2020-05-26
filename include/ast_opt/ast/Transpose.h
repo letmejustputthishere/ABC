@@ -32,6 +32,8 @@ class Transpose : public AbstractExpr {
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
   [[nodiscard]] AbstractExpr *getOperand() const;
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_TRANSPOSE_H_

@@ -32,3 +32,40 @@ ArithmeticExpr *ArithmeticExpr::clone() const {
 std::string ArithmeticExpr::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
 }
+
+void ArithmeticExpr::setLeft(AbstractExpr *newLeft) {
+  //TODO: Remove old
+  left = newLeft;
+  if (newLeft) newLeft->setParent(this);
+}
+
+void ArithmeticExpr::setOperator(Operator *newOperator) {
+  //TODO: Remove old
+  op = newOperator;
+  if (newOperator) newOperator->setParent(this);
+
+}
+void ArithmeticExpr::setRight(AbstractExpr *newRight) {
+  //TODO: Remove old
+  right = newRight;
+  if (newRight) newRight->setParent(this);
+
+}
+const std::vector<AbstractNode *> &ArithmeticExpr::getChildren() const {
+  //TODO returns temp
+  return {left, op, right};
+}
+void ArithmeticExpr::removeChildren() {
+  setLeft(nullptr);
+  setOperator(nullptr);
+  setRight(nullptr);
+}
+AbstractExpr *ArithmeticExpr::getLeft() const {
+  return left;
+}
+Operator *ArithmeticExpr::getOperator() const {
+  return op;
+}
+AbstractExpr *ArithmeticExpr::getRight() const {
+  return right;
+}

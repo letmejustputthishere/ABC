@@ -65,10 +65,10 @@ int FunctionParameter::getMaxNumberChildren() {
 
 void FunctionParameter::setAttributes(Datatype *datatype, AbstractExpr *value) {
   removeChildren();
-  children = {datatype, value};
-  for(auto &c: children) {
-    c->setParent(this);
-  }
+  this->datatype = datatype;
+  if (datatype) datatype->setParent(this);
+  this->value = value;
+  if (value) value->setParent(this);
 }
 
 bool FunctionParameter::operator==(const FunctionParameter &rhs) const {
@@ -80,5 +80,12 @@ bool FunctionParameter::operator!=(const FunctionParameter &rhs) const {
 }
 std::string FunctionParameter::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
+}
+
+const std::vector<AbstractNode *> &FunctionParameter::getChildren() const {
+  return {datatype,value};
+}
+void FunctionParameter::removeChildren() {
+//TODO: REMOVAL
 }
 

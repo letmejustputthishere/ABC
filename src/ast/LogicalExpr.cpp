@@ -26,3 +26,32 @@ LogicalExpr *LogicalExpr::clone() const {
 std::string LogicalExpr::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
 }
+AbstractExpr *LogicalExpr::getLeft() const {
+  return left;
+}
+void LogicalExpr::setLeft(AbstractExpr *newleft) {
+  left = newleft;
+  if (left) left->setParent(this);
+}
+void LogicalExpr::setOperator(Operator *newOperator) {
+  op = newOperator;
+  if (op) op->setParent(this);
+}
+void LogicalExpr::setRight(AbstractExpr *newRight) {
+  right = newRight;
+  if (right) right->setParent(this);
+}
+const std::vector<AbstractNode *> &LogicalExpr::getChildren() const {
+  return {left, op, right};
+}
+void LogicalExpr::removeChildren() {
+  setLeft(nullptr);
+  setOperator(nullptr);
+  setRight(nullptr);
+}
+Operator *LogicalExpr::getOperator() const {
+  return op;
+}
+AbstractExpr *LogicalExpr::getRight() const {
+  return right;
+}

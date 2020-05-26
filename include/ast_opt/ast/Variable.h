@@ -39,6 +39,8 @@ class Variable : public AbstractExpr {
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
   std::vector<Variable *> getVariables() override;
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_VARIABLE_H_

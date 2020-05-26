@@ -66,3 +66,11 @@ std::vector<Variable *> CallExternal::getVariables() {
 const std::vector<FunctionParameter *> &CallExternal::getArguments() const {
   return arguments;
 }
+
+const std::vector<AbstractNode *> &CallExternal::getChildren() const {
+  //TODO IMPLEMENT
+  return {};
+}
+void CallExternal::removeChildren() {
+  //TODO IMPLEMENT
+}

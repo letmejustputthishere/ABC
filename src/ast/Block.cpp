@@ -90,3 +90,11 @@ void Block::addStatement(AbstractStatement *stmt) {
     stmt->setParent(this);
   }
 }
+const std::vector<AbstractNode *> &Block::getChildren() const {
+  return children;
+}
+
+void Block::removeChildren() {
+  //TODO: Actually delete
+  children.clear();
+}

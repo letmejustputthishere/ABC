@@ -51,6 +51,8 @@ class Function : public AbstractStatement {
   int getMaxNumberChildren() override;
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 };
 
 /// Defines the JSON representation to be used for vector<Function> objects.

@@ -12,6 +12,10 @@
 #include "AbstractBinaryExpr.h"
 
 class ArithmeticExpr : public AbstractBinaryExpr {
+ private:
+  AbstractExpr * left;
+  Operator* op;
+  AbstractExpr * right;
  public:
   /// Represents an expression of the form "left op right", e.g., "2 + a" or "53 * 3".
   /// \param left is the left operand of the expression.
@@ -43,15 +47,15 @@ class ArithmeticExpr : public AbstractBinaryExpr {
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  void setLeft(AbstractExpr* left) {
-    if(children.empty()) {
-      children.push_back(left);
-    } else {
-      //TODO: Remove old
-      children[0] = left;
-      left->setParent(this);
-    }
-  }
+  void setLeft(AbstractExpr* left) override;
+
+  void setOperator(Operator *newOperator) override;
+  void setRight(AbstractExpr *newRight) override;
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
+  AbstractExpr *getLeft() const override;
+  Operator *getOperator() const override;
+  AbstractExpr *getRight() const override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_ARITHMETICEXPR_H_

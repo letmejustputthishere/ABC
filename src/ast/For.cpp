@@ -124,3 +124,10 @@ void For::setBody(Block *body) {
     body->setParent(this);
   }
 }
+
+const std::vector<AbstractNode *> &For::getChildren() const {
+  return children;
+}
+void For::removeChildren() {
+  children.clear();
+}

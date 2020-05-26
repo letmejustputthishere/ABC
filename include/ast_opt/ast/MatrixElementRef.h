@@ -43,6 +43,8 @@ class MatrixElementRef : public AbstractExpr {
   [[nodiscard]] AbstractExpr *getColumnIndex() const;
 
   void setAttributes(AbstractExpr *elementContainingMatrix, AbstractExpr *rowIndex, AbstractExpr *columnIndex);
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_MATRIXELEMENTREF_H_

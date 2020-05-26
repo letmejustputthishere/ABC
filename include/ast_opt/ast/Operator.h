@@ -162,6 +162,8 @@ class Operator : public AbstractNode {
   /// But the expression 32 < 193 < a < 12 would partially evaluate 32 < 193 = true and then lead to true < a < 12 which
   /// is obviously not correct. Because of that we require that all operands are known for these kind of operators.
   [[nodiscard]] bool supportsPartialEvaluation();
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_OPERATOR_H_

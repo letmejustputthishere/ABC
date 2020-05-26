@@ -41,17 +41,14 @@ int Return::getMaxNumberChildren() {
 void Return::setAttributes(std::vector<AbstractExpr *> returnExpr) {
   removeChildren();
   // we need to convert vector of AbstractExpr* into vector of AbstractNode* prior calling addChildren
-  std::vector<AbstractNode *> returnExprAsNodes(returnExpr.begin(), returnExpr.end());
-  children = returnExprAsNodes;
-  for(auto &c: children) {
+  returnExpressions = returnExpr;
+  for (auto &c: returnExpr) {
     c->setParent(this);
   }
 }
 
 std::vector<AbstractExpr *> Return::getReturnExpressions() const {
-  std::vector<AbstractExpr *> vec;
-  for (auto &child : getChildrenNonNull()) vec.push_back(child->castTo<AbstractExpr>());
-  return vec;
+  return returnExpressions;
 }
 
 Return *Return::clone() const {
@@ -82,4 +79,12 @@ bool Return::isEqual(AbstractStatement *as) {
 void Return::addReturnExpr(AbstractExpr *returnExpr) {
   children.push_back(returnExpr);
   returnExpr->setParent(this);
+}
+
+const std::vector<AbstractNode *> &Return::getChildren() const {
+  return std::vector<AbstractNode *>(returnExpressions.begin(), returnExpressions.end());
+}
+void Return::removeChildren() {
+//TODO ACTUAL REMOVE
+  returnExpressions.clear();
 }

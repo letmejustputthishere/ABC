@@ -54,23 +54,21 @@ void If::setAttributes(AbstractExpr *condition, AbstractStatement *thenBranch, A
   // update tree structure
   removeChildren();
 
-  children.push_back(condition);
+  setCondition(condition);
 
   auto thenBranchAsBlock = dynamic_cast<Block *>(thenBranch);
   if (!thenBranchAsBlock) {
     thenBranchAsBlock = new Block;
     thenBranchAsBlock->addStatement(thenBranch);
   }
-  children.push_back(thenBranchAsBlock);
-  thenBranchAsBlock->setParent(this);
+  setThenBranch(thenBranchAsBlock);
 
   auto elseBranchAsBlock = dynamic_cast<Block *>(elseBranch);
   if (!elseBranchAsBlock) {
     elseBranchAsBlock = new Block;
     elseBranchAsBlock->addStatement(elseBranch);
   }
-  children.push_back(elseBranchAsBlock);
-  elseBranchAsBlock->setParent(this);
+  setElseBranch(elseBranchAsBlock);
 
 }
 std::string If::toString(bool printChildren) const {
@@ -93,5 +91,14 @@ void If::setElseBranch(Block *newElseBranch) {
   //TODO: Delete old
   newElseBranch->setParent(this);
   children[2] = newElseBranch;
-
+}
+const std::vector<AbstractNode *> &If::getChildren() const {
+  //TODO: Returns temp
+  return {condition,thenBranch,elseBranch};
+}
+void If::removeChildren() {
+  //TODO: Remove old
+  setCondition(nullptr);
+  setThenBranch(nullptr);
+  setElseBranch(nullptr);
 }

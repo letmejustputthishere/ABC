@@ -4,6 +4,9 @@
 #include <vector>
 #include <string>
 #include <nlohmann/json.hpp>
+#include <map>
+#include <sstream>
+#include <typeinfo>
 #include "ast_opt/visitor/Visitor.h"
 #include "ast_opt/ast/Ast.h"
 #include "ast_opt/ast/AbstractNode.h"
@@ -26,6 +29,8 @@ class AbstractExpr : public AbstractNode {
 
   static AbstractNode *createParam(AbstractNode *node);
 
+  /// Stores the children nodes of the current node.
+  std::vector<AbstractNode *> children{};
  public:
   [[nodiscard]] json toJson() const override;
 

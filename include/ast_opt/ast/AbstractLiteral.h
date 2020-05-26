@@ -8,9 +8,10 @@
 #include <vector>
 #include "AbstractExpr.h"
 #include "Datatype.h"
+#include "ast_opt/ast/AbstractMatrix.h"
 
 class RandLiteralGen;
-class AbstractMatrix;
+
 
 class AbstractLiteral : public AbstractExpr {
  protected:
@@ -51,7 +52,12 @@ class AbstractLiteral : public AbstractExpr {
   static AbstractLiteral *createLiteralBasedOnDatatype(Datatype *dt);
 
   std::vector<std::string> getVariableIdentifiers() override;
+
   std::vector<Variable *> getVariables() override;
+
+  const std::vector<AbstractNode *> &getChildren() const override;
+
+  void removeChildren() override;
 
 };
 

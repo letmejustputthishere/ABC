@@ -7,6 +7,8 @@
 #include "AbstractExpr.h"
 
 class Return : public AbstractStatement {
+ private:
+  std::vector<AbstractExpr*> returnExpressions;
  public:
   Return();
 
@@ -32,6 +34,8 @@ class Return : public AbstractStatement {
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
   bool isEqual(AbstractStatement *as) override;
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 
  protected:
   int getMaxNumberChildren() override;

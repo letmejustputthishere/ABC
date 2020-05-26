@@ -11,8 +11,6 @@
 
 class AbstractNode {
  protected:
-  /// Stores the children nodes of the current node.
-  std::vector<AbstractNode *> children{};
 
   /// Stores the parent nodes of the current node.
   AbstractNode *parent = nullptr;
@@ -62,7 +60,7 @@ class AbstractNode {
 
   /// Returns a reference to the vector of children nodes.
   /// \return A reference to the vector of this node's children.
-  [[nodiscard]] const std::vector<AbstractNode *> &getChildren() const;
+  [[nodiscard]] virtual const std::vector<AbstractNode *> &getChildren() const = 0;
 
   /// Returns a vector of pointers to children nodes but without those children that are nullptr.
   /// \return A vector of non-nullptr children.
@@ -74,7 +72,7 @@ class AbstractNode {
   std::vector<AbstractNode *> getDescendants();
 
   /// Removes all children from this node. Note: Does not update the child's parent.
-  void removeChildren();
+  virtual void removeChildren() = 0;
 
   /// Replaces a given child (originalChild) of this node by a new node (newChild) and updates the child and
   /// parent references of both nodes. This method does not invalidate iterators over the children

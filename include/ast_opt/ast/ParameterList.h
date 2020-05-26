@@ -4,10 +4,12 @@
 #include "AbstractStatement.h"
 
 class ParameterList : public AbstractStatement {
+ private:
+  std::vector<FunctionParameter *> parameters;
  public:
   ParameterList() = default;
 
-  explicit ParameterList(std::vector<FunctionParameter*> parameters);
+  explicit ParameterList(std::vector<FunctionParameter *> parameters);
 
   [[nodiscard]] std::string getNodeType() const override;
 
@@ -15,13 +17,16 @@ class ParameterList : public AbstractStatement {
 
   ParameterList *clone() const override;
 
-  std::vector<FunctionParameter*> getParameters();
+  std::vector<FunctionParameter *> getParameters();
 
   int getMaxNumberChildren() override;
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  void addParameter(FunctionParameter* param);
+  void addParameter(FunctionParameter *param);
+
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_PARAMETERLIST_H_

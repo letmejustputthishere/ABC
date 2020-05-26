@@ -12,6 +12,10 @@
 #include <vector>
 
 class LogicalExpr : public AbstractBinaryExpr {
+ private:
+  AbstractExpr *left;
+  Operator *op;
+  AbstractExpr *right;
  public:
   LogicalExpr();
 
@@ -34,6 +38,15 @@ class LogicalExpr : public AbstractBinaryExpr {
   [[nodiscard]] std::string getNodeType() const override;
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
+
+  AbstractExpr *getLeft() const override;
+  void setLeft(AbstractExpr *newleft) override;
+  void setOperator(Operator *newOperator) override;
+  void setRight(AbstractExpr *newRight) override;
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
+  Operator *getOperator() const override;
+  AbstractExpr *getRight() const override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_LOGICALEXPR_H_

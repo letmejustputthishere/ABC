@@ -1,4 +1,6 @@
 #include "ast_opt/ast/ParameterList.h"
+
+#include <utility>
 #include "ast_opt/ast/FunctionParameter.h"
 
 std::string ParameterList::getNodeType() const {
@@ -18,19 +20,10 @@ ParameterList *ParameterList::clone() const {
   return new ParameterList(childrenCopy);
 }
 
-ParameterList::ParameterList(std::vector<FunctionParameter *> parameters) {
-  for (auto &fp : parameters) {
-    addParameter(fp);
-  }
-}
+ParameterList::ParameterList(std::vector<FunctionParameter *> parameters) : parameters(std::move(parameters)) {};
 
 std::vector<FunctionParameter *> ParameterList::getParameters() {
-  std::vector<FunctionParameter *> params;
-  params.reserve(children.size());
-  for (auto &n : children) {
-    params.emplace_back(dynamic_cast<FunctionParameter *>(n));
-  }
-  return params;
+    return parameters;
 }
 
 int ParameterList::getMaxNumberChildren() {
@@ -41,6 +34,17 @@ std::string ParameterList::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
 }
 void ParameterList::addParameter(FunctionParameter *param) {
-  children.push_back(param);
+  parameters.push_back(param);
   param->setParent(this);
+}
+const std::vector<AbstractNode *> &ParameterList::getChildren() const {
+  std::vector<AbstractNode*> v;
+  v.reserve(parameters.size());
+  for(auto &p : parameters) {
+    v.push_back(p);
+  }
+  return v;
+}
+void ParameterList::removeChildren() {
+//TODO removal
 }

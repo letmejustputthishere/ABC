@@ -24,6 +24,8 @@ class While : public AbstractStatement {
   void setAttributes(AbstractExpr *loopCondition, AbstractStatement *loopBody);
 
   int getMaxNumberChildren() override;
+  const std::vector<AbstractNode *> &getChildren() const override;
+  void removeChildren() override;
 
 };
 

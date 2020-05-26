@@ -137,3 +137,12 @@ int Function::getMaxNumberChildren() {
 std::string Function::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {getName()});
 }
+
+const std::vector<AbstractNode *> &Function::getChildren() const {
+  //TODO IMPLEMENT
+  return {};
+}
+
+void Function::removeChildren() {
+  //TODO IMPLEMENT
+}
