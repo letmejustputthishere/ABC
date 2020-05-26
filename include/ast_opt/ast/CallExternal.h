@@ -32,6 +32,7 @@ class CallExternal : public AbstractExpr {
   std::vector<Variable *> getVariables() override;
   std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
+  std::vector<const AbstractNode *> getChildren() const override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_CALLEXTERNAL_H_

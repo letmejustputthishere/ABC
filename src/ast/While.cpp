@@ -37,7 +37,7 @@ While *While::clone() const {
 void While::setAttributes(AbstractExpr *loopCondition, AbstractStatement *loopBody) {
   removeChildren();
   children = {loopCondition, loopBody};
-  for(auto &c: children) {
+  for (auto &c: children) {
     c->setParent(this);
   }
 }
@@ -46,7 +46,11 @@ int While::getMaxNumberChildren() {
   return 2;
 }
 
-std::vector<AbstractNode *> While::getChildren()  {
+std::vector<AbstractNode *> While::getChildren() {
+  //TODO IMPLEMENT
+  return {};
+}
+std::vector<const AbstractNode *> While::getChildren() const {
   //TODO IMPLEMENT
   return {};
 }

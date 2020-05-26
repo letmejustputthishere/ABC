@@ -60,7 +60,7 @@ void VarDecl::setAttributes(std::string varIdentifier, Datatype *varDatatype, Ab
   // handle attributes that are itself nodes
   removeChildren();
   children = {varDatatype, varValue};
-  for(auto &c: children) {
+  for (auto &c: children) {
     c->setParent(this);
   }
 }
@@ -116,18 +116,22 @@ int VarDecl::getMaxNumberChildren() {
 }
 
 VarDecl *VarDecl::clone() const {
- return new VarDecl(this->getVarTargetIdentifier(),
-                                this->getDatatype()->getType(),
-                                getInitializer()!=nullptr
-                                ? getInitializer()->clone()
-                                : nullptr);
+  return new VarDecl(this->getVarTargetIdentifier(),
+                     this->getDatatype()->getType(),
+                     getInitializer()!=nullptr
+                     ? getInitializer()->clone()
+                     : nullptr);
 }
 
 std::string VarDecl::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {identifier});
 }
 
-std::vector<AbstractNode *> VarDecl::getChildren()  {
+std::vector<AbstractNode *> VarDecl::getChildren() {
+  //TODO IMPLEMENT
+  return {};
+}
+std::vector<const AbstractNode *> VarDecl::getChildren() const {
   //TODO IMPLEMENT
   return {};
 }

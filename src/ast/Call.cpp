@@ -89,7 +89,11 @@ std::vector<Variable *> Call::getVariables() {
 AbstractBinaryExpr *Call::contains(AbstractBinaryExpr *aexpTemplate, AbstractExpr *excludedSubtree) {
   return AbstractExpr::contains(aexpTemplate, excludedSubtree);
 }
-std::vector<AbstractNode *> Call::getChildren()  {
+std::vector<AbstractNode *> Call::getChildren() {
+  //TODO IMPLEMENT
+  return {};
+}
+std::vector<const AbstractNode *> Call::getChildren() const {
   //TODO IMPLEMENT
   return {};
 }

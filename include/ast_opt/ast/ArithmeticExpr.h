@@ -56,6 +56,7 @@ class ArithmeticExpr : public AbstractBinaryExpr {
   AbstractExpr *getLeft() const override;
   Operator *getOperator() const override;
   AbstractExpr *getRight() const override;
+  std::vector<const AbstractNode *> getChildren() const override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_ARITHMETICEXPR_H_

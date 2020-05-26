@@ -37,7 +37,6 @@ std::vector<Variable *> Transpose::getVariables() {
   return getOperand()->getVariables();
 }
 
-
 bool Transpose::contains(Variable *var) {
   return getOperand()->contains(var);
 }
@@ -55,7 +54,11 @@ std::string Transpose::toString(bool printChildren) const {
 }
 
 Transpose::Transpose() = default;
-std::vector<AbstractNode *> Transpose::getChildren()  {
+std::vector<AbstractNode *> Transpose::getChildren() {
+  //TODO IMPLEMENT
+  return {};
+}
+std::vector<const AbstractNode *> Transpose::getChildren() const {
   //TODO IMPLEMENT
   return {};
 }

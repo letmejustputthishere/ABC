@@ -87,6 +87,10 @@ std::vector<AbstractNode *> MatrixAssignm::getChildren()  {
   //TODO IMPLEMENT
   return {};
 }
+std::vector<const AbstractNode *> MatrixAssignm::getChildren() const {
+  //TODO IMPLEMENT
+  return {};
+}
 void MatrixAssignm::removeChildren() {
   //TODO IMPLEMENT
 }

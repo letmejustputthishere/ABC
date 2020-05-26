@@ -83,6 +83,10 @@ std::vector<AbstractNode *> UnaryExpr::getChildren()  {
  //TODO IMPLEMENT
  return {};
 }
+std::vector<const AbstractNode *> UnaryExpr::getChildren() const {
+  //TODO IMPLEMENT
+  return {};
+}
 void UnaryExpr::removeChildren() {
 //TODO IMPLEMENT
 }

@@ -82,8 +82,11 @@ std::string FunctionParameter::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
 }
 
-std::vector<AbstractNode *> FunctionParameter::getChildren()  {
-  return {datatype,value};
+std::vector<AbstractNode *> FunctionParameter::getChildren() {
+  return {datatype, value};
+}
+std::vector<const AbstractNode *> FunctionParameter::getChildren() const {
+  return {datatype, value};
 }
 void FunctionParameter::removeChildren() {
 //TODO: REMOVAL

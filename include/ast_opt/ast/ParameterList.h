@@ -26,6 +26,7 @@ class ParameterList : public AbstractStatement {
   void addParameter(FunctionParameter *param);
 
   std::vector<AbstractNode *> getChildren() override;
+  std::vector<const AbstractNode *> getChildren() const override;
   void removeChildren() override;
 };
 

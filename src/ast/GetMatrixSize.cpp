@@ -41,7 +41,7 @@ GetMatrixSize *GetMatrixSize::clone() const {
 GetMatrixSize::GetMatrixSize(AbstractExpr *matrix, AbstractExpr *requestedDimension) {
   removeChildren();
   children = {matrix, requestedDimension};
-  for(auto &c: children) {
+  for (auto &c: children) {
     c->setParent(this);
   }
 }
@@ -73,7 +73,11 @@ AbstractExpr *GetMatrixSize::getDimensionParameter() const {
 
 GetMatrixSize::~GetMatrixSize() = default;
 
-std::vector<AbstractNode *> GetMatrixSize::getChildren()  {
+std::vector<AbstractNode *> GetMatrixSize::getChildren() {
+  //TODO IMPLEMENT
+  return {};
+}
+std::vector<const AbstractNode *> GetMatrixSize::getChildren() const {
   //TODO IMPLEMENT
   return {};
 }

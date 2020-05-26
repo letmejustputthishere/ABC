@@ -19,22 +19,22 @@ void Function::addParameter(FunctionParameter *param) {
 
 Function::Function(std::string name, Block *pt) : name(std::move(name)) {
   children = {new ParameterList(), pt};
-  for(auto &c: children) {
+  for (auto &c: children) {
     c->setParent(this);
   }
 }
 
 Function::Function(std::string name) : name(std::move(name)) {
   children = {new ParameterList(), new Block()};
-  for(auto &c: children) {
+  for (auto &c: children) {
     c->setParent(this);
   }
 }
 
 Function::Function(std::string functionName, ParameterList *functionParameters,
                    Block *functionStatements) : name(std::move(functionName)) {
-  children ={functionParameters, functionStatements};
-  for(auto &c: children) {
+  children = {functionParameters, functionStatements};
+  for (auto &c: children) {
     c->setParent(this);
   }
 }
@@ -89,9 +89,9 @@ std::string Function::getNodeType() const {
 }
 
 void Function::setParameterList(ParameterList *paramsVec) {
-  if(children.empty()) {
+  if (children.empty()) {
     children.push_back(paramsVec);
-  } else if(children[0]) {
+  } else if (children[0]) {
     //TODO: Deletion ~children[0]
   } else {
     // children[0] exists but is a nullptr
@@ -124,8 +124,8 @@ Function::Function(std::string functionName,
                    std::vector<FunctionParameter *> functionParameters,
                    std::vector<AbstractStatement *> functionStatements) : name(std::move(functionName)) {
   children = {new ParameterList(std::move(functionParameters)),
-               new Block(std::move(functionStatements))};
-  for(auto &c: children) {
+              new Block(std::move(functionStatements))};
+  for (auto &c: children) {
     c->setParent(this);
   }
 }
@@ -138,11 +138,14 @@ std::string Function::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {getName()});
 }
 
-std::vector<AbstractNode *> Function::getChildren()  {
+std::vector<AbstractNode *> Function::getChildren() {
   //TODO IMPLEMENT
   return {};
 }
-
+std::vector<const AbstractNode *> Function::getChildren() const {
+  //TODO IMPLEMENT
+  return {};
+}
 void Function::removeChildren() {
   //TODO IMPLEMENT
 }

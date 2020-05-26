@@ -132,6 +132,10 @@ std::vector<AbstractNode *> MatrixElementRef::getChildren()  {
   //TODO IMPLEMENT
   return {};
 }
+std::vector<const AbstractNode *> MatrixElementRef::getChildren() const {
+  //TODO IMPLEMENT
+  return {};
+}
 void MatrixElementRef::removeChildren() {
   //TODO IMPLEMENT
 }

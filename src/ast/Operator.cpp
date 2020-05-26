@@ -341,7 +341,7 @@ AbstractLiteral *Operator::applyOperator(const LiteralBool *lhs, const LiteralIn
     throw std::logic_error("applyOperator(LiteralBool* lhs, LiteralInt* rhs) failed!");
 }
 
-AbstractLiteral *Operator::applyOperator(const LiteralInt *lhs, const  LiteralBool *rhs) {
+AbstractLiteral *Operator::applyOperator(const LiteralInt *lhs, const LiteralBool *rhs) {
   int lhsVal = lhs->getValue();
   bool rhsVal = rhs->getValue();
 
@@ -368,7 +368,7 @@ AbstractLiteral *Operator::applyOperator(const LiteralInt *lhs, const  LiteralBo
     throw std::logic_error("applyOperator(LiteralBool* lhs, LiteralInt* rhs) failed!");
 }
 
-AbstractLiteral *Operator::applyOperator(const LiteralBool *lhs,const  LiteralBool *rhs) {
+AbstractLiteral *Operator::applyOperator(const LiteralBool *lhs, const LiteralBool *rhs) {
   int lhsVal = lhs->getValue();
   int rhsVal = rhs->getValue();
 
@@ -569,7 +569,10 @@ AbstractLiteral *Operator::applyOperator(std::vector<const AbstractLiteral *> op
     throw std::logic_error("Operator::apply failed because AbstractLiterals are of unknown type.");
   }
 }
-std::vector<AbstractNode *> Operator::getChildren()  {
+std::vector<AbstractNode *> Operator::getChildren() {
+  return {}; // has no node children
+}
+std::vector<const AbstractNode *> Operator::getChildren() const {
   return {}; // has no node children
 }
 void Operator::removeChildren() {

@@ -210,8 +210,4 @@ AbstractNode::~AbstractNode() = default;
 std::string AbstractNode::toString(bool) const {
   throw std::runtime_error("toString not implemented for class " + getNodeType() + ".");
 }
-std::vector<const AbstractNode *> AbstractNode::getChildren() const {
-  //TODO?
-  return {};
-}
 

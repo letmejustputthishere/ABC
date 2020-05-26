@@ -57,6 +57,8 @@ class AbstractLiteral : public AbstractExpr {
 
   std::vector<AbstractNode *> getChildren() override;
 
+  std::vector<const AbstractNode *> getChildren() const override;
+
   void removeChildren() override;
 
   AbstractLiteral *clone() const override = 0;

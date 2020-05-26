@@ -40,6 +40,9 @@ void ParameterList::addParameter(FunctionParameter *param) {
 std::vector<AbstractNode *> ParameterList::getChildren()  {
   return std::vector<AbstractNode*>(parameters.begin(),parameters.end());
 }
+std::vector<const AbstractNode *> ParameterList::getChildren() const {
+  return std::vector<const AbstractNode*>(parameters.begin(),parameters.end());
+}
 void ParameterList::removeChildren() {
 //TODO removal
 }

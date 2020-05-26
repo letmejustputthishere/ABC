@@ -43,6 +43,7 @@ class For : public AbstractStatement {
   bool isEqual(AbstractStatement *other) override;
   std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
+  std::vector<const AbstractNode *> getChildren() const override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_FOR_H_

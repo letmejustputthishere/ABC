@@ -63,7 +63,7 @@ class AbstractNode {
 
   /// Returns a reference to the vector of children nodes.
   /// \return A reference to the vector of this node's children.
-  [[nodiscard]] virtual std::vector<const AbstractNode *> getChildren() const;
+  [[nodiscard]] virtual std::vector<const AbstractNode *> getChildren() const = 0;
 
   /// Returns a vector of pointers to children nodes but without those children that are nullptr.
   /// \return A vector of non-nullptr children.

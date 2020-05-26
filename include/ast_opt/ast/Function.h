@@ -53,6 +53,7 @@ class Function : public AbstractStatement {
   [[nodiscard]] std::string toString(bool printChildren) const override;
   std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
+  std::vector<const AbstractNode *> getChildren() const override;
 };
 
 /// Defines the JSON representation to be used for vector<Function> objects.

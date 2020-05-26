@@ -59,7 +59,11 @@ Variable::~Variable() = default;
 Variable *Variable::clone() const {
   return new Variable(getIdentifier());
 }
-std::vector<AbstractNode *> Variable::getChildren()  {
+std::vector<AbstractNode *> Variable::getChildren() {
+  //TODO IMPLEMENT
+  return {};
+}
+std::vector<const AbstractNode *> Variable::getChildren() const {
   //TODO IMPLEMENT
   return {};
 }

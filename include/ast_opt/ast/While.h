@@ -26,6 +26,7 @@ class While : public AbstractStatement {
   int getMaxNumberChildren() override;
   std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
+  std::vector<const AbstractNode *> getChildren() const override;
 
 };
 

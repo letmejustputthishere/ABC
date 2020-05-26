@@ -41,7 +41,10 @@ void LogicalExpr::setRight(AbstractExpr *newRight) {
   right = newRight;
   if (right) right->setParent(this);
 }
-std::vector<AbstractNode *> LogicalExpr::getChildren()  {
+std::vector<AbstractNode *> LogicalExpr::getChildren() {
+  return {left, op, right};
+}
+std::vector<const AbstractNode *> LogicalExpr::getChildren() const {
   return {left, op, right};
 }
 void LogicalExpr::removeChildren() {

@@ -62,6 +62,7 @@ class OperatorExpr : public AbstractExpr {
 
   std::vector<Variable *> getVariables() override;
   std::vector<AbstractNode *> getChildren() override;
+  std::vector<const AbstractNode *> getChildren() const override;
   void removeChildren() override;
 };
 

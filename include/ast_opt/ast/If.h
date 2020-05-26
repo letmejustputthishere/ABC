@@ -44,6 +44,7 @@ class If : public AbstractStatement {
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
   std::vector<AbstractNode *> getChildren() override;
+  std::vector<const AbstractNode *> getChildren() const override;
   void removeChildren() override;
 };
 

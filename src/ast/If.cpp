@@ -92,8 +92,11 @@ void If::setElseBranch(Block *newElseBranch) {
   newElseBranch->setParent(this);
   children[2] = newElseBranch;
 }
- std::vector<AbstractNode *> If::getChildren()  {
-  return {condition,thenBranch,elseBranch};
+std::vector<AbstractNode *> If::getChildren() {
+  return {condition, thenBranch, elseBranch};
+}
+std::vector<const AbstractNode *> If::getChildren() const {
+  return {condition, thenBranch, elseBranch};
 }
 void If::removeChildren() {
   //TODO: Remove old

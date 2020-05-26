@@ -36,6 +36,7 @@ class UnaryExpr : public AbstractExpr {
   std::vector<Variable *> getVariables() override;
   std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
+  std::vector<const AbstractNode *> getChildren() const override;
 
  protected:
 

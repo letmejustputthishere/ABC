@@ -390,6 +390,7 @@ class Matrix : public AbstractMatrix {
   }
   std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
+  std::vector<const AbstractNode *> getChildren() const override;
 
 };
 
@@ -620,7 +621,12 @@ template<>
 bool Matrix<AbstractExpr *>::containsAbstractExprs();
 
 template<typename T>
-std::vector<AbstractNode *> Matrix<T>::getChildren()  {
+std::vector<AbstractNode *> Matrix<T>::getChildren() {
+  //TODO IMPLEMENT
+  return {};
+}
+template<typename T>
+std::vector<const AbstractNode *> Matrix<T>::getChildren() const {
   //TODO IMPLEMENT
   return {};
 }

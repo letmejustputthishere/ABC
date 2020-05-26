@@ -36,6 +36,7 @@ class Return : public AbstractStatement {
   bool isEqual(AbstractStatement *as) override;
   std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
+  std::vector<const AbstractNode *> getChildren() const override;
 
  protected:
   int getMaxNumberChildren() override;

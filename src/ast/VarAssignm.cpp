@@ -69,6 +69,10 @@ std::vector<AbstractNode *> VarAssignm::getChildren() {
   //TODO IMPLEMENT
   return {};
 }
+std::vector<const AbstractNode *> VarAssignm::getChildren() const {
+  //TODO IMPLEMENT
+  return {};
+}
 void VarAssignm::removeChildren() {
   //TODO IMPLEMENT
 }

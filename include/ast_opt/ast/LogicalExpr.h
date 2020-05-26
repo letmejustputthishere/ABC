@@ -47,6 +47,7 @@ class LogicalExpr : public AbstractBinaryExpr {
   void removeChildren() override;
   Operator *getOperator() const override;
   AbstractExpr *getRight() const override;
+  std::vector<const AbstractNode *> getChildren() const override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_LOGICALEXPR_H_

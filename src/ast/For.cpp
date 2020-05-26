@@ -128,6 +128,9 @@ void For::setBody(Block *body) {
 std::vector<AbstractNode *> For::getChildren()  {
   return children;
 }
+std::vector<const AbstractNode *> For::getChildren() const {
+  return std::vector<const AbstractNode *>(children.begin(),children.end());
+}
 void For::removeChildren() {
   children.clear();
 }
