@@ -9,8 +9,6 @@
 #include <nlohmann/json.hpp>
 #include "ast_opt/visitor/Visitor.h"
 
-using json = nlohmann::json;
-
 class AbstractNode {
  protected:
   /// Stores the children nodes of the current node.
@@ -155,9 +153,9 @@ class AbstractNode {
   *  @{
   */
 
-  /// Get the JSON representation of the node including all of its children.
-  /// \return JSON representation of the node
-  [[nodiscard]] virtual json toJson() const;
+  /// Get the nlohmann::json representation of the node including all of its children.
+  /// \return nlohmann::json representation of the node
+  [[nodiscard]] virtual nlohmann::json toJson() const;
 
   /// Returns a string representation of the node, if printChildren is True then calls toString for its children too.
   /// Hence, toString(false) is equivalent to printing a node's attributes only.

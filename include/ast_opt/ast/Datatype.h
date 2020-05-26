@@ -47,7 +47,7 @@ class Datatype : public AbstractNode {
 
   void accept(Visitor &v) override;
 
-  [[nodiscard]] json toJson() const override;
+  [[nodiscard]] nlohmann::json toJson() const override;
 
 };
 

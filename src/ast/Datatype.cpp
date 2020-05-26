@@ -4,6 +4,8 @@
 #include "ast_opt/ast/LiteralBool.h"
 #include "ast_opt/ast/LiteralString.h"
 
+using json = nlohmann::json;
+
 Datatype::Datatype(const std::string &type) {
   static const std::unordered_map<std::string, Types> string_to_types = {
       {"int", Types::INT},

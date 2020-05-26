@@ -3,6 +3,8 @@
 #include <set>
 #include "ast_opt/ast/AbstractNode.h"
 
+using json = nlohmann::json;
+
 int AbstractNode::nodeIdCounter = 0;
 
 std::string AbstractNode::generateUniqueNodeId() const {
