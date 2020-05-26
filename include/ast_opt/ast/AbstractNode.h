@@ -73,11 +73,6 @@ class AbstractNode {
   /// \return A list of descendant nodes.
   std::vector<AbstractNode *> getDescendants();
 
-  /// Adds multiple children to the node's list of children. If addBackReference is True then also updates the child's
-  /// list of parent nodes for each of the added children.
-  /// \param childrenToAdd A vector of nodes to be added as children to this node.
-  void addChildren(const std::vector<AbstractNode *> &childrenToAdd);
-
   /// Removes all children from this node. Note: Does not update the child's parent.
   void removeChildren();
 
@@ -104,6 +99,7 @@ class AbstractNode {
 
   /// Replaces the current parent with the newParent
   /// \param newParent The new parent node
+  /// throws std::logic_error if the node already has a parent
   void setParent(AbstractNode *newParent);
 
   /// Removes parent from this node  and also removes this node from parent's children

@@ -52,7 +52,10 @@ int VarAssignm::getMaxNumberChildren() {
 
 void VarAssignm::setAttribute(AbstractExpr *assignmentValue) {
   removeChildren();
-  addChildren({assignmentValue});
+  children = {assignmentValue};
+  for(auto &c: children) {
+    c->setParent(this);
+  }
 }
 
 VarAssignm *VarAssignm::clone() const {

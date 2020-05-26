@@ -10,13 +10,12 @@ void ParameterList::accept(Visitor &v) {
 }
 
 ParameterList *ParameterList::clone() const {
-  auto childrenCopy = children;
-  for (auto &c: childrenCopy) {
-    c = c->clone();
+  std::vector<FunctionParameter*> childrenCopy;
+  childrenCopy.reserve(children.size());
+  for (auto &c: children) {
+    childrenCopy.push_back(c->clone()->castTo<FunctionParameter>());
   }
-  auto clonedNode = new ParameterList();
-  clonedNode->addChildren(childrenCopy);
-  return clonedNode;
+  return new ParameterList(childrenCopy);
 }
 
 ParameterList::ParameterList(std::vector<FunctionParameter *> parameters) {

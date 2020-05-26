@@ -39,7 +39,10 @@ int UnaryExpr::getMaxNumberChildren() {
 void UnaryExpr::setAttributes(UnaryOp op, AbstractExpr *expr) {
   removeChildren();
   auto nodesToBeAdded = std::vector<AbstractNode *>({new Operator(op), expr});
-  addChildren(nodesToBeAdded);
+  children = nodesToBeAdded;
+  for(auto &c: children) {
+    c->setParent(this);
+  }
 }
 
 UnaryExpr *UnaryExpr::clone() const {

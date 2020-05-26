@@ -163,11 +163,17 @@ void OperatorExpr::setAttributes(Operator *newOperator, std::vector<AbstractExpr
     } // end of: else if (getOperator()->isLeftAssociative())
     // add the aggregated/simplified operands
     std::vector<AbstractNode *> abstractExprsVec(simplifiedAbstractExprs.begin(), simplifiedAbstractExprs.end());
-    addChildren(abstractExprsVec);
+    children = abstractExprsVec;
+    for(auto &c: children) {
+      c->setParent(this);
+    }
   } else {
     // add the operands without any prior aggregation
     std::vector<AbstractNode *> abstractExprsVec(newOperands.begin(), newOperands.end());
-    addChildren(abstractExprsVec);
+    children = abstractExprsVec;
+    for(auto &c: children) {
+      c->setParent(this);
+    }
   }
 }
 

@@ -36,7 +36,10 @@ While *While::clone() const {
 
 void While::setAttributes(AbstractExpr *loopCondition, AbstractStatement *loopBody) {
   removeChildren();
-  addChildren({loopCondition, loopBody});
+  children = {loopCondition, loopBody};
+  for(auto &c: children) {
+    c->setParent(this);
+  }
 }
 
 int While::getMaxNumberChildren() {

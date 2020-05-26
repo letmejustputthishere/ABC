@@ -1508,7 +1508,9 @@ void CompileTimeExpressionSimplifier::cleanUpBlock(Block &elem) {
   } else {
     elem.removeChildren();
     // not adding backreferences because they already exist
-    elem.addChildren(newChildren);
+    for (auto c: newChildren) {
+      elem.addStatement(c->castTo<AbstractStatement>());
+    }
   }
 }
 bool CompileTimeExpressionSimplifier::isUnrollLoopAllowed() const {

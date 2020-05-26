@@ -40,7 +40,10 @@ GetMatrixSize *GetMatrixSize::clone() const {
 
 GetMatrixSize::GetMatrixSize(AbstractExpr *matrix, AbstractExpr *requestedDimension) {
   removeChildren();
-  addChildren({matrix, requestedDimension});
+  children = {matrix, requestedDimension};
+  for(auto &c: children) {
+    c->setParent(this);
+  }
 }
 std::vector<std::string> GetMatrixSize::getVariableIdentifiers() {
   auto results = getMatrixOperand()->getVariableIdentifiers();

@@ -52,61 +52,6 @@ std::vector<AbstractNode *> AbstractNode::getChildrenNonNull() const {
   return childrenFiltered;
 }
 
-void AbstractNode::addChildren(const std::vector<AbstractNode *> &childrenToAdd) {
-  auto insertPosition = children.end();
-
-  auto allowsInfiniteNumberOfChildren = (getMaxNumberChildren()==-1);
-
-  // check whether the number of children to be added does not exceed the number available children spots
-  if (!allowsInfiniteNumberOfChildren && childrenToAdd.size() > (getMaxNumberChildren() - countChildrenNonNull())) {
-    std::stringstream errMsg;
-    errMsg << "AbstractNode " << getUniqueNodeId() << " of type " << getNodeType() << " does not allow more than ";
-    errMsg << std::to_string(getMaxNumberChildren()) << " children!";
-    throw std::invalid_argument(errMsg.str());
-  }
-
-  // check if prependChildren is supported
-  if (!allowsInfiniteNumberOfChildren && insertPosition!=children.end()) {
-    throw std::runtime_error("addChildren failed: Cannot add node at specific position as node only supports a limited "
-                             "number of children -> must add child in next free child spot.");
-  }
-
-  // these actions are to be performed after a node was added to the list of children
-  auto doInsertPostAction = [&](AbstractNode *childToAdd) {
-    // add a back reference to the child as parent
-    if (childToAdd!=nullptr) childToAdd->setParent(this);
-  };
-
-  // if this nodes accepts an infinite number of children, pre-filling the slots does not make any sense -> skip it
-  if (getMaxNumberChildren()!=-1) {
-    // fill remaining slots with nullptr values
-    children.insert(children.end(), getMaxNumberChildren() - getChildren().size(), nullptr);
-  }
-
-  // add the children one-by-one by looking for free slots
-  size_t childIdx = 0;
-  size_t idx = 0;
-  // add child in first empty spot
-  while (idx < children.size() && childIdx < childrenToAdd.size()) {
-    if (children.at(idx)==nullptr) {
-      children.at(idx) = childrenToAdd.at(childIdx);// insert the new child
-      doInsertPostAction(children.at(idx));
-      childIdx++;
-    }
-    idx++;
-  }
-  if (childIdx!=childrenToAdd.size()) {
-    if (allowsInfiniteNumberOfChildren) {
-      // then add all remaining nodes in one batch to the children vector's end
-      children.insert(insertPosition, childrenToAdd.begin() + childIdx, childrenToAdd.end());
-      std::for_each(childrenToAdd.begin(), childrenToAdd.end(), doInsertPostAction);
-    } else {
-      throw std::logic_error("Cannot add one or multiple children to " + this->getUniqueNodeId()
-                                 + " without overwriting an existing one. Consider removing an existing child first.");
-    }
-  }
-}
-
 void AbstractNode::removeChildren() {
   //TODO: Unset parent in the children
   children.clear();
@@ -164,7 +109,11 @@ void AbstractNode::setParent(AbstractNode *newParent) {
 }
 
 void AbstractNode::removeFromParent() {
- //TODO: Find way to offer this functionality?
+  if(!parent) {
+    throw std::logic_error("Cannot remove node from parent, since node does not have a parent!");
+  } else {
+   throw std::runtime_error("NOT IMPLEMENTED");
+  }
 }
 
 void to_json(json &j, const AbstractNode &n) {

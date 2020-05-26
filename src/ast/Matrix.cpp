@@ -300,7 +300,10 @@ Matrix<AbstractExpr *>::Matrix(std::initializer_list<std::vector<AbstractExpr *>
     }
   }
   removeChildren();
-  addChildren(childrenToBeAdded);
+  children = childrenToBeAdded;
+  for(auto &c: children) {
+    c->setParent(this);
+  }
 }
 
 template<>
@@ -326,7 +329,10 @@ Matrix<AbstractExpr *>::Matrix(std::vector<std::vector<AbstractExpr *>> inputMat
     }
   }
   removeChildren();
-  addChildren(childrenToBeAdded);
+  children = childrenToBeAdded;
+  for(auto &c: children) {
+    c->setParent(this);
+  }
 }
 
 // ===== toJson ==========

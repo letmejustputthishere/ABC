@@ -56,7 +56,10 @@ void Rotate::setAttributes(AbstractExpr *pExpr, AbstractExpr *rotationFactor) {
     throw std::logic_error("Rotate requires a 1-dimensional row or column vector.");
   }
   removeChildren();
-  addChildren({pExpr, rotationFactor});
+  children = {pExpr, rotationFactor};
+  for(auto &c: children) {
+    c->setParent(this);
+  }
 }
 
 bool Rotate::isOneDimensionalVector(AbstractExpr *operand) {

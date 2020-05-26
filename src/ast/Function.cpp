@@ -18,17 +18,25 @@ void Function::addParameter(FunctionParameter *param) {
 }
 
 Function::Function(std::string name, Block *pt) : name(std::move(name)) {
-  addChildren({new ParameterList(), pt});
+  children = {new ParameterList(), pt};
+  for(auto &c: children) {
+    c->setParent(this);
+  }
 }
 
 Function::Function(std::string name) : name(std::move(name)) {
-  addChildren({new ParameterList(), new Block()});
+  children = {new ParameterList(), new Block()};
+  for(auto &c: children) {
+    c->setParent(this);
+  }
 }
 
 Function::Function(std::string functionName, ParameterList *functionParameters,
                    Block *functionStatements) : name(std::move(functionName)) {
-  addChildren({functionParameters, functionStatements});
-
+  children ={functionParameters, functionStatements};
+  for(auto &c: children) {
+    c->setParent(this);
+  }
 }
 
 void Function::addStatement(AbstractStatement *statement) {
@@ -115,8 +123,11 @@ Block *Function::getBody() const {
 Function::Function(std::string functionName,
                    std::vector<FunctionParameter *> functionParameters,
                    std::vector<AbstractStatement *> functionStatements) : name(std::move(functionName)) {
-  addChildren({new ParameterList(std::move(functionParameters)),
-               new Block(std::move(functionStatements))});
+  children = {new ParameterList(std::move(functionParameters)),
+               new Block(std::move(functionStatements))};
+  for(auto &c: children) {
+    c->setParent(this);
+  }
 }
 
 int Function::getMaxNumberChildren() {

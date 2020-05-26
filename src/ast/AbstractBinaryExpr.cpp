@@ -5,7 +5,10 @@
 
 void AbstractBinaryExpr::setAttributes(AbstractExpr *leftOperand, Operator *operatore, AbstractExpr *rightOperand) {
   removeChildren();
-  addChildren({leftOperand, operatore, rightOperand});
+  children = {leftOperand, operatore, rightOperand};
+  leftOperand->setParent(this);
+  operatore->setParent(this);
+  rightOperand->setParent(this);
 }
 
 AbstractExpr *AbstractBinaryExpr::getLeft() const {

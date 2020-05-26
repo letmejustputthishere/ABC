@@ -52,7 +52,10 @@ Call *Call::clone() const {
 
 void Call::setAttributes(std::vector<FunctionParameter *> functionCallParameters, Function *functionToBeCalled) {
   removeChildren();
-  addChildren({new ParameterList(std::move(functionCallParameters)), functionToBeCalled});
+  children = {new ParameterList(std::move(functionCallParameters)), functionToBeCalled};
+  for(auto &c: children) {
+    c->setParent(this);
+  }
 }
 
 int Call::getMaxNumberChildren() {

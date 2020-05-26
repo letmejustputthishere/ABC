@@ -24,7 +24,10 @@ Block::Block(std::vector<AbstractStatement *> statements) {
     throw std::logic_error("Block statement vector is empty!"
                            "If this is intended, use the parameter-less constructor instead.");
   }
-  addChildren(std::vector<AbstractNode *>(statements.begin(), statements.end()));
+  children = std::vector<AbstractNode *>(statements.begin(), statements.end());
+  for(auto &c: children) {
+    c->setParent(this);
+  }
 }
 
 void Block::accept(Visitor &v) {
