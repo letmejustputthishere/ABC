@@ -9,12 +9,20 @@
 template<typename T>
 class IfIteratorImpl : public BaseIteratorImpl<T> {
  private:
-  T &ifNode = nullptr;
+  // Select const If / If depending on whether or not T is const/non-const
+  typedef typename std::conditional<std::is_const<T>::value, const If, If>::type I;
+  I &ifNode;
   /// 0 = condition, 1 = thenBranch, 2 = elseBranch, 3 = "end"
   uint position = 0;
-
+ protected:
+  T &getNode() override {
+    return ifNode;
+  };
+  const T &getNode() const override {
+    return ifNode;
+  };
  public:
-  IfIteratorImpl(T &ifNode, uint position) : ifNode(ifNode), position(position) {};
+  IfIteratorImpl(I &ifNode, uint position) : ifNode(ifNode), position(position) {};
 
   std::unique_ptr<BaseIteratorImpl<T>> clone() override {
     return std::make_unique<IfIteratorImpl>(ifNode, position);
@@ -24,7 +32,7 @@ class IfIteratorImpl : public BaseIteratorImpl<T> {
   }
 
   bool equal(const BaseIteratorImpl<T> &other) override {
-    return ifNode==other.ifNode;
+    return ifNode==other.getNode();
   }
 
   T &operator*() override {

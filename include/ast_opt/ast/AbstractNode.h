@@ -13,6 +13,8 @@
 template<typename T>
 class BaseIteratorImpl {
  public:
+  virtual const T& getNode() const = 0;
+  virtual T& getNode() = 0;
   virtual std::unique_ptr<BaseIteratorImpl> clone() = 0;
   virtual void increment() = 0;
   virtual bool equal(const BaseIteratorImpl &other) = 0;
