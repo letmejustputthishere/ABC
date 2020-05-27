@@ -100,8 +100,8 @@ std::string VarDecl::getVarTargetIdentifier() const {
   return this->getIdentifier();
 }
 
-bool VarDecl::isEqual(AbstractStatement *as) {
-  if (auto otherVarDecl = dynamic_cast<VarDecl *>(as)) {
+bool VarDecl::isEqual(const AbstractNode *as) const {
+  if (auto otherVarDecl = dynamic_cast<const VarDecl *>(as)) {
     return (this->getIdentifier()==otherVarDecl->getIdentifier())
         && (*this->getDatatype()==*otherVarDecl->getDatatype())
         && ((this->getInitializer()==nullptr && otherVarDecl->getInitializer()==nullptr)

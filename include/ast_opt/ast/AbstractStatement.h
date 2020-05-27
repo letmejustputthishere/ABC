@@ -19,8 +19,6 @@ class AbstractStatement : public AbstractNode {
 
   virtual AbstractBinaryExpr *contains(AbstractBinaryExpr *aexpTemplate, ArithmeticExpr *excludedSubtree);
 
-  virtual bool isEqual(AbstractStatement *as);
-
   virtual AbstractStatement* clone() const override = 0;
  protected:
 /// Stores the children nodes of the current node.

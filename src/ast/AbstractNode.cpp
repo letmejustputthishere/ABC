@@ -211,3 +211,9 @@ std::string AbstractNode::toString(bool) const {
   throw std::runtime_error("toString not implemented for class " + getNodeType() + ".");
 }
 
+bool AbstractNode::isEqual(const AbstractNode *as) const{
+  throw std::runtime_error("Unimplemented AbstractStatement::isEqual.");
+}
+bool AbstractNode::operator==(const AbstractNode &other) const {
+  return this->isEqual(&other);
+}

@@ -129,6 +129,11 @@ class AbstractNode {
     }
   }
 
+  /// Compares two nodes for equality TODO: Define semantics!
+  virtual bool isEqual(const AbstractNode *as) const;
+
+  bool operator==(const AbstractNode& other) const;
+
   /// Part of the visitor pattern.
   /// Must be overridden in derived classes and must call v.visit(node).
   /// This allows the correct overload for the derived class to be called in the visitor.

@@ -89,8 +89,8 @@ json For::toJson() const {
   return j;
 }
 
-bool For::isEqual(AbstractStatement *other) {
-  if (auto otherFor = dynamic_cast<For *>(other)) {
+bool For::isEqual(const AbstractNode *other) const {
+  if (auto otherFor = dynamic_cast<const For *>(other)) {
     auto sameInitializer = (getInitializer()==nullptr && otherFor->getInitializer()==nullptr)
         || (getInitializer()!=nullptr && otherFor->getInitializer()!=nullptr
             && getInitializer()->isEqual(otherFor->getInitializer()));

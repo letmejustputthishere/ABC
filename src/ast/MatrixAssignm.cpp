@@ -75,8 +75,8 @@ AbstractBinaryExpr *MatrixAssignm::contains(AbstractBinaryExpr *aexpTemplate, Ar
   return getValue()->contains(aexpTemplate, excludedSubtree);
 }
 
-bool MatrixAssignm::isEqual(AbstractStatement *as) {
-  if (auto otherMxAssignm = dynamic_cast<MatrixAssignm *>(as)) {
+bool MatrixAssignm::isEqual(const AbstractNode *as) const {
+  if (auto otherMxAssignm = dynamic_cast<const MatrixAssignm *>(as)) {
     return getAssignmTarget()->isEqual(otherMxAssignm->getAssignmTarget())
         && getValue()->isEqual(otherMxAssignm->getValue());
   }

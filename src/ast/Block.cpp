@@ -67,8 +67,8 @@ std::string Block::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
 }
 
-bool Block::isEqual(AbstractStatement *otherBlockStatement) {
-  if (auto otherAsBlock = dynamic_cast<Block *>(otherBlockStatement)) {
+bool Block::isEqual(const AbstractNode *otherBlockStatement) const {
+  if (auto otherAsBlock = dynamic_cast<const Block *>(otherBlockStatement)) {
     auto thisStatements = getStatements();
     auto otherStatements = otherAsBlock->getStatements();
 

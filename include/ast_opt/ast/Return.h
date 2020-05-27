@@ -33,7 +33,7 @@ class Return : public AbstractStatement {
   void addReturnExpr(AbstractExpr* returnExpr);
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
-  bool isEqual(AbstractStatement *as) override;
+  bool isEqual(const AbstractNode *as) const override;
   std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
   std::vector<const AbstractNode *> getChildren() const override;

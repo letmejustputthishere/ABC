@@ -5,16 +5,16 @@
 #include "AbstractExpr.h"
 #include <string>
 
-// Designed to be called only with T = (const) AbstractNode and I = (const) If
-template<typename T, typename  I>
+// Designed to be called only with T = (const) AbstractNode
+template<typename T>
 class IfIteratorImpl : public BaseIteratorImpl<T> {
  private:
-  T *ifNode = nullptr;
+  T &ifNode = nullptr;
   /// 0 = condition, 1 = thenBranch, 2 = elseBranch, 3 = "end"
   uint position = 0;
 
  public:
-  IfIteratorImpl(T *ifNode, uint position) : ifNode(ifNode), position(position) {};
+  IfIteratorImpl(T &ifNode, uint position) : ifNode(ifNode), position(position) {};
 
   std::unique_ptr<BaseIteratorImpl<T>> clone() override {
     return std::make_unique<IfIteratorImpl>(ifNode, position);
@@ -24,18 +24,14 @@ class IfIteratorImpl : public BaseIteratorImpl<T> {
   }
 
   bool equal(const BaseIteratorImpl<T> &other) override {
-    if (auto otherIf = dynamic_cast<I &>(other)) {
-      return ifNode->isEqual(otherIf) && position==otherIf.position;
-    } else {
-      return false;
-    }
+    return ifNode==other.ifNode;
   }
 
   T &operator*() override {
     switch (position) {
-      case 0: return *ifNode->getCondition();
-      case 1: return *ifNode->getThenBranch();
-      case 2: return *ifNode->getElseBranch();
+      case 0: return *ifNode.getCondition();
+      case 1: return *ifNode.getThenBranch();
+      case 2: return *ifNode.getElseBranch();
         // calling dereference on higher elements is an error
     }
   }

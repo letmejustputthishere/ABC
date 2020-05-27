@@ -12,9 +12,6 @@ AbstractBinaryExpr *AbstractStatement::contains(AbstractBinaryExpr *aexpTemplate
   return nullptr;
 }
 
-bool AbstractStatement::isEqual(AbstractStatement *as) {
-  throw std::runtime_error("Unimplemented AbstractStatement::isEqual.");
-}
 AbstractNode::iterator AbstractStatement::begin() {
   //TODO
   return AbstractNode::iterator();

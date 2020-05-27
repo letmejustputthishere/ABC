@@ -31,7 +31,7 @@ class Block : public AbstractStatement {
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  bool isEqual(AbstractStatement *otherBlockStatement) override;
+  bool isEqual(const AbstractNode *otherBlockStatement) const override;
 
   void addStatement(AbstractStatement *stmt);
 

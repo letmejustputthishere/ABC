@@ -54,7 +54,7 @@ class VarDecl : public AbstractStatement {
 
   std::string getVarTargetIdentifier() const;
 
-  bool isEqual(AbstractStatement *as) override;
+  bool isEqual(const AbstractNode *as) const override;
 
   void setAttributes(std::string varIdentifier, Datatype *datatype, AbstractExpr *value);
 

@@ -62,8 +62,8 @@ std::string Return::toString(bool printChildren) const {
   return AbstractNode::generateOutputString(printChildren, {});
 }
 
-bool Return::isEqual(AbstractStatement *as) {
-  if (auto asAsReturn = dynamic_cast<Return *>(as)) {
+bool Return::isEqual(const AbstractNode *as) const {
+  if (auto asAsReturn = dynamic_cast<const Return *>(as)) {
     auto thisRetExp = this->getReturnExpressions();
     auto otherRetExp = asAsReturn->getReturnExpressions();
     // check equality of every returned value

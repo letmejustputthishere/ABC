@@ -27,7 +27,7 @@ class MatrixAssignm : public AbstractStatement {
 
   AbstractBinaryExpr *contains(AbstractBinaryExpr *aexpTemplate, ArithmeticExpr *excludedSubtree) override;
 
-  bool isEqual(AbstractStatement *as) override;
+  bool isEqual(const AbstractNode *as) const override;
 
   [[nodiscard]] MatrixElementRef *getAssignmTarget() const;
 
