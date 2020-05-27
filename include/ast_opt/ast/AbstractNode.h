@@ -9,12 +9,94 @@
 #include <nlohmann/json.hpp>
 #include "ast_opt/visitor/Visitor.h"
 
+/// BaseIteratorImpl is an abstract class that simply specifies the functions required in the wrapper
+template<typename T>
+class BaseIteratorImpl {
+ public:
+  virtual std::unique_ptr<BaseIteratorImpl> clone() = 0;
+  virtual void increment() = 0;
+  virtual bool equal(const BaseIteratorImpl &other) = 0;
+  virtual T& operator*() = 0;
+};
+
+/// Forward Iterator that redirects all calls to a (polymorphic) BaseIteratorImpl iterator
+template<typename T>
+class NodeIterator {
+ private:
+  /// Pointer to the actual iterator implementation, which depends on the derivde class' data layout
+  std::unique_ptr<BaseIteratorImpl<T>> impl;
+
+ public:
+  typedef std::ptrdiff_t difference_type;
+  typedef T value_type;
+  typedef T *pointer;
+  typedef T &reference;
+  typedef std::forward_iterator_tag iterator_category;
+
+  /// A default constructed iterator is uninitialized and should not be used
+  NodeIterator() = default;
+
+  /// Create a NodeIterator Wrapper from an IteratorImpl
+  /// \param impl Pointer to an IteratorImpl
+  explicit NodeIterator(std::unique_ptr<BaseIteratorImpl<T>> impl) : impl(impl) {};
+
+  /// Copy constructor
+  NodeIterator(const NodeIterator &other) : impl(other.impl->clone()) {};
+
+  /// Move constructor
+  NodeIterator(NodeIterator &&other) noexcept: impl(std::move(other.impl)) {};
+
+  /// Copy assignment
+  NodeIterator &operator=(const NodeIterator &other) {
+    impl = other.impl->clone();
+  }
+
+  /// Move assignment
+  NodeIterator &operator=(NodeIterator &&other) {
+    impl = std::move(other.impl);
+  }
+
+  /// Pre-increment
+  NodeIterator &operator++() {
+    impl->increment();
+  }
+
+  /// Post-increment
+  NodeIterator<T> operator++(int) {
+    NodeIterator tmp(*this);
+    impl->increment();
+    return tmp;
+  }
+
+  /// Equality
+  bool operator==(const NodeIterator &other) const {
+    return impl->equal(*other.impl);
+  }
+
+  /// Inequality
+  bool operator!=(const NodeIterator &other) const {
+    return !(this->operator==(other));
+  }
+
+  /// Dereference
+  T &operator*() {
+    return **impl;
+  }
+
+};
+
 class AbstractNode {
  private:
   /// Stores the parent nodes of the current node.
   AbstractNode *parent = nullptr;
 
  public:
+  /// Forward Iterator through Nodes
+  typedef NodeIterator<AbstractNode> iterator;
+
+  /// Const Forward Iterator through Nodes
+  typedef NodeIterator<const AbstractNode> const_iterator;
+
   /// Virtual Destructor, force class to be abstract
   virtual ~AbstractNode() = 0;
 
