@@ -91,4 +91,20 @@ std::vector<const AbstractNode *> Datatype::getChildren() const {
 void Datatype::removeChildren() {
   //do nothing, has no node children
 }
+AbstractNode::iterator Datatype::begin() {
+  //TODO
+  return AbstractNode::iterator();
+}
+AbstractNode::const_iterator Datatype::begin() const {
+  //TODO
+  return AbstractNode::const_iterator();
+}
+AbstractNode::iterator Datatype::end() {
+  //TODO
+  return AbstractNode::iterator();
+}
+AbstractNode::const_iterator Datatype::end() const {
+  //TODO
+  return AbstractNode::const_iterator();
+}
 

@@ -25,3 +25,19 @@ bool AbstractMatrix::operator==(const AbstractMatrix &rhs) const {
 bool AbstractMatrix::operator!=(const AbstractMatrix &rhs) const {
   return !(rhs==*this);
 }
+AbstractNode::iterator AbstractMatrix::begin() {
+  //TODO
+  return AbstractNode::iterator();
+}
+AbstractNode::const_iterator AbstractMatrix::begin() const {
+  //TODO
+  return AbstractNode::const_iterator();
+}
+AbstractNode::iterator AbstractMatrix::end() {
+  //TODO
+  return AbstractNode::iterator();
+}
+AbstractNode::const_iterator AbstractMatrix::end() const {
+  //TODO
+  return AbstractNode::const_iterator();
+}

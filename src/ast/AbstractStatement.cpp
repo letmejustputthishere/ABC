@@ -15,6 +15,22 @@ AbstractBinaryExpr *AbstractStatement::contains(AbstractBinaryExpr *aexpTemplate
 bool AbstractStatement::isEqual(AbstractStatement *as) {
   throw std::runtime_error("Unimplemented AbstractStatement::isEqual.");
 }
+AbstractNode::iterator AbstractStatement::begin() {
+  //TODO
+  return AbstractNode::iterator();
+}
+AbstractNode::const_iterator AbstractStatement::begin() const {
+  //TODO
+  return AbstractNode::const_iterator();
+}
+AbstractNode::iterator AbstractStatement::end() {
+  //TODO
+  return AbstractNode::iterator();
+}
+AbstractNode::const_iterator AbstractStatement::end() const {
+  //TODO
+  return AbstractNode::const_iterator();
+}
 
 std::ostream &operator<<(std::ostream &outs, const AbstractStatement &obj) {
   return outs << obj.toString(false);

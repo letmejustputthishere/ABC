@@ -578,3 +578,19 @@ std::vector<const AbstractNode *> Operator::getChildren() const {
 void Operator::removeChildren() {
   //This node has no AbstractNode children, so nothing to do
 }
+AbstractNode::iterator Operator::begin() {
+  //TODO
+  return AbstractNode::iterator();
+}
+AbstractNode::const_iterator Operator::begin() const {
+  //TODO
+  return AbstractNode::const_iterator();
+}
+AbstractNode::iterator Operator::end() {
+  //TODO
+  return AbstractNode::iterator();
+}
+AbstractNode::const_iterator Operator::end() const {
+  //TODO
+  return AbstractNode::const_iterator();
+}

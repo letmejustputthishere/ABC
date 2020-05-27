@@ -54,6 +54,22 @@ AbstractNode *AbstractExpr::createParam(AbstractNode *node) {
   throw std::runtime_error(
       "Method AbstractNode::createParam does not support AbstractNode objects. Did you forget to cast the AbstractNode object?");
 }
+AbstractNode::iterator AbstractExpr::begin() {
+  //TODO
+  return AbstractNode::iterator();
+}
+AbstractNode::const_iterator AbstractExpr::begin() const {
+  //TODO
+  return AbstractNode::const_iterator();
+}
+AbstractNode::iterator AbstractExpr::end() {
+  //TODO
+  return AbstractNode::iterator();
+}
+AbstractNode::const_iterator AbstractExpr::end() const {
+  //TODO
+  return AbstractNode::const_iterator();
+}
 
 void to_json(json &j, const AbstractExpr &absExpr) {
   j = absExpr.toJson();

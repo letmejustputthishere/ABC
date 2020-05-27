@@ -167,6 +167,10 @@ class Operator : public AbstractNode {
 
   std::vector<const AbstractNode *> getChildren() const override;
   void removeChildren() override;
+  iterator begin() override;
+  const_iterator begin() const override;
+  iterator end() override;
+  const_iterator end() const override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_OPERATOR_H_

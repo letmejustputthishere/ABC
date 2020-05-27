@@ -25,6 +25,11 @@ class AbstractStatement : public AbstractNode {
  protected:
 /// Stores the children nodes of the current node.
 std::vector<AbstractNode *> children{};
+ public:
+  iterator begin() override;
+  const_iterator begin() const override;
+  iterator end() override;
+  const_iterator end() const override;
 };
 
 std::ostream &operator<<(std::ostream &outs, const AbstractStatement &obj);

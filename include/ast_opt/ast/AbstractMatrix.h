@@ -115,6 +115,10 @@ class AbstractMatrix : public AbstractNode {
   bool operator!=(const AbstractMatrix &rhs) const;
 
   AbstractMatrix *clone() const override = 0;
+  iterator begin() override;
+  const_iterator begin() const override;
+  iterator end() override;
+  const_iterator end() const override;
  protected:
 /// Stores the children nodes of the current node.
 std::vector<AbstractNode *> children{};

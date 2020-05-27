@@ -49,6 +49,11 @@ class AbstractExpr : public AbstractNode {
   AbstractExpr() = default;
 
   AbstractExpr *clone() const override = 0;
+
+  iterator begin() override;
+  const_iterator begin() const override;
+  iterator end() override;
+  const_iterator end() const override;
 };
 
 std::ostream &operator<<(std::ostream &outs, const AbstractExpr &obj);

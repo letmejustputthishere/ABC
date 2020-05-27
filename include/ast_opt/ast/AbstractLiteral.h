@@ -63,6 +63,11 @@ class AbstractLiteral : public AbstractExpr {
 
   AbstractLiteral *clone() const override = 0;
 
+  iterator begin() override;
+  const_iterator begin() const override;
+  iterator end() override;
+  const_iterator end() const override;
+
 };
 
 inline std::ostream &operator<<(std::ostream &os, const std::vector<AbstractLiteral *> &v) {

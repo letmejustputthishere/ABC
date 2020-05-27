@@ -104,3 +104,15 @@ void If::removeChildren() {
   setThenBranch(nullptr);
   setElseBranch(nullptr);
 }
+AbstractNode::iterator If::begin() {
+  return AbstractNode::iterator(std::make_unique<IfIteratorImpl<AbstractNode, If>>(this, 0));
+}
+AbstractNode::const_iterator If::begin() const {
+  return AbstractNode::const_iterator(std::make_unique<IfIteratorImpl<const AbstractNode, const If>>(this, 0));
+}
+AbstractNode::iterator If::end() {
+  return AbstractNode::iterator(std::make_unique<IfIteratorImpl<AbstractNode, If>>(this, 3));
+}
+AbstractNode::const_iterator If::end() const {
+  return AbstractNode::const_iterator(std::make_unique<IfIteratorImpl<const AbstractNode, const If>>(this, 3));
+}

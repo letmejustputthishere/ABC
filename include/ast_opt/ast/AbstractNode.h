@@ -36,9 +36,9 @@ class NodeIterator {
   /// A default constructed iterator is uninitialized and should not be used
   NodeIterator() = default;
 
-  /// Create a NodeIterator Wrapper from an IteratorImpl
+  /// Create a NodeIterator Wrapper from an IteratorImpl, taking ownership of the Impl
   /// \param impl Pointer to an IteratorImpl
-  explicit NodeIterator(std::unique_ptr<BaseIteratorImpl<T>> impl) : impl(impl) {};
+  explicit NodeIterator(std::unique_ptr<BaseIteratorImpl<T>> impl) : impl(std::move(impl)) {};
 
   /// Copy constructor
   NodeIterator(const NodeIterator &other) : impl(other.impl->clone()) {};
@@ -96,6 +96,13 @@ class AbstractNode {
 
   /// Const Forward Iterator through Nodes
   typedef NodeIterator<const AbstractNode> const_iterator;
+
+  // ITERATORS OVER CHILDREN
+
+  virtual iterator begin() = 0;
+  virtual const_iterator begin() const = 0;
+  virtual iterator  end() = 0;
+  virtual const_iterator  end() const = 0;
 
   /// Virtual Destructor, force class to be abstract
   virtual ~AbstractNode() = 0;

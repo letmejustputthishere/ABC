@@ -69,3 +69,15 @@ std::vector<const AbstractNode *> AbstractLiteral::getChildren() const {
 void AbstractLiteral::removeChildren() {
   matrix = nullptr;
 }
+AbstractNode::iterator AbstractLiteral::begin() {
+  return AbstractNode::iterator();
+}
+AbstractNode::const_iterator AbstractLiteral::begin() const {
+  return AbstractNode::const_iterator();
+}
+AbstractNode::iterator AbstractLiteral::end() {
+  return AbstractNode::iterator();
+}
+AbstractNode::const_iterator AbstractLiteral::end() const {
+  return AbstractNode::const_iterator();
+}
