@@ -52,6 +52,12 @@ void OperatorExpr::addOperand(AbstractExpr *operand) {
   setAttributes(newOperator, newOperands);
 }
 
+void OperatorExpr::addOperands(std::vector<AbstractExpr *> operands) {
+  for (auto &o : operands) {
+    addOperand(o);
+  }
+}
+
 void OperatorExpr::setOperator(Operator *op) {
   // child at index 0 is always the operator
   auto curOperator = children.at(0);
@@ -162,11 +168,36 @@ void OperatorExpr::setAttributes(Operator *newOperator, std::vector<AbstractExpr
       }
     } // end of: else if (getOperator()->isLeftAssociative())
     // add the aggregated/simplified operands
-    operands = newOperands;
-
+    std::vector<AbstractExpr *> abstractExprsVec;
+    // clone the operands to match non-const-ness requirements
+    for (auto &e: simplifiedAbstractExprs) {
+      abstractExprsVec.emplace_back(e->clone());
+    }
+    addOperands(abstractExprsVec);
+    if (getOperands().size()==0) {
+      throw std::logic_error("Operator expression reduced to zero operands.");
+    } else if (getOperands().size()==1) {
+      //Replace myself with operand in parent.
+      getParent()->replaceChild(this, getOperands()[0]);
+    }
+  } else if (newOperands.size()==2) {
+    // add the operands without any prior aggregation
+    std::vector<AbstractExpr *> abstractExprsVec(newOperands.begin(), newOperands.end());
+    // clone the operands to match non-const-ness requirements
+    for (auto &e: newOperands) {
+      abstractExprsVec.emplace_back(e->clone());
+    }
+    addOperands(abstractExprsVec);
+  } else if (newOperands.size()==1 || newOperands.size()==0) {
+    throw std::logic_error("Operator expression with 1 or 0 operands is not valid.");
   } else {
     // add the operands without any prior aggregation
-    operands = newOperands;
+    std::vector<AbstractExpr *> abstractExprsVec(newOperands.begin(), newOperands.end());
+    // clone the operands to match non-const-ness requirements
+    for (auto &e: newOperands) {
+      abstractExprsVec.emplace_back(e->clone());
+    }
+    addOperands(abstractExprsVec);
   }
   for (auto &c: operands) {
     c->setParent(this);
@@ -230,6 +261,10 @@ void OperatorExpr::replaceChild(AbstractNode *originalChild, AbstractNode *newCh
     op->removeFromParent();
     for (auto &operand : operands) operand->removeFromParent();
     setAttributes(op, operands);
+  } else if (operands.size()==1) {
+    throw std::logic_error("Operator Expression was reduced to single operand.");
+  } else {// size == 0
+    throw std::logic_error("Operator Expression was reduced to zero operands.");
   }
 }
 std::vector<std::string> OperatorExpr::getVariableIdentifiers() {

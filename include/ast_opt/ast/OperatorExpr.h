@@ -30,6 +30,8 @@ class OperatorExpr : public AbstractExpr {
 
   void addOperand(AbstractExpr *operand);
 
+  void addOperands(std::vector<AbstractExpr *> operands);
+
   void removeOperand(AbstractExpr * operand);
 
   [[nodiscard]] Operator *getOperator() const;

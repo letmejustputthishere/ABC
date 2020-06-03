@@ -16,6 +16,7 @@
 #include "ast_opt/ast/ArithmeticExpr.h"
 #include "ast_opt/mockup_classes/Ciphertext.h"
 #include <ast_opt/mockup_classes/Plaintext.h>
+#include <climits>
 
 void RuntimeVisitor::visit(Ast &elem) {
   // determine the tainted nodes, i.e., nodes that deal with secret inputs
@@ -63,7 +64,13 @@ void RuntimeVisitor::visit(VarAssignm &elem) {
 
 void RuntimeVisitor::visit(MatrixElementRef &elem) {
   auto intermedResultSize = intermedResult.size();
-  Visitor::visit(elem);
+  //THIS WILL DESTROY THE VARIABLE!!!
+  //  Visitor::visit(elem);
+  // INSTEAD VISIT ONLY INDICES
+  // row index
+  elem.getRowIndex()->accept(*this);
+  // column index
+  if (elem.getColumnIndex()!=nullptr) elem.getColumnIndex()->accept(*this);
   clearIntermediateResults(intermedResultSize);
 
   // a helper utility that either returns the value of an already existing LiteralInt (in AST) or performs evaluation
@@ -91,11 +98,37 @@ void RuntimeVisitor::visit(MatrixElementRef &elem) {
     varIdentifier = var->getIdentifier();
   } else if (dynamic_cast<AbstractLiteral *>(elem.getOperand())==nullptr) {
     throw std::runtime_error("MatrixElementRef does not refer to a Variable. Cannot continue. Aborting.");
+  } else {
+    throw std::runtime_error("Variable does not have an identifier.");
   }
 
   if (visitingForEvaluation==EVALUATION_CIPHERTEXT) {
     if (precomputedCiphertexts.count(MatrixElementAccess(rowIdx, colIdx, varIdentifier)) > 0) {
       intermedResult.push(precomputedCiphertexts.at(MatrixElementAccess(rowIdx, colIdx, varIdentifier))->second.ctxt);
+    } else {
+      if (currentMatrixAccessMode==READ) {
+        // if we are in READ mode, this probably means that we have a literal value
+        int val;
+        try {
+          val = determineIndexValue(&elem);
+        } catch (std::runtime_error e) {
+          throw std::runtime_error(
+              "Variable has neither a precomputed ciphertext available nor is it known: ");
+          //+ e.what()); TODO: Figure out how to append caught exceptions error message to new exception
+        }
+        // Not a ciphertext. Create a Plaintext from the Literal and push it
+        // slight misnomer but just evals exprs:
+        //TODO: fix memoryleak
+        auto memoryleak = new Plaintext(val); //TODO: Correct size (default param)?
+        intermedResult.push(memoryleak);
+      } else if (currentMatrixAccessMode==WRITE) {
+        // If we are in write mode, we can simply push a dummy plaintext which should be overridden eventually
+        //TODO: fix memoryleak
+        auto memoryleak = new Plaintext(0);
+        intermedResult.push(memoryleak);
+      } else {
+        throw std::logic_error("Unknown currentMatrixAccessMode.");
+      }
     }
   }
   // store accessed index pair (rowIdx, colidx) and associated variable (matrix) globally
@@ -130,6 +163,9 @@ void RuntimeVisitor::visit(VarDecl &elem) {
 
   elem.accept(*ev);
 
+  //TODO: The RuntimeVisitor currently seems to assume that when a varable is declared non-secret,
+  // it will never become secret later!
+
   // if this is a secret variable, create a ciphertext object in varValues
   if (elem.getDatatype()->isEncrypted()) {
     if (elem.getInitializer()!=nullptr) {
@@ -159,7 +195,7 @@ void RuntimeVisitor::visit(MatrixAssignm &elem) {
     lastVisitedStatement = elem.clone()->castTo<AbstractStatement>();
   }
 
-  // visit the right-hand side of the MatrixAssignm
+  // visit the left-hand side of the MatrixAssignm
   currentMatrixAccessMode = WRITE;
   elem.getAssignmTarget()->accept(*this);
 
@@ -339,12 +375,18 @@ std::vector<RotationData> RuntimeVisitor::determineRequiredRotations(VarValuesMa
       // a vector that describes how many additional rotations an existing ciphertext would require to align it to
       // the target slot
       std::vector<std::pair<int, Ciphertext *>> rotations;
+      std::pair<int, Ciphertext *> cur_best;
+      int cur_best_distance = INT_MAX;
 
       // determine the difference between current index and existing index for each idx in reqIndices
       bool canReuseExistingRotation = false;
       rotations.reserve(existingRotations.size());
       for (auto[offset, varValEntry] : existingRotations) {
         auto numRequiredRotations = targetSlot - (offset + idx);
+        if (numRequiredRotations < cur_best_distance) {
+          cur_best_distance = numRequiredRotations;
+          cur_best = std::make_pair(numRequiredRotations, varValEntry.ctxt);
+        }
         rotations.emplace_back(numRequiredRotations, varValEntry.ctxt);
         if (numRequiredRotations==0) {
           // if we can reuse an existing rotation there is no need
@@ -358,8 +400,9 @@ std::vector<RotationData> RuntimeVisitor::determineRequiredRotations(VarValuesMa
       //  Implement technique used in SEAL that uses bit representation and allows determining cheapest rotation.
       //  Take the values in the set rotations and push the determine cheapest one into resultSet.
       if (!canReuseExistingRotation) {
-        throw std::runtime_error(
-            "Not implemented: Cannot determine the optimal (ciphertext, req. rotations) set yet.");
+        //TODO: Find optimal rotations instead of simply outputting the required input without much processing.
+        // For now, just take smallest values of required rotations
+        resultSet.emplace_back(idx, cur_best.second, cur_best.first);
       }
     }
   }
@@ -432,6 +475,7 @@ void RuntimeVisitor::visit(OperatorExpr &elem) {
       intermedResult.pop();
     }
 
+    /// Remaining, non-precomputed operands
     std::vector<Ciphertext *> operands;
     // create a Plaintext for any involved plaintext literal to allow operation exec between Ciphertext and Plaintext
     for (auto opnd : elem.getOperands()) {
@@ -442,6 +486,9 @@ void RuntimeVisitor::visit(OperatorExpr &elem) {
       } else if (dynamic_cast<OperatorExpr *>(opnd) || dynamic_cast<MatrixElementRef *>(opnd)) {
         // in this case the OperatorExpr/MatrixElementRef was visited before and its Ciphertext was pushed to
         // intermedResult
+        if (!intermedResultReversed.back()) {
+          throw std::logic_error("A result is missing and we don't know why!");
+        }
         operands.push_back(intermedResultReversed.back());
         intermedResultReversed.pop_back();
       } else {
@@ -449,8 +496,12 @@ void RuntimeVisitor::visit(OperatorExpr &elem) {
       }
     }
 
-    // make sure that we collected all operands
-    assert(operands.size()==elem.getOperands().size());
+    // Add precomputed operands
+    //TODO: precomputation in this form is not correct for non-commutative operators!
+    //     Example: 100 / 10 / 2, if 10 is precomp, then inserting it at either end or begin is incorrect.
+    //     Need to associate precomputed results with the AST again. Probably requires massive refactoring...
+    //     Until then: TODO: Add exception if precomp + non-precomp exist && operator is non-commutative.
+    operands.insert(operands.end(), intermedResultReversed.begin(), intermedResultReversed.end());
 
 #ifndef NDEBUG
     std::cout << "Computing expression on ciphertext..." << std::endl;

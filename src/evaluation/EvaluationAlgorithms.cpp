@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cmath>
 #include <functional>
+#include <random>
 #include <ast_opt/ast/Ast.h>
 #include <ast_opt/ast/Function.h>
 #include <ast_opt/ast/GetMatrixSize.h>
@@ -23,6 +24,8 @@
 #include <ast_opt/ast/Variable.h>
 #include <ast_opt/ast/Return.h>
 #include <ast_opt/ast/Rotate.h>
+#include <ast_opt/mockup_classes/Ciphertext.h>
+#include <ast_opt/visitor/PrintVisitor.h>
 
 typedef std::vector<std::vector<int>> VecInt2D;
 
@@ -677,7 +680,7 @@ void EvaluationAlgorithms::genPolynomialRegressionAstAfterCtes(Ast &ast) {
 
 VecInt2D EvaluationAlgorithms::runLaplacianSharpeningAlgorithm(VecInt2D img) {
   VecInt2D weightMatrix = {{1, 1, 1}, {1, -8, 1}, {1, 1, 1}};
-  VecInt2D img2(img);
+  VecInt2D img2(img.size(), std::vector<int>(img.size())); //TODO: What is actually CORRECT for laplacian sharpening?
   for (int x = 1; x < img.size() - 1; ++x) {
     for (int y = 1; y < img.at(x).size() - 1; ++y) {
       int value = 0;
@@ -687,7 +690,7 @@ VecInt2D EvaluationAlgorithms::runLaplacianSharpeningAlgorithm(VecInt2D img) {
           value = value + weightMatrix.at(i + 1).at(j + 1)*img.at(x + i).at(y + j);
         }
       }
-      img2[x][y] = img.at(x).at(y) - (value/2);
+      img2[x][y] = img.at(x).at(y) - (value/2); //FIXME: This is an integer divison
     }
   }
   return img2;
@@ -708,7 +711,7 @@ void EvaluationAlgorithms::genLaplacianSharpeningAlgorithmAst(Ast &ast) {
   //                     value = value + weightMatrix[i+1][j+1] * img[imgSize*(x+i)+y+j];
   //                 }
   //             }
-  //             img2[imgSize*x+y] = img[imgSize*x+y] - (value/2);
+  //             img2[imgSize*x+y] = 2 * img[imgSize*x+y] - value; //slight adjustment to fit with FHE
   //         }
   //     }
   //     return img2;
@@ -722,7 +725,7 @@ void EvaluationAlgorithms::genLaplacianSharpeningAlgorithmAst(Ast &ast) {
 //  func->addStatement(new VarDecl("img2", new Datatype(Types::INT, true),
 //                                 new LiteralInt(
 //                                     new Matrix<int>(std::vector<std::vector<int>>(1, std::vector<int>(1024))))));
-  func->addStatement(new VarDecl("img2", new Datatype(Types::INT)));
+  func->addStatement(new VarDecl("img2", new Datatype(Types::INT, true)));
 
   // Matrix<int> weightMatrix = [1 1 1; 1 -8 1; 1 1 1];  –- row-wise concatenation of the original matrix
   func->addStatement(new VarDecl("weightMatrix", new Datatype(Types::INT),
@@ -750,12 +753,13 @@ void EvaluationAlgorithms::genLaplacianSharpeningAlgorithmAst(Ast &ast) {
                                                             {new Variable("y"),
                                                              new Variable("j")})}));
 
-  auto fourthLoopBody = new Block(new VarAssignm("value",
+  auto fourthLoopBody = new Block(new MatrixAssignm(new MatrixElementRef(new Variable("value"), 0, 0),
                                                  new OperatorExpr(new Operator(ADDITION),
-                                                                  {new Variable("value"),
-                                                                   new OperatorExpr(new Operator(MULTIPLICATION),
-                                                                                    {wmTerm,
-                                                                                     imgTerm})})));
+                                                                  {
+                                                                      new MatrixElementRef(new Variable("value"), 0, 0),
+                                                                      new OperatorExpr(new Operator(MULTIPLICATION),
+                                                                                       {wmTerm,
+                                                                                        imgTerm})})));
   // for (int i = -1; i < 2; ++i)  -- 4th level loop
   auto thirdLoopBody = new Block(new For(new VarDecl("i", -1),
                                          new LogicalExpr(new Variable("i"), SMALLER, new LiteralInt(2)),
@@ -768,7 +772,13 @@ void EvaluationAlgorithms::genLaplacianSharpeningAlgorithmAst(Ast &ast) {
   // includes the 3rd level loop
   auto secondLoopBody = new Block({
                                       // int value = 0;
-                                      new VarDecl("value", 0),
+                                      new VarDecl("value",
+                                                  new Datatype(Types::INT, true),
+                                                  new LiteralInt(new Matrix<int>(std::vector<std::vector<int>>(1,
+                                                                                                               std::vector<
+                                                                                                                   int>(
+                                                                                                                   1))))
+                                      ),
                                       // for (int j = -1; j < 2; ++j) {...}  -- 3rd level loop
                                       new For(new VarDecl("j", -1),
                                               new LogicalExpr(new Variable("j"), SMALLER, new LiteralInt(2)),
@@ -789,20 +799,21 @@ void EvaluationAlgorithms::genLaplacianSharpeningAlgorithmAst(Ast &ast) {
                                                                                   new Variable("y")})),
                                                         new OperatorExpr(
                                                             new Operator(SUBTRACTION),
-                                                            {new MatrixElementRef(new Variable("img"),
-                                                                                  new LiteralInt(0),
-                                                                                  new OperatorExpr(
-                                                                                      new Operator(ADDITION),
-                                                                                      {new OperatorExpr(
-                                                                                          new Operator(MULTIPLICATION),
-                                                                                          {new Variable("imgSize"),
-                                                                                           new Variable("x")}),
-                                                                                       new Variable("y")})),
-
-                                                             new OperatorExpr(
-                                                                 new Operator(DIVISION),
-                                                                 {new Variable("value"),
-                                                                  new LiteralInt(2)})}))});
+                                                            {new OperatorExpr(
+                                                                new Operator(MULTIPLICATION),
+                                                                {
+                                                                    new MatrixElementRef(new Variable("img"),
+                                                                                         new LiteralInt(0),
+                                                                                         new OperatorExpr(
+                                                                                             new Operator(ADDITION),
+                                                                                             {new OperatorExpr(
+                                                                                                 new Operator(
+                                                                                                     MULTIPLICATION),
+                                                                                                 {new Variable("imgSize"),
+                                                                                                  new Variable("x")}),
+                                                                                              new Variable("y")})),
+                                                                    new LiteralInt(2)}),
+                                                             new MatrixElementRef(new Variable("value"), 0, 0)}))});
 
   // for (int y = 1; y < imgSize - 1; ++y)  -- 2nd level loop
   auto firstLoopBody = new Block(new For(new VarDecl("y", 1),
@@ -854,7 +865,7 @@ void EvaluationAlgorithms::genLaplacianSharpeningAlgorithmAstAfterCtes(Ast &ast)
   func->addParameter(new FunctionParameter(new Datatype(Types::INT, true), new Variable("img")));
   func->addParameter(new FunctionParameter(new Datatype(Types::INT, false), new Variable("imgSize")));
 
-  func->addStatement(new VarDecl("img2", new Datatype(Types::INT)));
+  func->addStatement(new VarDecl("img2", new Datatype(Types::INT, true)));
 
   // a helper to generate img[imgSize*(x-i)+y+j] terms
   auto createImgIdx = [](int i, int j) -> AbstractExpr * {
@@ -1236,49 +1247,20 @@ std::unique_ptr<seal::PublicKey> publicKey = nullptr;
 /// The default constructor used by SEAL in GaloisKey() segfaults. Therefore, it's a ptr
 std::unique_ptr<seal::GaloisKeys> galoisKeys = nullptr;
 
+/// DId not test segfaulting, ptr for consistency
+std::unique_ptr<seal::RelinKeys> relinKeys = nullptr;
+
 /// the seal context, i.e. object that holds params/etc
 std::shared_ptr<seal::SEALContext> context;
 
-/// Hack until we have real parameter setup
-/// Sets up a context and keys, iff the context is not yet setup
-/// Takes everything by reference, so we don't have to make it a friend and expose its existence in the header
-/// \param context
-/// \param secretKey
-/// \param publicKey
-/// \param galoisKeys
-void setup_context(std::shared_ptr<seal::SEALContext> &context,
-                   std::unique_ptr<seal::SecretKey> &secretKey,
-                   std::unique_ptr<seal::PublicKey> &publicKey,
-                   std::unique_ptr<seal::GaloisKeys> &galoisKeys) {
-  if (!context || !context->parameters_set()) {
-    /// Wrapper for parameters
-    seal::EncryptionParameters params(seal::scheme_type::BFV);
-
-    // in BFV, this degree is also the number of slots.
-    params.set_poly_modulus_degree(16384);
-
-    // Let SEAL select a "suitable" coefficient modulus (not necessarily maximal)
-    params.set_coeff_modulus(seal::CoeffModulus::BFVDefault(params.poly_modulus_degree()));
-
-    // Let SEAL select a plaintext modulus that actually supports batching
-    params.set_plain_modulus(seal::PlainModulus::Batching(params.poly_modulus_degree(), 20));
-
-    // Instantiate context
-    context = seal::SEALContext::Create(params);
-
-    /// Helper object to create keys
-    seal::KeyGenerator keyGenerator(context);
-
-    secretKey = std::make_unique<seal::SecretKey>(keyGenerator.secret_key());
-    publicKey = std::make_unique<seal::PublicKey>(keyGenerator.public_key());
-    galoisKeys = std::make_unique<seal::GaloisKeys>(keyGenerator.galois_keys());
-  }
-}
-
 void EvaluationAlgorithms::encryptedLaplacianSharpeningAlgorithmBatched(VecInt2D img) {
-  setup_context(context, secretKey, publicKey, galoisKeys);
+//  // time measurements
+//  std::chrono::microseconds tTotal;
+//  auto tStart = std::chrono::high_resolution_clock::now();
+
+  setup_context(context, secretKey, publicKey, galoisKeys, relinKeys);
   auto encoder = seal::BatchEncoder(context);
-  auto encryptor = seal::Encryptor(context, *secretKey); //secret Key encryptor is more efficient
+  auto encryptor = seal::Encryptor(context, *publicKey, *secretKey); //secret Key encryptor is more efficient
 
   // Encrypt input
   std::vector<int64_t> img_as_vec;
@@ -1290,8 +1272,8 @@ void EvaluationAlgorithms::encryptedLaplacianSharpeningAlgorithmBatched(VecInt2D
   }
   seal::Plaintext img_ptxt;
   encoder.encode(img_as_vec, img_ptxt);
-  seal::Ciphertext img_ctxt;
-  encryptor.encrypt(img_ptxt, img_ctxt);
+  seal::Ciphertext img_ctxt(context);
+  encryptor.encrypt_symmetric(img_ptxt, img_ctxt);
 
 
   // Compute sharpening filter
@@ -1303,63 +1285,134 @@ void EvaluationAlgorithms::encryptedLaplacianSharpeningAlgorithmBatched(VecInt2D
   std::vector<size_t> rotations =
       {0, 1, 2, img.size(), img.size() + 1, img.size() + 2, 2*img.size(), 2*img.size() + 1, 2*img.size() + 2};
   seal::Plaintext w_ptxt;
-  std::vector<seal::Ciphertext> img_ctxts;
+  std::vector<seal::Ciphertext> img_ctxts(img.size(), seal::Ciphertext(context));
   img_ctxts.reserve(weights.size());
   for (size_t i = 0; i < weights.size(); ++i) {
     img_ctxts[i] = (i==0) ? std::move(img_ctxt) : img_ctxts[0]; //move for i == 0 saves one ctxt copy
-    evaluator.rotate_vector_inplace(img_ctxts[i], (int) rotations[i], *galoisKeys);
+    evaluator.rotate_rows_inplace(img_ctxts[i], (int) rotations[i], *galoisKeys);
+//    seal::Ciphertext dst(context);
+//    evaluator.rotate_vector(img_ctxts[i], (int) rotations[i], *galoisKeys, dst);
     encoder.encode(std::vector<int64_t>(img_as_vec.size(), weights[i]), w_ptxt);
     evaluator.multiply_plain_inplace(img_ctxts[i], w_ptxt);
   }
 
   // Sum up all the ctxts
-  seal::Ciphertext res_ctxt;
+  seal::Ciphertext res_ctxt(context);
   evaluator.add_many(img_ctxts, res_ctxt);
+
+//  auto tEnd = std::chrono::high_resolution_clock::now();
+//  tTotal = std::chrono::duration_cast<std::chrono::microseconds>(tEnd - tStart);
+//  std::cout << "Total: " << tTotal.count() << std::endl;
 }
 
 void EvaluationAlgorithms::encryptedLaplacianSharpeningAlgorithmNaive(VecInt2D img) {
-  setup_context(context, secretKey, publicKey, galoisKeys);
+  // time measurements
+//  std::chrono::microseconds tTotal;
+//  auto tStart = std::chrono::high_resolution_clock::now();
+
+  setup_context(context, secretKey, publicKey, galoisKeys, relinKeys);
   auto encoder = seal::BatchEncoder(context);
-  auto encryptor = seal::Encryptor(context, *secretKey); //secret Key encryptor is more efficient
+  auto encryptor = seal::Encryptor(context, *publicKey, *secretKey); //secret Key encryptor is more efficient
 
-  // Encrypt input (very inefficiently)
-  std::vector<std::vector<seal::Ciphertext>> img_ctxt;
 
+
+  // Encrypt input
+  std::vector<int64_t> img_as_vec;
+  img_as_vec.reserve(img.size()*img.size());
   for (int x = 1; x < img.size() - 1; ++x) {
     for (int y = 1; y < img.at(x).size() - 1; ++y) {
-      seal::Plaintext p;
-      encoder.encode(std::vector<int64_t>(1, img[x][y]), p);
-      encryptor.encrypt(p, img_ctxt[x][y]);
-
+      img_as_vec.push_back(img[x][y]);
     }
   }
+  seal::Plaintext img_ptxt;
+  encoder.encode(img_as_vec, img_ptxt);
+  seal::Ciphertext img_ctxt(context);
+  encryptor.encrypt_symmetric(img_ptxt, img_ctxt);
 
   // Compute sharpening filter
   auto evaluator = seal::Evaluator(context);
 
   // Naive way: very similar to plain C++
   VecInt2D weightMatrix = {{1, 1, 1}, {1, -8, 1}, {1, 1, 1}};
-  std::vector<std::vector<seal::Ciphertext>> img2_ctxt;
+  // Can be default constructed because this is overriden in each loop
+  seal::Ciphertext img2_ctxt;
+
   for (int x = 1; x < img.size() - 1; ++x) {
     for (int y = 1; y < img.at(x).size() - 1; ++y) {
-      seal::Ciphertext value;
+      seal::Ciphertext value(context);
       for (int j = -1; j < 2; ++j) {
         for (int i = -1; i < 2; ++i) {
 //          std::cout << x << ", " << y << ", " << i << ", " << j << std::endl;
           seal::Plaintext w;
           encoder.encode(std::vector<int64_t>(1, weightMatrix.at(i + 1).at(j + 1)), w);
           seal::Ciphertext temp;
-          temp = img_ctxt.at(x + i).at(y + j);
+          evaluator.rotate_rows(img_ctxt, (x + i)*img.size() + (y + j), *galoisKeys, temp);
           evaluator.multiply_plain_inplace(temp, w);
           evaluator.add_inplace(value, temp);
         }
       }
-      img2_ctxt[x][y] = img_ctxt.at(x).at(y);
+
       seal::Plaintext two;
       encoder.encode(std::vector<int64_t>(1, 2), two);
-      evaluator.multiply_plain_inplace(img2_ctxt[x][y], two);
-      evaluator.sub_inplace(img2_ctxt[x][y], value);
+      seal::Ciphertext temp = img_ctxt;
+      evaluator.multiply_plain_inplace(temp, two);
+      evaluator.sub_inplace(temp, value);
+      //TODO: Add masking and merge masking and mult by two
+      //std::vector<int64_t> mask(16384,0);
+      //mask[x*img.size()+y] = 1;
+      //seal::Plaintext mask_ptxt;
+      //encoder.encode(mask,mask_ptxt);
+      //evaluator.multiply_plain_inplace(temp,mask_ptxt);
+      img2_ctxt = temp;
     }
   }
+
+  auto decryptor = seal::Decryptor(context, *secretKey);
+  seal::Plaintext ptxt;
+  std::vector<int64_t> output;
+  decryptor.decrypt(img2_ctxt, ptxt);
+  encoder.decode(ptxt, output);
+  for (int k = 1; k < img.size() - 1; ++k) {
+    for (int h = 1; h < img.size() - 1; ++h) {
+//      std::cout << output[0] << " ";
+    }
+//    std::cout << std::endl;
+  }
+
+//  auto tEnd = std::chrono::high_resolution_clock::now();
+//  tTotal = std::chrono::duration_cast<std::chrono::microseconds>(tEnd - tStart);
+//  std::cout << "Total: " << tTotal.count() << std::endl;
 }
-#endif
+#endif // HAVE_SEAL_BFV
+
+std::vector<double> EvaluationAlgorithms::runLaplacianSharpeningFilterModified(Matrix<int> &img, int imgSize) {
+  // initialize img2 as (1, imgSize*imgSize) matrix
+  std::vector<std::vector<double>> weightMatrix = {{1, 1, 1}, {1, -8, 1}, {1, 1, 1}};
+  std::vector<double> img2(imgSize*imgSize);
+  for (int x = 1; x < imgSize - 1; ++x) {
+    for (int y = 1; y < imgSize - 1; ++y) {
+      double value = 0;
+      for (int j = -1; j < 2; ++j) {
+        for (int i = -1; i < 2; ++i) {
+          value = value + weightMatrix[i + 1][j + 1]*img(0, imgSize*(x + i) + y + j);
+        }
+      }
+      img2[imgSize*x + y] = 2*img(0, imgSize*x + y) - value;
+    }
+  }
+  return img2;
+}
+
+
+Matrix<int> *genRandomImageData(int imageSize, int numSlots) {
+  // helpers to generate pseudorandom but reproducible numbers
+  const unsigned int RANDOM_SEED = 874'332'410;
+  std::mt19937 random_engine(RANDOM_SEED);
+  std::uniform_int_distribution<int> distribution_1_1000(1, 1000);
+  // generate a Matrix<int> of dimension (1, imageSize*imageSize) representing an image of size (imageSize, imageSize)
+  std::vector<int> vec(numSlots);
+  std::generate(vec.begin(), vec.begin() + (imageSize*imageSize), [&]() {
+    return distribution_1_1000(random_engine);
+  });
+  return new Matrix<int>({vec});
+}

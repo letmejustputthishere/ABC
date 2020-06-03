@@ -117,7 +117,7 @@ int VarDecl::getMaxNumberChildren() {
 
 VarDecl *VarDecl::clone() const {
   return new VarDecl(this->getVarTargetIdentifier(),
-                     this->getDatatype()->getType(),
+                     this->getDatatype(),
                      getInitializer()!=nullptr
                      ? getInitializer()->clone()
                      : nullptr);

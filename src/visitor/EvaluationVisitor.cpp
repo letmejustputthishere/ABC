@@ -132,6 +132,7 @@ void EvaluationVisitor::visit(CallExternal &elem) {
 
 void EvaluationVisitor::visit(Function &elem) {
   // visit all statements of the Function's body in order of execution
+  //TODO: Must visit block for correct scoping!
   for (size_t i = 0; i < elem.getBodyStatements().size(); i++) {
     elem.getBodyStatements().at(i)->accept(*this);
   }
@@ -297,6 +298,7 @@ void EvaluationVisitor::visit(MatrixAssignm &elem) {
   // evaluate the assigned value (rvalue) as it might be an expression (e.g., M[0][3] = 43+12)
   elem.getValue()->accept(*this);
   auto val = getOnlyEvaluationResult(results.top());
+  results.pop();
 
   auto matrixRef = elem.getAssignmTarget();
   // row index

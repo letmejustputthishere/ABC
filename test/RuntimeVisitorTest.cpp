@@ -11,22 +11,11 @@
 #include <include/ast_opt/ast/Return.h>
 #include <include/ast_opt/visitor/CompileTimeExpressionSimplifier.h>
 #include <include/ast_opt/visitor/RuntimeVisitor.h>
+#include <include/ast_opt/evaluation/EvaluationAlgorithms.h>
 #include <include/ast_opt/visitor/PrintVisitor.h>
 #include <random>
+#include <include/ast_opt/evaluation/EvaluationAlgorithms.h>
 #include "AstTestingGenerator.h"
-
-Matrix<int> *genRandomImageData(int imageSize, int numSlots) {
-  // helpers to generate pseudorandom but reproducible numbers
-  const unsigned int RANDOM_SEED = 874'332'410;
-  std::mt19937 random_engine(RANDOM_SEED);
-  std::uniform_int_distribution<int> distribution_1_1000(1, 1000);
-  // generate a Matrix<int> of dimension (1, imageSize*imageSize) representing an image of size (imageSize, imageSize)
-  std::vector<int> vec(numSlots);
-  std::generate(vec.begin(), vec.begin() + (imageSize*imageSize), [&]() {
-    return distribution_1_1000(random_engine);
-  });
-  return new Matrix<int>({vec});
-}
 
 std::vector<double> runLaplacianSharpeningFilter(Matrix<int> &img, int imgSize) {
   // initialize img2 as (1, imgSize*imgSize) matrix
@@ -92,24 +81,6 @@ TEST(RuntimeVisitorTests, DISABLED_rtCheckUsingCtes) { /* NOLINT */
   }
 }
 
-std::vector<double> runLaplacianSharpeningFilterModified(Matrix<int> &img, int imgSize) {
-  // initialize img2 as (1, imgSize*imgSize) matrix
-  std::vector<std::vector<double>> weightMatrix = {{1, 1, 1}, {1, -8, 1}, {1, 1, 1}};
-  std::vector<double> img2(imgSize*imgSize);
-  for (int x = 1; x < imgSize - 1; ++x) {
-    for (int y = 1; y < imgSize - 1; ++y) {
-      double value = 0;
-      for (int j = -1; j < 2; ++j) {
-        for (int i = -1; i < 2; ++i) {
-          value = value + weightMatrix[i + 1][j + 1]*img(0, imgSize*(x + i) + y + j);
-        }
-      }
-      img2[imgSize*x + y] = 2*img(0, imgSize*x + y) - value;
-    }
-  }
-  return img2;
-}
-
 TEST(RuntimeVisitorTests, rtCheckUsingExplicitAst) { /* NOLINT */
   // Executes the following AST using the RuntimeVisitor:
   // [BFV-compatible variant without division]
@@ -125,119 +96,21 @@ TEST(RuntimeVisitorTests, rtCheckUsingExplicitAst) { /* NOLINT */
   //     }
   //     return img2;
   // }
-
-
-  // VecInt2D runLaplacianSharpeningAlgorithm(Vector<int> img, int imgSize, int x, int y) {
-  auto func = new Function("runLaplacianSharpeningAlgorithm");
-  func->addParameter(new FunctionParameter(new Datatype(Types::INT, true), new Variable("img")));
-  func->addParameter(new FunctionParameter(new Datatype(Types::INT, false), new Variable("imgSize")));
-
-  func->addStatement(new VarDecl("img2", new Datatype(Types::INT)));
-
-  // a helper to generate img[imgSize*(x-i)+y+j] terms
-  auto createImgIdx = [](int i, int j) -> AbstractExpr * {
-    auto buildTermI = [](int i) -> AbstractExpr * {
-      if (i==0) {
-        return new Variable("x");
-      } else {
-        return new OperatorExpr(new Operator(ADDITION), {new Variable("x"), new LiteralInt(i)});
-      }
-    };
-
-    auto buildTermJ = [&](int j) -> AbstractExpr * {
-      if (j==0) {
-        return new OperatorExpr(new Operator(ADDITION),
-                                {new OperatorExpr(new Operator(MULTIPLICATION),
-                                                  {new Variable("imgSize"),
-                                                   buildTermI(i)}),
-                                 new Variable("y")});
-      } else {
-        return new OperatorExpr(new Operator(ADDITION),
-                                {new OperatorExpr(new Operator(MULTIPLICATION),
-                                                  {new Variable("imgSize"),
-                                                   buildTermI(i)}),
-                                 new Variable("y"),
-                                 new LiteralInt(j)});
-      }
-    };
-    return new MatrixElementRef(new Variable("img"), new LiteralInt(0), buildTermJ(j));
-  };
-
-  // img[imgSize*(x-1)+y-1]  * 1 + ... + img[imgSize*(x+1)+y+1]  * 1;
-  auto varValue =
-      new OperatorExpr(
-          new Operator(ADDITION),
-          {createImgIdx(-1, -1),
-           createImgIdx(0, -1),
-           createImgIdx(1, -1),
-           createImgIdx(-1, 0),
-           new OperatorExpr(new Operator(MULTIPLICATION), {createImgIdx(0, 0), new LiteralInt(-8)}),
-           createImgIdx(1, 0),
-           createImgIdx(-1, 1),
-           createImgIdx(0, 1),
-           createImgIdx(1, 1)});
-
-
-  // img2[imgSize*x+y] = img[imgSize*x+y] - (value/2);
-  auto secondLoopBody = new Block(
-      new MatrixAssignm(new MatrixElementRef(new Variable("img2"),
-                                             new LiteralInt(0),
-                                             new OperatorExpr(
-                                                 new Operator(ADDITION),
-                                                 {new OperatorExpr(new Operator(MULTIPLICATION),
-                                                                   {new Variable("imgSize"), new Variable("x")}),
-                                                  new Variable("y")})),
-                        new OperatorExpr(
-                            new Operator(SUBTRACTION),
-                            {new OperatorExpr(new Operator(MULTIPLICATION),
-                                              {new MatrixElementRef(
-                                                  new Variable("img"),
-                                                  new LiteralInt(0),
-                                                  new OperatorExpr(
-                                                      new Operator(ADDITION),
-                                                      {new OperatorExpr(new Operator(MULTIPLICATION),
-                                                                        {new Variable("imgSize"), new Variable("x")}),
-                                                       new Variable("y")})),
-                                               new LiteralInt(2)}),
-                             varValue})));
-
-  // for (int y = 1; y < imgSize - 1; ++y)  -- 2nd level loop
-  auto firstLoopBody = new Block(new For(new VarDecl("y", 1),
-                                         new LogicalExpr(new Variable("y"),
-                                                         SMALLER,
-                                                         new ArithmeticExpr(new Variable("imgSize"), SUBTRACTION, 1)),
-                                         new VarAssignm("y",
-                                                        new ArithmeticExpr(new Variable("y"),
-                                                                           ADDITION,
-                                                                           new LiteralInt(1))),
-                                         secondLoopBody));
-
-  // for (int x = 1; x < imgSize - 1; ++x)  -- 1st level loop
-  func->addStatement(new For(new VarDecl("x", 1),
-                             new LogicalExpr(new Variable("x"),
-                                             SMALLER,
-                                             new ArithmeticExpr(new Variable("imgSize"), SUBTRACTION, 1)),
-                             new VarAssignm("x",
-                                            new ArithmeticExpr(new Variable("x"),
-                                                               ADDITION,
-                                                               new LiteralInt(1))),
-                             firstLoopBody));
-
-  // return img2;
-  func->addStatement(new Return(new Variable("img2")));
-
   Ast ast;
-  ast.setRootNode(func);
+  EvaluationAlgorithms::genLaplacianSharpeningAlgorithmAstAfterCtes(ast);
 
-  // a 32x32 image encoded as single 1'024 elements row vector
-  auto imgData = genRandomImageData(32, 8192);
+  /// Image size
+  size_t imgSize = 32;
+
+  // a img_size x img_size image encoded as single img_size^2 elements row vector
+  auto imgData = genRandomImageData(imgSize, Ciphertext::DEFAULT_NUM_SLOTS);
 
   // execute the plaintext algorithm to know the expected result
-  auto expectedResult = runLaplacianSharpeningFilterModified(*imgData, 32);
-  Ciphertext ct = Ciphertext(expectedResult);
+  auto expectedResult = EvaluationAlgorithms::runLaplacianSharpeningFilterModified(*imgData, imgSize);
+//  Ciphertext ct = Ciphertext(expectedResult);
 
   // perform the actual execution by running the RuntimeVisitor
-  RuntimeVisitor rt({{"img", new LiteralInt(imgData)}, {"imgSize", new LiteralInt(32)}});
+  RuntimeVisitor rt({{"img", new LiteralInt(imgData)}, {"imgSize", new LiteralInt(imgSize)}});
   rt.visit(ast);
 
   // retrieve the RuntimeVisitor result
@@ -246,15 +119,135 @@ TEST(RuntimeVisitorTests, rtCheckUsingExplicitAst) { /* NOLINT */
 
   // compare: our shadow plaintext computation vs. computations made on the SEAL ciphertext
   EXPECT_EQ(retVal->getNumCiphertextSlots(), vals.size());
-  for (int i = 33; i < 33 + (30*30); ++i) {
+
+  for (int i = 0; i < imgSize*imgSize; ++i) {
     EXPECT_EQ(vals.at(i), retVal->getElementAt(i)) << "Plaintext result and ciphertext result mismatch at i=" << i;
   }
+//  auto retLits = rt.getResults();
+//  std::vector<int> retVal;
+//  for (auto &e: retLits[0]->getMatrix()->castTo<Matrix<AbstractExpr*>>()->values[0]) {
+//    if (e) {
+//      retVal.push_back(e->castTo<LiteralInt>()->getValue());
+//    } else {
+//      retVal.push_back(0);
+//    }
+//  }
 
   // compare: our shadown plaintext computation vs. reference implementation of Laplacian Sharpening algorithm
   // FIXME: Some of the values are not equal.. this must be investigated further, not clear yet why.
   //  Cause for some of the mismatches is that original algorithm does not compute image's border values.
-  for (int i = 33; i < 33 + (30*30); ++i) {
-    EXPECT_EQ(retVal->getElementAt(i), ct.getElementAt(i))
-              << "Expected result and plaintext result mismatch at i=" << i;
+  // TODO: Check indices
+  for (int i = 0; i < imgSize*imgSize; ++i) {
+    auto row = i/imgSize;
+    auto col = i%imgSize;
+    if (row==0 || col==0 || row==imgSize - 1 || col==imgSize - 1) {
+      // DON'T CARE
+    } else {
+      EXPECT_EQ(retVal->getElementAt(i), expectedResult[i])
+                << "Expected result and plaintext result mismatch at i=" << i;
+    }
+  }
+}
+//todo: test if original and modified return result, assuming you divide modified's result by two
+TEST(RuntimeVisitorTests, sharpeningSanityTest) {
+  /// Image size
+  size_t imgSize = 32;
+
+  // a img_size x img_size image encoded as single img_size^2 elements row vector
+  auto imgData = genRandomImageData(imgSize, Ciphertext::DEFAULT_NUM_SLOTS);
+
+  std::vector<std::vector<int>> imgVecVec;
+  for (size_t i = 0; i < imgSize; ++i) {
+    imgVecVec.push_back(std::vector<int>());
+    for (size_t j = 0; j < imgSize; ++j) {
+      auto e = imgData->getElementAt(0, i * imgSize +  j);
+      if (e) {
+        imgVecVec[i].push_back(e->castTo<LiteralInt>()->getValue());
+      } else {
+        imgVecVec[i].push_back(0);
+      }
+    }
+  }
+
+  auto optimizedResult = EvaluationAlgorithms::runLaplacianSharpeningFilterModified(*imgData, imgSize);
+
+  auto originalResult = EvaluationAlgorithms::runLaplacianSharpeningAlgorithm(imgVecVec);
+
+  //TODO: Because of an integer divison in the orignial algorithm, some are off-by-one
+  for (int i = 0; i < imgSize*imgSize; ++i) {
+    auto row = i/imgSize;
+    auto col = i%imgSize;
+    EXPECT_EQ(optimizedResult[i], originalResult[row][col]*2)
+              << "optimized result and original result mismatch at i=" << i;
+  }
+
+}
+
+TEST(RuntimeVisitorTests, rtCheckUsingExplicitOriginalAst) { /* NOLINT */
+  // -- source code --
+  // /// \param img A quadratic image given as row vector (single row matrix) consisting of concatenated rows.
+  // /// \param imgSize The image's size. Assumes that img is quadratic, i.e., img has dimension (imgSize, imgSize).
+  // VecInt2D runLaplacianSharpeningAlgorithm(Vector<secret_int> img, int imgSize) {
+  //     Vector<int> img2;
+  //     Matrix<int> weightMatrix = [1 1 1; 1 -8 1; 1 1 1];
+  //     for (int x = 1; x < imgSize - 1; ++x) {
+  //         for (int y = 1; y < imgSize - 1; ++y) {
+  //             int value = 0;
+  //             for (int j = -1; j < 2; ++j) {
+  //                 for (int i = -1; i < 2; ++i) {
+  //                     value[0][0] = value[0][0] + (weightMatrix[i+1][j+1] * img[imgSize*(x+i)+y+j]);
+  //                 }
+  //             }
+  //             img2[imgSize*x+y] = img[imgSize*x+y] * 2 - value; //slightly adapted for ints
+  //         }
+  //     }
+  //     return img2;
+  // }
+  Ast ast;
+  EvaluationAlgorithms::genLaplacianSharpeningAlgorithmAst(ast);
+
+  /// Image size
+  size_t imgSize = 32;
+
+  // a img_size x img_size image encoded as single img_size^2 elements row vector
+  auto imgData = genRandomImageData(imgSize, Ciphertext::DEFAULT_NUM_SLOTS);
+
+  // execute the plaintext algorithm to know the expected result
+  auto expectedResult = EvaluationAlgorithms::runLaplacianSharpeningFilterModified(*imgData, imgSize);
+//  Ciphertext ct = Ciphertext(expectedResult);
+
+  // perform the actual execution by running the RuntimeVisitor
+  RuntimeVisitor rt({{"img", new LiteralInt(imgData)}, {"imgSize", new LiteralInt(imgSize)}});
+  rt.visit(ast);
+
+  // retrieve the RuntimeVisitor result
+  auto retVal = rt.getReturnValues().front();
+  std::vector<std::int64_t> vals = retVal->decryptAndDecode();
+
+  // compare: our shadow plaintext computation vs. computations made on the SEAL ciphertext
+  EXPECT_EQ(retVal->getNumCiphertextSlots(), vals.size());
+
+  for (int i = 0; i < imgSize*imgSize; ++i) {
+    EXPECT_EQ(vals.at(i), retVal->getElementAt(i)) << "Plaintext result and ciphertext result mismatch at i=" << i;
+  }
+//  auto retLits = rt.getResults();
+//  std::vector<int> retVal;
+//  for (auto &e: retLits[0]->getMatrix()->castTo<Matrix<AbstractExpr*>>()->values[0]) {
+//    if (e) {
+//      retVal.push_back(e->castTo<LiteralInt>()->getValue());
+//    } else {
+//      retVal.push_back(0);
+//    }
+//  }
+
+  for (int i = 0; i < imgSize*imgSize; ++i) {
+    auto row = i/imgSize;
+    auto col = i%imgSize;
+    if (row==0 || col==0 || row==imgSize - 1 || col==imgSize - 1) {
+      // DON'T CARE
+    } else {
+      EXPECT_EQ(retVal->getElementAt(i), expectedResult[i])
+                << "Expected result and plaintext result mismatch at i=" << i;
+    }
   }
 }
