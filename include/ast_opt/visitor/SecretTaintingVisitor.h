@@ -84,7 +84,7 @@ class SecretTaintingVisitor : public Visitor {
 
   void addTaintedNodes(std::vector<AbstractNode *> nodesToAdd);
 
-  void addTaintedNode(const AbstractNode *n);
+  void addTaintedNode(const AbstractNode &n);
 
   [[nodiscard]] bool anyNodesAreTainted(std::vector<AbstractNode *> nodes) const;
 

@@ -29,7 +29,7 @@ void SecretTaintingVisitor::visit(Block &elem) {
   auto statements = elem.getStatements();
   auto statementsAsNodes = std::vector<AbstractNode *>(statements.begin(), statements.end());
   if (anyNodesAreTainted(statementsAsNodes))
-    addTaintedNode(elem.castTo<AbstractNode>());
+    addTaintedNode(elem);
 }
 
 void SecretTaintingVisitor::visit(Function &elem) {
@@ -38,21 +38,21 @@ void SecretTaintingVisitor::visit(Function &elem) {
   // be tainted (this makes sense, e.g., if Function is part of a called sub-function that is referenced by a Call obj.)
   auto bodyStatements = elem.getBodyStatements();
   auto statementsAsNodes = std::vector<AbstractNode *>(bodyStatements.begin(), bodyStatements.end());
-  if (anyNodesAreTainted(statementsAsNodes)) addTaintedNode(elem.castTo<AbstractNode>());
+  if (anyNodesAreTainted(statementsAsNodes)) addTaintedNode(elem);
 }
 
 void SecretTaintingVisitor::visit(If &elem) {
 //  throw std::invalid_argument("ASTs containing If statements are not supported by the SecretTaintingVisitor!");
   Visitor::visit(elem);
   if (anyNodesAreTainted(elem.getChildren())) {
-    addTaintedNode(&elem);
+    addTaintedNode(elem);
   }
 }
 
 void SecretTaintingVisitor::visit(Return &elem) {
   Visitor::visit(elem);
   if (anyNodesAreTainted(elem.getChildren())) {
-    addTaintedNode(&elem);
+    addTaintedNode(elem);
   }
 }
 
@@ -67,7 +67,7 @@ void SecretTaintingVisitor::visit(VarAssignm &elem) {
   Visitor::visit(elem);
   // after visiting the initializer, check if it is tainted - this is needed for Call nodes
   if (nodeIsTainted(*elem.getValue())) {
-    addTaintedNode(&elem);
+    addTaintedNode(elem);
     taintedVariables.insert(elem.getIdentifier());
   }
 }
@@ -81,7 +81,7 @@ void SecretTaintingVisitor::visit(VarDecl &elem) {
   Visitor::visit(elem);
   // after visiting the initializer, check if it is tainted - this is needed for Call nodes
   if (elem.getInitializer() != nullptr && nodeIsTainted(*elem.getInitializer())) {
-    addTaintedNode(&elem);
+    addTaintedNode(elem);
     taintedVariables.insert(elem.getIdentifier());
   }
 }
@@ -93,28 +93,28 @@ void SecretTaintingVisitor::visit(VarDecl &elem) {
 void SecretTaintingVisitor::visit(LogicalExpr &elem) {
   Visitor::visit(elem);
   if (anyNodesAreTainted(elem.getChildren())) {
-    addTaintedNode(&elem);
+    addTaintedNode(elem);
   }
 }
 
 void SecretTaintingVisitor::visit(ArithmeticExpr &elem) {
   Visitor::visit(elem);
   if (anyNodesAreTainted(elem.getChildren())) {
-    addTaintedNode(&elem);
+    addTaintedNode(elem);
   }
 }
 
 void SecretTaintingVisitor::visit(OperatorExpr &elem) {
   Visitor::visit(elem);
   if (anyNodesAreTainted(elem.getChildren())) {
-    addTaintedNode(&elem);
+    addTaintedNode(elem);
   }
 }
 
 void SecretTaintingVisitor::visit(GetMatrixSize &elem) {
   Visitor::visit(elem);
   if (anyNodesAreTainted(elem.getChildren())) {
-    addTaintedNode(&elem);
+    addTaintedNode(elem);
   }
 }
 
@@ -122,13 +122,13 @@ void SecretTaintingVisitor::visit(FunctionParameter &elem) {
   // if this FunctionParameter refers to an encrypted variable -> all of its variable identifiers are tainted
   if (elem.getDatatype()->isEncrypted()) {
     // taint the FunctionParameter object
-    addTaintedNode(&elem);
+    addTaintedNode(elem);
     // remember the Variable identifiers associated
     auto varIdentifiers = elem.getVariableIdentifiers();
     addTaintedVariableIdentifiers(varIdentifiers.begin(), varIdentifiers.end());
     // taint the Variable objects
-    for (auto &child : elem.getChildrenNonNull()) {
-      auto childAsVariable = dynamic_cast<const Variable *>(child);
+    for (auto &child : elem) {
+      auto childAsVariable = dynamic_cast<const Variable*>(&child);
       if (childAsVariable!=nullptr
           && std::count(varIdentifiers.begin(), varIdentifiers.end(), childAsVariable->getIdentifier()) > 0) {
         addTaintedNode(child);
@@ -144,7 +144,7 @@ void SecretTaintingVisitor::visit(ParameterList &elem) {
   if (std::any_of(params.begin(),
                   params.end(),
                   [&](AbstractNode *node) { return nodeIsTainted(*node); })) {
-    addTaintedNode(&elem);
+    addTaintedNode(elem);
   }
 }
 
@@ -153,7 +153,7 @@ void SecretTaintingVisitor::visit(Call &elem) {
   // after visiting the Call's referenced Function, check if the Function node was tainted
   // if the Function was tainted -> taint the Call node too
   if (elem.getFunc()!=nullptr && nodeIsTainted(*elem.getFunc())) {
-    addTaintedNode(elem.AbstractExpr::castTo<AbstractNode>());
+    addTaintedNode(elem);
   }
 }
 
@@ -187,13 +187,13 @@ void SecretTaintingVisitor::visit(UnaryExpr &elem) {
 }
 
 void SecretTaintingVisitor::visit(Datatype &elem) {
-  if (elem.isEncrypted()) addTaintedNode(&elem);
+  if (elem.isEncrypted()) addTaintedNode(elem);
   Visitor::visit(elem);
 }
 
 void SecretTaintingVisitor::visit(Variable &elem) {
   if (taintedVariables.count(elem.getIdentifier()) > 0) {
-    addTaintedNode(&elem);
+    addTaintedNode(elem);
   }
 }
 
@@ -220,7 +220,7 @@ void SecretTaintingVisitor::visit(Transpose &elem) {
 void SecretTaintingVisitor::visit(MatrixElementRef &elem) {
   Visitor::visit(elem);
   if (taintedNodes.count(elem.getOperand()->getUniqueNodeId()) > 0) {
-    addTaintedNode(&elem);
+    addTaintedNode(elem);
   }
 }
 
@@ -228,7 +228,7 @@ void SecretTaintingVisitor::visit(MatrixAssignm &elem) {
   Visitor::visit(elem);
   // after visiting the initializer, check if it is tainted - this is needed for Call nodes
   if (nodeIsTainted(*elem.getValue())) {
-    addTaintedNode(&elem);
+    addTaintedNode(elem);
     for(auto &v: elem.getAssignmTarget()->getVariableIdentifiers()) {
       taintedVariables.insert(v);
     }
@@ -261,7 +261,7 @@ void SecretTaintingVisitor::addTaintedNodes(std::vector<AbstractNode *> nodesToA
                  });
 }
 
-void SecretTaintingVisitor::addTaintedNode(const AbstractNode *n) {
-  taintedNodes.insert(n->getUniqueNodeId());
+void SecretTaintingVisitor::addTaintedNode(const AbstractNode &n) {
+  taintedNodes.insert(n.getUniqueNodeId());
 }
 

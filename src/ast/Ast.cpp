@@ -175,20 +175,7 @@ std::set<const AbstractNode *> Ast::getAllNodes(const std::function<bool(const A
 void Ast::deleteNode(AbstractNode **node, bool deleteSubtreeRecursively) {
   AbstractNode *nodePtr = *node;
 
-  // handle the node's children
-  if (deleteSubtreeRecursively) {
-    // if deleteSubtreeRecursively is set, we need to delete all children first
-    //TODO: IMPLEMENT DELETION
-    throw std::logic_error("Ast::deleteNode currently not implemented.");
-    //    for (auto &c : nodePtr->getChildren()) {
-    //      if (c) deleteNode(&c, deleteSubtreeRecursively);
-    //    }
-  } else if (!nodePtr->getChildrenNonNull().empty()) {
-    // if deleteSubtreesRecursively is not set but there are children, we cannot continue.
-    // probably the user's intention was not to delete the whole subtree.
-    throw std::logic_error("Cannot remove node (" + nodePtr->getUniqueNodeId()
-                               + ") because node has children but deleteSubtreeRecursively is not set (false).");
-  }
+  // TODO: handle the node's children
 
   // remove AST's root node if this node is the AST's root node
   if (nodePtr==this->getRootNode()) this->setRootNode(nullptr);

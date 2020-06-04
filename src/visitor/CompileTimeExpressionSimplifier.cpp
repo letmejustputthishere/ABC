@@ -1463,20 +1463,7 @@ std::set<VarAssignm *> CompileTimeExpressionSimplifier::emitVariableAssignments(
 
 void CompileTimeExpressionSimplifier::enqueueNodeForDeletion(AbstractNode *node) {
 
-  auto pc = node->getParent()->getChildrenNonNull();
-  if (std::find(pc.begin(), pc.end(), node)!=pc.end()) {
-    throw std::invalid_argument("Cannot enqueue a Node for deletion if it is still linked in parent");
-  }
-
-  for (auto &n : node->getDescendants()) {
-    nodesQueuedForDeletion.push_back(n);
-  }
-  nodesQueuedForDeletion.push_back(node);
-  // if this node is a previously emitted variable assignment, we need to remove the dependency to its assoc. VarDecl
-  if (emittedVariableAssignms.count(node) > 0) {
-    emittedVariableAssignms.at(node)->second->removeVarAssignm(node);
-    emittedVariableAssignms.erase(node);
-  }
+   //TODO: Replace the deletion logic in CTES with something more efficient
 }
 
 void CompileTimeExpressionSimplifier::leftForLoop() {
