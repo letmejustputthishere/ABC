@@ -61,6 +61,7 @@ class NodeIterator {
   /// Pre-increment
   NodeIterator &operator++() {
     impl->increment();
+    return *this;
   }
 
   /// Post-increment
