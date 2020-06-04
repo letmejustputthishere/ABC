@@ -63,7 +63,7 @@ VarAssignm *VarAssignm::clone() const {
 }
 
 std::string VarAssignm::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {this->identifier});
+  return AbstractNode::toStringHelper(printChildren, {this->identifier});
 }
 std::vector<AbstractNode *> VarAssignm::getChildren() {
   //TODO IMPLEMENT

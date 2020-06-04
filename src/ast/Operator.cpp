@@ -115,7 +115,7 @@ bool Operator::equals(UnaryOp op) const {
 }
 
 std::string Operator::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {this->getOperatorString()});
+  return AbstractNode::toStringHelper(printChildren, {this->getOperatorString()});
 }
 
 Operator::Operator(OpSymbolVariant opVar) {
@@ -568,29 +568,4 @@ AbstractLiteral *Operator::applyOperator(std::vector<const AbstractLiteral *> op
   } else {
     throw std::logic_error("Operator::apply failed because AbstractLiterals are of unknown type.");
   }
-}
-std::vector<AbstractNode *> Operator::getChildren() {
-  return {}; // has no node children
-}
-std::vector<const AbstractNode *> Operator::getChildren() const {
-  return {}; // has no node children
-}
-void Operator::removeChildren() {
-  //This node has no AbstractNode children, so nothing to do
-}
-AbstractNode::iterator Operator::begin() {
-  //TODO
-  return AbstractNode::iterator();
-}
-AbstractNode::const_iterator Operator::begin() const {
-  //TODO
-  return AbstractNode::const_iterator();
-}
-AbstractNode::iterator Operator::end() {
-  //TODO
-  return AbstractNode::iterator();
-}
-AbstractNode::const_iterator Operator::end() const {
-  //TODO
-  return AbstractNode::const_iterator();
 }

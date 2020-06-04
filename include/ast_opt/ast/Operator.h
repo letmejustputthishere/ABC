@@ -16,7 +16,7 @@
 #include "ast_opt/ast/OpSymbEnum.h"
 #include "ast_opt/ast/LiteralFloat.h"
 
-class Operator : public AbstractNode {
+class Operator {
  private:
   std::string operatorString;
   OpSymbolVariant operatorSymbol;
@@ -93,12 +93,6 @@ class Operator : public AbstractNode {
 
   AbstractLiteral *applyOperator(const LiteralFloat *rhs);
 
-  [[nodiscard]] std::string toString(bool printChildren) const override;
-
-  ~Operator() override;
-
-  Operator *clone() const override;
-
   [[nodiscard]] bool equals(ArithmeticOp op) const;
 
   [[nodiscard]] bool equals(LogCompOp op) const;
@@ -162,15 +156,6 @@ class Operator : public AbstractNode {
   /// But the expression 32 < 193 < a < 12 would partially evaluate 32 < 193 = true and then lead to true < a < 12 which
   /// is obviously not correct. Because of that we require that all operands are known for these kind of operators.
   [[nodiscard]] bool supportsPartialEvaluation();
-
-  std::vector<AbstractNode *> getChildren() override;
-
-  std::vector<const AbstractNode *> getChildren() const override;
-  void removeChildren() override;
-  iterator begin() override;
-  const_iterator begin() const override;
-  iterator end() override;
-  const_iterator end() const override;
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_OPERATOR_H_

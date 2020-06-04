@@ -27,7 +27,7 @@ json Rotate::toJson() const {
 }
 
 std::string Rotate::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {});
+  return AbstractNode::toStringHelper(printChildren, {});
 }
 
 AbstractExpr *Rotate::getOperand() const {

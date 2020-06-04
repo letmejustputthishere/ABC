@@ -76,7 +76,7 @@ For *For::clone() const {
 }
 
 std::string For::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {});
+  return AbstractNode::toStringHelper(printChildren, {});
 }
 
 json For::toJson() const {

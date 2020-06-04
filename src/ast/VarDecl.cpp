@@ -124,7 +124,7 @@ VarDecl *VarDecl::clone() const {
 }
 
 std::string VarDecl::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {identifier});
+  return AbstractNode::toStringHelper(printChildren, {identifier});
 }
 
 std::vector<AbstractNode *> VarDecl::getChildren() {

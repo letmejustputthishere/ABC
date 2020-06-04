@@ -29,7 +29,7 @@ void MatrixAssignm::accept(Visitor &v) {
 }
 
 std::string MatrixAssignm::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {});
+  return AbstractNode::toStringHelper(printChildren, {});
 }
 
 MatrixElementRef *MatrixAssignm::getAssignmTarget() const {

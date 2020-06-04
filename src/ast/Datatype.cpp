@@ -46,8 +46,8 @@ Datatype::operator Types() const {
 }
 
 std::string Datatype::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren,
-                                            {(isEncrypted() ? "encrypted" : "plaintext"), enumToString(val)});
+  return AbstractNode::toStringHelper(printChildren,
+                                      {(isEncrypted() ? "encrypted" : "plaintext"), enumToString(val)});
 }
 
 bool Datatype::operator==(const Datatype &rhs) const {

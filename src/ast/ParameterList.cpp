@@ -31,7 +31,7 @@ int ParameterList::getMaxNumberChildren() {
 }
 
 std::string ParameterList::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {});
+  return AbstractNode::toStringHelper(printChildren, {});
 }
 void ParameterList::addParameter(FunctionParameter *param) {
   parameters.push_back(param);

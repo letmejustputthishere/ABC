@@ -2,6 +2,84 @@
 #include "ast_opt/ast/LiteralBool.h"
 #include "ast_opt/ast/Block.h"
 
+If::~If() = default;
+
+If::If(std::unique_ptr<AbstractExpr> &&condition, std::unique_ptr<AbstractStatement> &&thenBranch, std::unique_ptr<
+    AbstractStatement> &&elseBranch) {
+
+}
+
+If *If::clone() const {
+  return new If(getCondition()->clone(),
+                getThenBranch()->clone(),
+                getElseBranch()->clone());
+}
+
+const AbstractExpr * If::getCondition() const {
+  return children.at(0)->castTo<AbstractExpr>();
+}
+
+const Block * If::getThenBranch() const {
+  return children.at(1) ? children.at(1)->castTo<Block>() : nullptr;
+}
+
+const Block * If::getElseBranch() const {
+  return children.at(2) ? children.at(2)->castTo<Block>() : nullptr;
+}
+
+void If::setCondition(std::unique_ptr<AbstractExpr> &&newCondition) {
+  newCondition->setParent(this);
+  condition = std::move(newCondition);
+}
+
+void If::setThenBranch(std::unique_ptr<Block> &&newThenBranch) {
+  newThenBranch->setParent(this);
+  thenBranch = std::move(newThenBranch);
+}
+
+void If::setElseBranch(std::unique_ptr<Block> &&newElseBranch) {
+  newElseBranch->setParent(this);
+  elseBranch = std::move(newElseBranch);
+}
+
+int If::getMaxNumberChildren() {
+  return 3;
+}
+
+std::vector<AbstractNode *> If::getChildren() {
+  return {};
+}
+std::vector<const AbstractNode *> If::getChildren() const {
+  return {};
+}
+
+void If::removeChildren() {
+  //TODO: Remove old
+  setCondition(nullptr);
+  setThenBranch(nullptr);
+  setElseBranch(nullptr);
+}
+
+AbstractNode::iterator If::begin() {
+  return AbstractNode::iterator(std::make_unique<IfIteratorImpl<AbstractNode>>(*this, 0));
+}
+
+AbstractNode::const_iterator If::begin() const {
+  return AbstractNode::const_iterator(std::make_unique<IfIteratorImpl<const AbstractNode>>(*this, 0));
+}
+
+AbstractNode::iterator If::end() {
+  return AbstractNode::iterator(std::make_unique<IfIteratorImpl<AbstractNode>>(*this, 3));
+}
+
+AbstractNode::const_iterator If::end() const {
+  return AbstractNode::const_iterator(std::make_unique<IfIteratorImpl<const AbstractNode>>(*this, 3));
+}
+
+std::string If::getNodeType() const {
+  return "If";
+}
+
 json If::toJson() const {
   json j;
   j["type"] = getNodeType();
@@ -11,108 +89,6 @@ json If::toJson() const {
   return j;
 }
 
-If::If(AbstractExpr *condition, AbstractStatement *thenBranch, AbstractStatement *elseBranch) {
-  setAttributes(condition, thenBranch, elseBranch);
-}
-
-If::If(AbstractExpr *condition, AbstractStatement *thenBranch) {
-  setAttributes(condition, thenBranch, nullptr);
-}
-
 void If::accept(Visitor &v) {
   v.visit(*this);
-}
-
-std::string If::getNodeType() const {
-  return "If";
-}
-
-AbstractExpr *If::getCondition() const {
-  return children.at(0)->castTo<AbstractExpr>();
-}
-
-Block *If::getThenBranch() const {
-  return children.at(1) ? children.at(1)->castTo<Block>() : nullptr;
-}
-
-Block *If::getElseBranch() const {
-  return children.at(2) ? children.at(2)->castTo<Block>() : nullptr;
-}
-
-If::~If() = default;
-
-If *If::clone() const {
-  return new If(getCondition()->clone(),
-                getThenBranch()->clone(),
-                getElseBranch()->clone());
-}
-int If::getMaxNumberChildren() {
-  return 3;
-}
-
-void If::setAttributes(AbstractExpr *condition, AbstractStatement *thenBranch, AbstractStatement *elseBranch) {
-  // update tree structure
-  removeChildren();
-
-  setCondition(condition);
-
-  auto thenBranchAsBlock = dynamic_cast<Block *>(thenBranch);
-  if (!thenBranchAsBlock) {
-    thenBranchAsBlock = new Block;
-    thenBranchAsBlock->addStatement(thenBranch);
-  }
-  setThenBranch(thenBranchAsBlock);
-
-  auto elseBranchAsBlock = dynamic_cast<Block *>(elseBranch);
-  if (!elseBranchAsBlock) {
-    elseBranchAsBlock = new Block;
-    elseBranchAsBlock->addStatement(elseBranch);
-  }
-  setElseBranch(elseBranchAsBlock);
-
-}
-std::string If::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {});
-}
-
-void If::setCondition(AbstractExpr *newCondition) {
-  //TODO: Delete old
-  newCondition->setParent(this);
-  children[0] = newCondition;
-}
-
-void If::setThenBranch(Block *newThenBranch) {
-  //TODO: Delete old
-  newThenBranch->setParent(this);
-  children[1] = newThenBranch;
-}
-
-void If::setElseBranch(Block *newElseBranch) {
-  //TODO: Delete old
-  newElseBranch->setParent(this);
-  children[2] = newElseBranch;
-}
-std::vector<AbstractNode *> If::getChildren() {
-  return {condition, thenBranch, elseBranch};
-}
-std::vector<const AbstractNode *> If::getChildren() const {
-  return {condition, thenBranch, elseBranch};
-}
-void If::removeChildren() {
-  //TODO: Remove old
-  setCondition(nullptr);
-  setThenBranch(nullptr);
-  setElseBranch(nullptr);
-}
-AbstractNode::iterator If::begin() {
-  return AbstractNode::iterator(std::make_unique<IfIteratorImpl<AbstractNode>>(*this, 0));
-}
-AbstractNode::const_iterator If::begin() const {
-  return AbstractNode::const_iterator(std::make_unique<IfIteratorImpl<const AbstractNode>>(*this, 0));
-}
-AbstractNode::iterator If::end() {
-  return AbstractNode::iterator(std::make_unique<IfIteratorImpl<AbstractNode>>(*this, 3));
-}
-AbstractNode::const_iterator If::end() const {
-  return AbstractNode::const_iterator(std::make_unique<IfIteratorImpl<const AbstractNode>>(*this, 3));
 }

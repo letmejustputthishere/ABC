@@ -64,7 +64,7 @@ int Block::getMaxNumberChildren() {
 }
 
 std::string Block::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {});
+  return AbstractNode::toStringHelper(printChildren, {});
 }
 
 bool Block::isEqual(const AbstractNode *otherBlockStatement) const {

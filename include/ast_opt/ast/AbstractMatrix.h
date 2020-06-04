@@ -22,7 +22,7 @@ using json = nlohmann::json;
 
 /// A helper class that allows to access and use all Matrix<T> instances using a unified interface, without
 /// needing exact knowledge about the specific template type T.
-class AbstractMatrix : public AbstractNode {
+class AbstractMatrix {
  public:
   /// Rotates a matrix by a given rotationFactor.
   /// \param rotationFactor Determines the number of rotations and its direction. If rotationFactor is positive (>0),
@@ -113,15 +113,6 @@ class AbstractMatrix : public AbstractNode {
   bool operator==(const AbstractMatrix &rhs) const;
 
   bool operator!=(const AbstractMatrix &rhs) const;
-
-  AbstractMatrix *clone() const override = 0;
-  iterator begin() override;
-  const_iterator begin() const override;
-  iterator end() override;
-  const_iterator end() const override;
- protected:
-/// Stores the children nodes of the current node.
-std::vector<AbstractNode *> children{};
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_ABSTRACTMATRIX_H_

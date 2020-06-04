@@ -125,7 +125,7 @@ int MatrixElementRef::getMaxNumberChildren() {
 }
 
 std::string MatrixElementRef::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {});
+  return AbstractNode::toStringHelper(printChildren, {});
 }
 
 std::vector<AbstractNode *> MatrixElementRef::getChildren()  {

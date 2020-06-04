@@ -64,7 +64,7 @@ bool UnaryExpr::isEqual(AbstractExpr *other) {
   return false;
 }
 std::string UnaryExpr::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {});
+  return AbstractNode::toStringHelper(printChildren, {});
 }
 std::vector<std::string> UnaryExpr::getVariableIdentifiers() {
   return getRight()->getVariableIdentifiers();

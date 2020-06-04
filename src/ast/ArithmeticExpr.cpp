@@ -30,7 +30,7 @@ ArithmeticExpr *ArithmeticExpr::clone() const {
                             this->getRight()->clone());
 }
 std::string ArithmeticExpr::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {});
+  return AbstractNode::toStringHelper(printChildren, {});
 }
 
 void ArithmeticExpr::setLeft(AbstractExpr *newLeft) {

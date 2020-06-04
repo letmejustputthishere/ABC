@@ -51,7 +51,7 @@ std::vector<Variable *> Variable::getVariables() {
 }
 
 std::string Variable::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {getIdentifier()});
+  return AbstractNode::toStringHelper(printChildren, {getIdentifier()});
 }
 
 Variable::~Variable() = default;

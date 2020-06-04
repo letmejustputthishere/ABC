@@ -24,7 +24,7 @@ LogicalExpr *LogicalExpr::clone() const {
 }
 
 std::string LogicalExpr::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {});
+  return AbstractNode::toStringHelper(printChildren, {});
 }
 AbstractExpr *LogicalExpr::getLeft() const {
   return left;

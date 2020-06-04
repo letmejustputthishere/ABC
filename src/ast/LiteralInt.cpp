@@ -65,7 +65,7 @@ void LiteralInt::setRandomValue(RandLiteralGen &rlg) {
 }
 
 std::string LiteralInt::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {matrix->toString()});
+  return AbstractNode::toStringHelper(printChildren, {matrix->toString()});
 }
 
 LiteralInt *LiteralInt::clone() const {

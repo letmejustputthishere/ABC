@@ -62,7 +62,7 @@ void LiteralFloat::setRandomValue(RandLiteralGen &rlg) {
 }
 
 std::string LiteralFloat::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {matrix->toString()});
+  return AbstractNode::toStringHelper(printChildren, {matrix->toString()});
 }
 
 bool LiteralFloat::supportsDatatype(const Datatype &datatype) const {

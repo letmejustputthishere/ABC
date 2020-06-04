@@ -53,49 +53,48 @@ class IfIteratorImpl : public BaseIteratorImpl<T> {
 
 class If : public AbstractStatement {
  private:
-  AbstractExpr *condition;
-  Block *thenBranch;
-  Block *elseBranch;
+  std::unique_ptr<AbstractExpr> condition = nullptr;
+  std::unique_ptr<Block> thenBranch = nullptr;
+  std::unique_ptr<Block> elseBranch = nullptr;
  public:
-  If(AbstractExpr *condition, AbstractStatement *thenBranch);
-
-  If(AbstractExpr *condition, AbstractStatement *thenBranch, AbstractStatement *elseBranch);
-
   ~If() override;
 
-  If *clone() const override;
+  If(std::unique_ptr<AbstractExpr>&& condition, std::unique_ptr<AbstractStatement>&& thenBranch, std::unique_ptr<
+      AbstractStatement>&& elseBranch = nullptr);
 
-  [[nodiscard]] json toJson() const override;
+  std::unique_ptr<If> clone() const;
 
-  void accept(Visitor &v) override;
+  std::unique_ptr<AbstractNode> clone() const override;
 
-  [[nodiscard]] std::string getNodeType() const override;
+  [[nodiscard]] const AbstractExpr * getCondition() const;
 
-  [[nodiscard]] AbstractExpr *getCondition() const;
+  [[nodiscard]] const Block * getThenBranch() const;
 
-  [[nodiscard]] Block *getThenBranch() const;
+  [[nodiscard]] const Block * getElseBranch() const;
 
-  [[nodiscard]] Block *getElseBranch() const;
+  void setCondition(std::unique_ptr<AbstractExpr> &&newCondition);
 
-  void setCondition(AbstractExpr *newCondition);
+  void setThenBranch(std::unique_ptr<Block> &&newThenBranch);
 
-  void setThenBranch(Block *newThenBranch);
+  void setElseBranch(std::unique_ptr<Block> &&newElseBranch);
 
-  void setElseBranch(Block *newElseBranch);
+
+
 
   int getMaxNumberChildren() override;
-
-  void setAttributes(AbstractExpr *condition, AbstractStatement *thenBranch, AbstractStatement *elseBranch);
-
-  [[nodiscard]] std::string toString(bool printChildren) const override;
-
   std::vector<AbstractNode *> getChildren() override;
   std::vector<const AbstractNode *> getChildren() const override;
   void removeChildren() override;
+
   iterator begin() override;
   const_iterator begin() const override;
   iterator end() override;
   const_iterator end() const override;
+
+  [[nodiscard]] std::string getNodeType() const override;
+  [[nodiscard]] json toJson() const override;
+  void accept(Visitor &v) override;
+
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_AST_IF_H_

@@ -59,7 +59,7 @@ Return *Return::clone() const {
 }
 
 std::string Return::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {});
+  return AbstractNode::toStringHelper(printChildren, {});
 }
 
 bool Return::isEqual(const AbstractNode *as) const {

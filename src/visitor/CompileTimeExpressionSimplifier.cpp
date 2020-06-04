@@ -253,7 +253,7 @@ void CompileTimeExpressionSimplifier::visit(GetMatrixSize &elem) {
 
 void isolateNode(AbstractNode *n) {
   n->removeChildren();
-  n->removeFromParent();
+  n->takeFromParent();
 }
 
 void CompileTimeExpressionSimplifier::visit(Ast &elem) {
@@ -366,8 +366,8 @@ void CompileTimeExpressionSimplifier::visit(ArithmeticExpr &elem) {
     auto op = elem.getOperator();
     op->removeFromParent();
     std::vector<AbstractExpr *> operands{elem.getLeft(), elem.getRight()};
-    elem.getLeft()->removeFromParent();
-    elem.getRight()->removeFromParent();
+    elem.getLeft()->takeFromParent();
+    elem.getRight()->takeFromParent();
     auto operatorExpr = new OperatorExpr(op, operands);
     elem.getParent()->replaceChild(&elem, operatorExpr);
     enqueueNodeForDeletion(&elem);
@@ -383,8 +383,8 @@ void CompileTimeExpressionSimplifier::visit(LogicalExpr &elem) {
     auto op = elem.getOperator();
     op->removeFromParent();
     std::vector<AbstractExpr *> operands{elem.getLeft(), elem.getRight()};
-    elem.getLeft()->removeFromParent();
-    elem.getRight()->removeFromParent();
+    elem.getLeft()->takeFromParent();
+    elem.getRight()->takeFromParent();
     auto operatorExpr = new OperatorExpr(op, operands);
     elem.getParent()->replaceChild(&elem, operatorExpr);
     enqueueNodeForDeletion(&elem);
@@ -408,7 +408,7 @@ void CompileTimeExpressionSimplifier::visit(UnaryExpr &elem) {
     auto op = elem.getOperator();
     op->removeFromParent();
     std::vector<AbstractExpr *> operands{elem.getRight()};
-    elem.getRight()->removeFromParent();
+    elem.getRight()->takeFromParent();
     auto operatorExpr = new OperatorExpr(op, operands);
     elem.getParent()->replaceChild(&elem, operatorExpr);
   }
@@ -447,7 +447,7 @@ void CompileTimeExpressionSimplifier::visit(OperatorExpr &elem) {
       // go through all operands of this sub-OperatorExpr, remove each from its current parent and add it as operand to
       // this OperatorExpr
       for (auto &operand : operandsToBeAdded) {
-        operand->removeFromParent();
+        operand->takeFromParent();
         newOperands.push_back(operand->castTo<AbstractExpr>());
       }
       // mark the obsolete OperatorExpr child for deletion
@@ -456,7 +456,7 @@ void CompileTimeExpressionSimplifier::visit(OperatorExpr &elem) {
     } else {
       // if this operand is not an OperatorExpr, we also need to remove it from this OperatorExpr because re-adding it
       // as operand would otherwise lead to having two times the same parent
-      (*it)->removeFromParent();
+      (*it)->takeFromParent();
       newOperands.push_back((*it)->castTo<AbstractExpr>());
     }
   }
@@ -575,7 +575,7 @@ void CompileTimeExpressionSimplifier::visit(Call &elem) {
       // remove return expression from its parent (return statement) and replace Call by extracted return statement
       auto parentNode = elem.getParent();
       auto returnExpr = returnStmt->getReturnExpressions().front();
-      returnExpr->removeFromParent();
+      returnExpr->takeFromParent();
       parentNode->replaceChild(&elem, returnExpr);
 
       // revisit subtree as new simplification opportunities may exist now
@@ -650,7 +650,7 @@ void CompileTimeExpressionSimplifier::visit(If &elem) {
       enqueueNodeForDeletion(then);
       // negate the condition and delete the conditions stored value (is now invalid)
       auto condition = elem.getCondition();
-      condition->removeFromParent();
+      condition->takeFromParent();
       auto newCondition = new OperatorExpr(new Operator(UnaryOp::NEGATION), {condition});
       // replace the If statement's Then branch by the Else branch
       auto newThen = elem.getElseBranch();
@@ -915,7 +915,7 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
 
         // If there are any stmts left, transfer them to the unrolledBlock
         for (auto &s: clonedBody->getStatements()) {
-          s->removeFromParent();
+          s->takeFromParent();
           unrolledBlock->addStatement(s);
         }
         nodesQueuedForDeletion.push_back(clonedBody);
@@ -928,7 +928,7 @@ void CompileTimeExpressionSimplifier::visit(For &elem) {
         clonedUpdate->accept(loopCTES);
         // If there are any stmts left, transfer them to the unrolledBlock
         for (auto &s: clonedUpdate->getStatements()) {
-          s->removeFromParent();
+          s->takeFromParent();
           unrolledBlock->addStatement(s);
         }
         nodesQueuedForDeletion.push_back(clonedUpdate);
@@ -1309,7 +1309,7 @@ void CompileTimeExpressionSimplifier::setMatrixVariableValue(const std::string &
   if (matrixElementValue!=nullptr) {
     // clone the given value and detach it from its parent
     valueToStore = matrixElementValue->clone();
-    valueToStore->removeFromParent();
+    valueToStore->takeFromParent();
   }
 
   auto var = variableValues.getVariableEntryDeclaredInThisOrOuterScope(variableIdentifier, curScope);

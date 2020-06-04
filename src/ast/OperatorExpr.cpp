@@ -20,7 +20,7 @@ OperatorExpr::OperatorExpr(AbstractExpr *lhsOperand, Operator *op, AbstractExpr 
 }
 
 std::string OperatorExpr::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {});
+  return AbstractNode::toStringHelper(printChildren, {});
 }
 
 OperatorExpr *OperatorExpr::clone() const {
@@ -259,7 +259,7 @@ void OperatorExpr::replaceChild(AbstractNode *originalChild, AbstractNode *newCh
     // opportunities (e.g., if variable is now a Literal value)
     auto op = getOperator();
     op->removeFromParent();
-    for (auto &operand : operands) operand->removeFromParent();
+    for (auto &operand : operands) operand->takeFromParent();
     setAttributes(op, operands);
   } else if (operands.size()==1) {
     throw std::logic_error("Operator Expression was reduced to single operand.");
@@ -292,7 +292,7 @@ std::vector<Variable *> OperatorExpr::getVariables() {
 void OperatorExpr::removeOperand(AbstractExpr *operand) {
   auto it = std::find(children.begin(), children.end(), operand);
   if (it!=children.end()) {
-    (*it)->removeFromParent();
+    (*it)->takeFromParent();
     // if the node supports an infinite number of children (getMaxNumberChildren() == -1), we can delete the node from
     // the children list, otherwise we just overwrite the slot with a nullptr
     if (this->getMaxNumberChildren()!=-1) {

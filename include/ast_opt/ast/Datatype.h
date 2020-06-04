@@ -9,7 +9,7 @@ enum class Types {
   INT, FLOAT, STRING, BOOL
 };
 
-class Datatype : public AbstractNode {
+class Datatype {
  private:
   Types val;
   bool encrypted{false};
@@ -42,19 +42,6 @@ class Datatype : public AbstractNode {
   [[nodiscard]] bool isEncrypted() const;
 
   void setEncrypted(bool isEncrypted);
-
-  void accept(Visitor &v) override;
-
-  [[nodiscard]] nlohmann::json toJson() const override;
-
-  std::vector<AbstractNode *> getChildren() override;
-  void removeChildren() override;
-  std::vector<const AbstractNode *> getChildren() const override;
-  iterator begin() override;
-  const_iterator begin() const override;
-  iterator end() override;
-  const_iterator end() const override;
-
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_INCLUDE_UTILITIES_DATATYPE_H_

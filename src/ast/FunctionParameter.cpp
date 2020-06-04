@@ -79,7 +79,7 @@ bool FunctionParameter::operator!=(const FunctionParameter &rhs) const {
   return !(rhs==*this);
 }
 std::string FunctionParameter::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {});
+  return AbstractNode::toStringHelper(printChildren, {});
 }
 
 std::vector<AbstractNode *> FunctionParameter::getChildren() {

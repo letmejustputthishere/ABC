@@ -59,7 +59,7 @@ void LiteralBool::setRandomValue(RandLiteralGen &rlg) {
 }
 
 std::string LiteralBool::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {matrix->toString()});
+  return AbstractNode::toStringHelper(printChildren, {matrix->toString()});
 }
 
 bool LiteralBool::supportsDatatype(const Datatype &datatype) const {

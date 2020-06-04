@@ -31,7 +31,7 @@ void GetMatrixSize::accept(Visitor &v) {
 }
 
 std::string GetMatrixSize::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {});
+  return AbstractNode::toStringHelper(printChildren, {});
 }
 
 GetMatrixSize *GetMatrixSize::clone() const {

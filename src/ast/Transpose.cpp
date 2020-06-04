@@ -50,7 +50,7 @@ int Transpose::getMaxNumberChildren() {
 }
 
 std::string Transpose::toString(bool printChildren) const {
-  return AbstractNode::generateOutputString(printChildren, {});
+  return AbstractNode::toStringHelper(printChildren, {});
 }
 
 Transpose::Transpose() = default;
