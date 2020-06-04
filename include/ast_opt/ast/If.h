@@ -32,7 +32,13 @@ class IfIteratorImpl : public BaseIteratorImpl<T> {
   }
 
   bool equal(const BaseIteratorImpl<T> &other) override {
-    return ifNode==other.getNode();
+    if (ifNode==other.getNode()) {
+      auto otherIfPtr = dynamic_cast<const IfIteratorImpl *>(&other);
+      assert(otherIfPtr); // If the other node is an If, the Iterator must be an IfIterator, too
+      return (position==otherIfPtr->position);
+    } else {
+      return false;
+    }
   }
 
   T &operator*() override {
