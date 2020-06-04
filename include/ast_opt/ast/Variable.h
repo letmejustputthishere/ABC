@@ -4,10 +4,10 @@
 #include <map>
 #include <string>
 #include <vector>
-#include "AbstractExpr.h"
+#include "AbstractExpression.h"
 #include "Matrix.h"
 
-class Variable : public AbstractExpr {
+class Variable : public AbstractExpression {
  private:
   std::string identifier;
 
@@ -32,7 +32,7 @@ class Variable : public AbstractExpr {
 
   bool contains(Variable *var) override;
 
-  bool isEqual(AbstractExpr *other) override;
+  bool isEqual(AbstractExpression *other) override;
 
   std::vector<std::string> getVariableIdentifiers() override;
 

@@ -5,18 +5,18 @@
 #include <string>
 #include "Datatype.h"
 
-class FunctionParameter : public AbstractExpr {
+class FunctionParameter : public AbstractExpression {
  private:
   Datatype * datatype;
-  AbstractExpr * value;
+  AbstractExpression * value;
  public:
-  FunctionParameter(Datatype *datatype, AbstractExpr *value);
+  FunctionParameter(Datatype *datatype, AbstractExpression *value);
 
   /// Helper constructor for keeping downwards compatibility with earlier interface.
   /// \deprecated This constructor should not be used anymore, use the one requiring a Datatype instead.
   /// \param datatypeEnumString A valid datatype according to types in Datatype.h
   /// \param value The value of the function parameter.
-  FunctionParameter(const std::string &datatypeEnumString, AbstractExpr *value);
+  FunctionParameter(const std::string &datatypeEnumString, AbstractExpression *value);
 
   FunctionParameter *clone() const override;
 
@@ -26,13 +26,13 @@ class FunctionParameter : public AbstractExpr {
 
   [[nodiscard]] Datatype *getDatatype() const;
 
-  [[nodiscard]] AbstractExpr *getValue() const;
+  [[nodiscard]] AbstractExpression *getValue() const;
 
   void accept(Visitor &v) override;
 
   int getMaxNumberChildren() override;
 
-  void setAttributes(Datatype *datatype, AbstractExpr *value);
+  void setAttributes(Datatype *datatype, AbstractExpression *value);
 
   bool operator==(const FunctionParameter &rhs) const;
 

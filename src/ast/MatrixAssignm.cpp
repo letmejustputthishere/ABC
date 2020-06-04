@@ -4,11 +4,11 @@
 
 MatrixAssignm::~MatrixAssignm() = default;
 
-MatrixAssignm::MatrixAssignm(MatrixElementRef *assignmentTarget, AbstractExpr *value) {
-  setAttributes(dynamic_cast<AbstractExpr *>(assignmentTarget), value);
+MatrixAssignm::MatrixAssignm(MatrixElementRef *assignmentTarget, AbstractExpression *value) {
+  setAttributes(dynamic_cast<AbstractExpression *>(assignmentTarget), value);
 }
 
-void MatrixAssignm::setAttributes(AbstractExpr *assignmTarget, AbstractExpr *value) {
+void MatrixAssignm::setAttributes(AbstractExpression *assignmTarget, AbstractExpression *value) {
   removeChildren();
   children = {assignmTarget, value};
   for(auto &c: children) {
@@ -55,8 +55,8 @@ std::string MatrixAssignm::getAssignmTargetString() const {
   return res;
 }
 
-AbstractExpr *MatrixAssignm::getValue() const {
-  return dynamic_cast<AbstractExpr *>(children.at(1));
+AbstractExpression *MatrixAssignm::getValue() const {
+  return dynamic_cast<AbstractExpression *>(children.at(1));
 }
 
 MatrixAssignm *MatrixAssignm::clone() const {

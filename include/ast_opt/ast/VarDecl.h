@@ -3,7 +3,7 @@
 
 #include <string>
 #include "AbstractStatement.h"
-#include "AbstractExpr.h"
+#include "AbstractExpression.h"
 #include "Datatype.h"
 
 class VarDecl : public AbstractStatement {
@@ -13,9 +13,9 @@ class VarDecl : public AbstractStatement {
  public:
   VarDecl(std::string name, Datatype *datatype);
 
-  VarDecl(std::string name, Types datatype, AbstractExpr *initializer);
+  VarDecl(std::string name, Types datatype, AbstractExpression *initializer);
 
-  VarDecl(std::string name, Datatype *datatype, AbstractExpr *initializer);
+  VarDecl(std::string name, Datatype *datatype, AbstractExpression *initializer);
 
   VarDecl(const std::string &name, void *abstractExpr);
 
@@ -46,7 +46,7 @@ class VarDecl : public AbstractStatement {
 
   [[nodiscard]] Datatype *getDatatype() const;
 
-  [[nodiscard]] AbstractExpr *getInitializer() const;
+  [[nodiscard]] AbstractExpression *getInitializer() const;
 
   AbstractBinaryExpr *contains(AbstractBinaryExpr *aexpTemplate, ArithmeticExpr *excludedSubtree) override;
 
@@ -56,7 +56,7 @@ class VarDecl : public AbstractStatement {
 
   bool isEqual(const AbstractNode *as) const override;
 
-  void setAttributes(std::string varIdentifier, Datatype *datatype, AbstractExpr *value);
+  void setAttributes(std::string varIdentifier, Datatype *datatype, AbstractExpression *value);
 
   int getMaxNumberChildren() override;
 

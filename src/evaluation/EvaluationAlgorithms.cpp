@@ -868,8 +868,8 @@ void EvaluationAlgorithms::genLaplacianSharpeningAlgorithmAstAfterCtes(Ast &ast)
   func->addStatement(new VarDecl("img2", new Datatype(Types::INT, true)));
 
   // a helper to generate img[imgSize*(x-i)+y+j] terms
-  auto createImgIdx = [](int i, int j) -> AbstractExpr * {
-    auto buildTermI = [](int i) -> AbstractExpr * {
+  auto createImgIdx = [](int i, int j) -> AbstractExpression * {
+    auto buildTermI = [](int i) -> AbstractExpression * {
       if (i==0) {
         return new Variable("x");
       } else {
@@ -877,7 +877,7 @@ void EvaluationAlgorithms::genLaplacianSharpeningAlgorithmAstAfterCtes(Ast &ast)
       }
     };
 
-    auto buildTermJ = [&](int j) -> AbstractExpr * {
+    auto buildTermJ = [&](int j) -> AbstractExpression * {
       if (j==0) {
         return new OperatorExpr(new Operator(ADDITION),
                                 {new OperatorExpr(new Operator(MULTIPLICATION),

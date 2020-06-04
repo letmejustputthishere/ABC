@@ -9,7 +9,7 @@
 #include "ast_opt/ast/Block.h"
 #include "ast_opt/ast/OperatorExpr.h"
 
-const AbstractNode * BatchingChecker::getLargestBatchableSubtree(const AbstractExpr *expr) {
+const AbstractNode * BatchingChecker::getLargestBatchableSubtree(const AbstractExpression *expr) {
   std::queue<const AbstractNode *> processingQ({expr});
   while (!processingQ.empty()) {
     auto curNode = processingQ.front();

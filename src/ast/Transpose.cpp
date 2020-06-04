@@ -8,14 +8,14 @@ void Transpose::accept(Visitor &v) {
   v.visit(*this);
 }
 
-Transpose::Transpose(AbstractExpr *operand) {
+Transpose::Transpose(AbstractExpression *operand) {
   removeChildren();
   children.push_back(operand);
   operand->setParent(this);
 }
 
-AbstractExpr *Transpose::getOperand() const {
-  return dynamic_cast<AbstractExpr *>(children.at(0));
+AbstractExpression *Transpose::getOperand() const {
+  return dynamic_cast<AbstractExpression *>(children.at(0));
 }
 
 Transpose *Transpose::clone() const {
@@ -41,8 +41,8 @@ bool Transpose::contains(Variable *var) {
   return getOperand()->contains(var);
 }
 
-bool Transpose::isEqual(AbstractExpr *other) {
-  return AbstractExpr::isEqual(other);
+bool Transpose::isEqual(AbstractExpression *other) {
+  return AbstractExpression::isEqual(other);
 }
 
 int Transpose::getMaxNumberChildren() {

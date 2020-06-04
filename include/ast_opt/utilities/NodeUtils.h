@@ -21,11 +21,11 @@
 std::vector<AbstractNode *> rewriteMultiInputGateToBinaryGatesChain(
     std::vector<AbstractNode *> inputNodes, LogCompOp gateType);
 
-AbstractNode *createMultDepthBalancedTreeFromInputs(std::vector<AbstractExpr *> inputs,
+AbstractNode *createMultDepthBalancedTreeFromInputs(std::vector<AbstractExpression *> inputs,
                                                     OpSymbolVariant operatorType,
                                                     std::unordered_map<std::string, int> multiplicativeDepths);
 
-AbstractNode *createMultDepthBalancedTreeFromInputs(std::vector<AbstractExpr *> inputs,
+AbstractNode *createMultDepthBalancedTreeFromInputs(std::vector<AbstractExpression *> inputs,
                                                     std::variant<ArithmeticOp,
                                                                  LogCompOp,
                                                                  UnaryOp> operatorType);

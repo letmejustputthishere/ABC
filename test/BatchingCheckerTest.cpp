@@ -18,7 +18,7 @@ TEST(BatchingChecker, laplacianAstInnerLoopsWithNonStdWeights) { /* NOLINT */
 
   // find all assignments targets (rvalue-like) in MatrixAssignm and VarAssignm statements
   auto func = ast.getRootNode()->castTo<Function>();
-  std::vector<AbstractExpr *> statementsTopExprs;
+  std::vector<AbstractExpression *> statementsTopExprs;
   for (auto node : ast.getAllNodes()) {
     if (auto ma = dynamic_cast<const MatrixAssignm *>(node)) {
       statementsTopExprs.push_back(ma->getValue());
@@ -50,7 +50,7 @@ TEST(BatchingChecker, laplacianAstFullLoopsWithStdWeights) { /* NOLINT */
 
   // find all assignments targets (rvalue-like) in MatrixAssignm and VarAssignm statements
   auto func = ast.getRootNode()->castTo<Function>();
-  std::vector<AbstractExpr *> statementsTopExprs;
+  std::vector<AbstractExpression *> statementsTopExprs;
   for (auto node : ast.getAllNodes()) {
     if (auto ma = dynamic_cast<const MatrixAssignm *>(node)) {
       statementsTopExprs.push_back(ma->getValue());

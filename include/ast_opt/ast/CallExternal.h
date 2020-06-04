@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-class CallExternal : public AbstractExpr {
+class CallExternal : public AbstractExpression {
  private:
   std::string functionName;
   std::vector<FunctionParameter *> arguments;

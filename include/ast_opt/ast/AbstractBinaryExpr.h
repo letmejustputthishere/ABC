@@ -1,23 +1,23 @@
 #ifndef AST_OPTIMIZER_INCLUDE_AST_OPT_AST_ABSTRACTBINARYEXPR_H_
 #define AST_OPTIMIZER_INCLUDE_AST_OPT_AST_ABSTRACTBINARYEXPR_H_
 
-#include "AbstractExpr.h"
+#include "AbstractExpression.h"
 
-class AbstractBinaryExpr : public AbstractExpr {
+class AbstractBinaryExpr : public AbstractExpression {
  public:
-  void setAttributes(AbstractExpr *leftOperand, Operator *operatore, AbstractExpr *rightOperand);
+  void setAttributes(AbstractExpression *leftOperand, Operator *operatore, AbstractExpression *rightOperand);
 
-  [[nodiscard]] virtual AbstractExpr *getLeft() const = 0;
+  [[nodiscard]] virtual AbstractExpression *getLeft() const = 0;
 
   [[nodiscard]] virtual Operator *getOperator() const = 0;
 
-  [[nodiscard]] virtual AbstractExpr *getRight() const = 0;
+  [[nodiscard]] virtual AbstractExpression *getRight() const = 0;
 
-  virtual void setLeft(AbstractExpr *newleft) = 0;
+  virtual void setLeft(AbstractExpression *newleft) = 0;
 
   virtual void setOperator(Operator *newOperator) = 0;
 
-  virtual void setRight(AbstractExpr *newRight) = 0;
+  virtual void setRight(AbstractExpression *newRight) = 0;
 
   int getMaxNumberChildren() override;
 
@@ -27,11 +27,11 @@ class AbstractBinaryExpr : public AbstractExpr {
 
   bool contains(Variable *var) override;
 
-  int countByTemplate(AbstractExpr *abstractExpr) override;
+  int countByTemplate(AbstractExpression *abstractExpr) override;
 
-  AbstractBinaryExpr *contains(AbstractBinaryExpr *aexpTemplate, AbstractExpr *excludedSubtree) override;
+  AbstractBinaryExpr *contains(AbstractBinaryExpr *aexpTemplate, AbstractExpression *excludedSubtree) override;
 
-  bool isEqual(AbstractExpr *other) override;
+  bool isEqual(AbstractExpression *other) override;
 
   static void swapOperandsLeftAWithRightB(AbstractBinaryExpr *aexpA, AbstractBinaryExpr *aexpB);
 

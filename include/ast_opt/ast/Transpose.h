@@ -1,15 +1,15 @@
 #ifndef AST_OPTIMIZER_INCLUDE_AST_OPT_AST_TRANSPOSE_H_
 #define AST_OPTIMIZER_INCLUDE_AST_OPT_AST_TRANSPOSE_H_
 
-#include "AbstractExpr.h"
+#include "AbstractExpression.h"
 #include <vector>
 #include <string>
 
-class Transpose : public AbstractExpr {
+class Transpose : public AbstractExpression {
  public:
   Transpose();
 
-  explicit Transpose(AbstractExpr *operand);
+  explicit Transpose(AbstractExpression *operand);
 
   [[nodiscard]] std::string getNodeType() const override;
 
@@ -25,13 +25,13 @@ class Transpose : public AbstractExpr {
 
   bool contains(Variable *var) override;
 
-  bool isEqual(AbstractExpr *other) override;
+  bool isEqual(AbstractExpression *other) override;
 
   int getMaxNumberChildren() override;
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  [[nodiscard]] AbstractExpr *getOperand() const;
+  [[nodiscard]] AbstractExpression *getOperand() const;
   std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
   std::vector<const AbstractNode *> getChildren() const override;

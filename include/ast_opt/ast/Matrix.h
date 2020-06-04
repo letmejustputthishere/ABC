@@ -295,12 +295,12 @@ class Matrix : public AbstractMatrix {
     throw std::runtime_error("toJson is unimplemented for type T: " + std::string(typeid(T).name()));
   }
 
-  AbstractExpr *getElementAt(int row, int column) const override {
+  AbstractExpression *getElementAt(int row, int column) const override {
     throw std::logic_error("getElementAt failed: Value in matrix is of unknown type. "
                            "Cannot determine associated AbstractLiteral subtype.");
   }
 
-  void setElementAt(int row, int column, AbstractExpr *element) override {
+  void setElementAt(int row, int column, AbstractExpression *element) override {
     throw std::runtime_error("setElementAt is unimplemented for type T: " + std::string(typeid(T).name()));
   }
 
@@ -534,7 +534,7 @@ template<>
 bool Matrix<std::string>::isScalar() const;
 
 template<>
-bool Matrix<AbstractExpr *>::operator==(const Matrix &rhs) const;
+bool Matrix<AbstractExpression *>::operator==(const Matrix &rhs) const;
 
 template<>
 AbstractMatrix *Matrix<int>::applyBinaryOperatorComponentwise(Matrix<int> *rhsOperand, Operator *os);
@@ -558,25 +558,25 @@ template<>
 AbstractMatrix *Matrix<bool>::applyUnaryOperatorComponentwise(Operator *os);
 
 template<>
-AbstractExpr *Matrix<int>::getElementAt(int row, int column) const;
+AbstractExpression *Matrix<int>::getElementAt(int row, int column) const;
 
 template<>
-AbstractExpr *Matrix<float>::getElementAt(int row, int column) const;
+AbstractExpression *Matrix<float>::getElementAt(int row, int column) const;
 
 template<>
-AbstractExpr *Matrix<double>::getElementAt(int row, int column) const;
+AbstractExpression *Matrix<double>::getElementAt(int row, int column) const;
 
 template<>
-AbstractExpr *Matrix<bool>::getElementAt(int row, int column) const;
+AbstractExpression *Matrix<bool>::getElementAt(int row, int column) const;
 
 template<>
-AbstractExpr *Matrix<std::string>::getElementAt(int row, int column) const;
+AbstractExpression *Matrix<std::string>::getElementAt(int row, int column) const;
 
 template<>
-AbstractExpr *Matrix<AbstractExpr *>::getElementAt(int row, int column) const;
+AbstractExpression *Matrix<AbstractExpression *>::getElementAt(int row, int column) const;
 
 template<>
-[[nodiscard]] json Matrix<AbstractExpr *>::toJson() const;
+[[nodiscard]] json Matrix<AbstractExpression *>::toJson() const;
 
 template<>
 json Matrix<bool>::toJson() const;
@@ -594,31 +594,31 @@ template<>
 json Matrix<std::string>::toJson() const;
 
 template<>
-Matrix<AbstractExpr *> *Matrix<AbstractExpr *>::clone() const;
+Matrix<AbstractExpression *> *Matrix<AbstractExpression *>::clone() const;
 
 template<>
-void Matrix<AbstractExpr *>::addElementToStringStream(AbstractExpr *elem, std::stringstream &s);
+void Matrix<AbstractExpression *>::addElementToStringStream(AbstractExpression *elem, std::stringstream &s);
 
 template<>
-void Matrix<AbstractExpr *>::setElementAt(int row, int column, AbstractExpr *element);
+void Matrix<AbstractExpression *>::setElementAt(int row, int column, AbstractExpression *element);
 
 template<>
-void Matrix<int>::setElementAt(int row, int column, AbstractExpr *element);
+void Matrix<int>::setElementAt(int row, int column, AbstractExpression *element);
 
 template<>
-void Matrix<float>::setElementAt(int row, int column, AbstractExpr *element);
+void Matrix<float>::setElementAt(int row, int column, AbstractExpression *element);
 
 template<>
-void Matrix<bool>::setElementAt(int row, int column, AbstractExpr *element);
+void Matrix<bool>::setElementAt(int row, int column, AbstractExpression *element);
 
 template<>
-void Matrix<std::string>::setElementAt(int row, int column, AbstractExpr *element);
+void Matrix<std::string>::setElementAt(int row, int column, AbstractExpression *element);
 
 template<>
-void Matrix<AbstractExpr *>::replaceChild(AbstractNode *originalChild, AbstractNode *newChildToBeAdded);
+void Matrix<AbstractExpression *>::replaceChild(AbstractNode *originalChild, AbstractNode *newChildToBeAdded);
 
 template<>
-bool Matrix<AbstractExpr *>::containsAbstractExprs();
+bool Matrix<AbstractExpression *>::containsAbstractExprs();
 
 template<typename T>
 std::vector<AbstractNode *> Matrix<T>::getChildren() {

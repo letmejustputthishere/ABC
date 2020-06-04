@@ -50,7 +50,7 @@ void PrintVisitor::visit(Block &elem) {
 }
 
 void PrintVisitor::visit(Call &elem) {
-  auto *node = static_cast<AbstractNode *>(static_cast<AbstractExpr *>(&elem));
+  auto *node = static_cast<AbstractNode *>(static_cast<AbstractExpression *>(&elem));
   addOutputStr(*node);
   printChildNodesIndented(elem);
 }

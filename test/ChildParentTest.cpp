@@ -187,8 +187,8 @@ TEST(ChildParentTests, CallExternal) {  /* NOLINT */
 
   // using AbstractExpr
   ASSERT_EQ(callExternal->getChildren().size(), 0);
-  ASSERT_EQ(callExternal->AbstractExpr::getParent(), nullptr);
-  ASSERT_EQ(callExternal->AbstractExpr::getMaxNumberChildren(), 0);
+  ASSERT_EQ(callExternal->AbstractExpression::getParent(), nullptr);
+  ASSERT_EQ(callExternal->AbstractExpression::getMaxNumberChildren(), 0);
 }
 
 class FunctionFixture : public ::testing::Test {
@@ -221,8 +221,8 @@ class FunctionParameterFixture : public ::testing::Test {
   Datatype *datatype2;
   Types datatypeEnum;
   std::string datatypeAsString;
-  AbstractExpr *variableThreshold;
-  AbstractExpr *variableSecret;
+  AbstractExpression *variableThreshold;
+  AbstractExpression *variableSecret;
 
   FunctionParameterFixture() {
     datatypeEnum = Types::INT;
@@ -298,7 +298,7 @@ TEST_F(FunctionParameterFixture, FunctionParameter_AddChildSuccess) {  /* NOLINT
 
 class IfStmtFixture : public ::testing::Test {
  protected:
-  AbstractExpr *condition;
+  AbstractExpression *condition;
   AbstractStatement *thenBranch, *elseBranch;
   IfStmtFixture() {
     condition = new LogicalExpr(new LiteralInt(33), LogCompOp::GREATER, new CallExternal("computeX"));
@@ -494,8 +494,8 @@ TEST(ChildParentTests, OperatorHasNoChildrenOrParents) {  /* NOLINT */
 
 class ReturnStatementFixture : public ::testing::Test {
  protected:
-  AbstractExpr *abstractExpr;
-  AbstractExpr *abstractExprOther;
+  AbstractExpression *abstractExpr;
+  AbstractExpression *abstractExprOther;
 
   ReturnStatementFixture() {
     abstractExpr = new LiteralInt(22);
@@ -646,7 +646,7 @@ class VarDeclFixture : public ::testing::Test {
     datatypeInt = Types::INT;
   }
 
-  static void checkExpected(VarDecl *varDeclaration, Datatype *expectedDatatype, AbstractExpr *expectedValue) {
+  static void checkExpected(VarDecl *varDeclaration, Datatype *expectedDatatype, AbstractExpression *expectedValue) {
     // children
     ASSERT_EQ(varDeclaration->getChildren().size(), 2);
     ASSERT_EQ(reinterpret_cast<Datatype *>(varDeclaration->getDatatype()), expectedDatatype);
@@ -708,7 +708,7 @@ TEST(ChildParentTests, Variable) {  /* NOLINT */
 
 class WhileStmtFixture : public ::testing::Test {
  protected:
-  AbstractExpr *whileCondition;
+  AbstractExpression *whileCondition;
   AbstractStatement *whileBlock;
 
  public:

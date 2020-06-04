@@ -35,7 +35,7 @@ bool Variable::operator!=(const Variable &rhs) const {
   return !(rhs==*this);
 }
 
-bool Variable::isEqual(AbstractExpr *other) {
+bool Variable::isEqual(AbstractExpression *other) {
   if (auto otherVar = dynamic_cast<Variable *>(other)) {
     return *this==*otherVar;
   }

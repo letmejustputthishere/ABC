@@ -1,16 +1,16 @@
 #include <iostream>
 #include "ast_opt/utilities/RandNumGen.h"
 #include "ast_opt/ast/LiteralInt.h"
-#include "ast_opt/ast/AbstractExpr.h"
+#include "ast_opt/ast/AbstractExpression.h"
 #include "ast_opt/ast/Matrix.h"
 
-LiteralInt::LiteralInt(Matrix<AbstractExpr *> *am) : AbstractLiteral(am) {}
+LiteralInt::LiteralInt(Matrix<AbstractExpression *> *am) : AbstractLiteral(am) {}
 
 LiteralInt::LiteralInt(AbstractMatrix *am) : AbstractLiteral(am) {}
 
 LiteralInt::LiteralInt(int value) : AbstractLiteral(new Matrix(value)) {}
 
-LiteralInt::LiteralInt() : AbstractLiteral(new Matrix<AbstractExpr *>()) {}
+LiteralInt::LiteralInt() : AbstractLiteral(new Matrix<AbstractExpression *>()) {}
 
 LiteralInt::LiteralInt(Matrix<int> *inputMatrix) : AbstractLiteral(inputMatrix) {}
 
@@ -72,7 +72,7 @@ LiteralInt *LiteralInt::clone() const {
   return new LiteralInt(matrix->clone());
 }
 
-bool LiteralInt::isEqual(AbstractExpr *other) {
+bool LiteralInt::isEqual(AbstractExpression *other) {
   auto otherLiteralInt = dynamic_cast<LiteralInt *>(other);
   return otherLiteralInt!=nullptr && *this==*otherLiteralInt;
 }

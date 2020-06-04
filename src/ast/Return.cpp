@@ -12,11 +12,11 @@ json Return::toJson() const {
   return j;
 }
 
-Return::Return(AbstractExpr *returnValue) {
+Return::Return(AbstractExpression *returnValue) {
   setAttributes({returnValue});
 }
 
-Return::Return(std::vector<AbstractExpr *> returnValues) {
+Return::Return(std::vector<AbstractExpression *> returnValues) {
   setAttributes(std::move(returnValues));
 }
 
@@ -38,7 +38,7 @@ int Return::getMaxNumberChildren() {
   return -1;
 }
 
-void Return::setAttributes(std::vector<AbstractExpr *> returnExpr) {
+void Return::setAttributes(std::vector<AbstractExpression *> returnExpr) {
   removeChildren();
   // we need to convert vector of AbstractExpr* into vector of AbstractNode* prior calling addChildren
   returnExpressions = returnExpr;
@@ -47,12 +47,12 @@ void Return::setAttributes(std::vector<AbstractExpr *> returnExpr) {
   }
 }
 
-std::vector<AbstractExpr *> Return::getReturnExpressions() const {
+std::vector<AbstractExpression *> Return::getReturnExpressions() const {
   return returnExpressions;
 }
 
 Return *Return::clone() const {
-  std::vector<AbstractExpr *> returnValues;
+  std::vector<AbstractExpression *> returnValues;
   for (auto &child : getReturnExpressions())
     returnValues.push_back(child->clone());
   return new Return(returnValues);
@@ -69,14 +69,14 @@ bool Return::isEqual(const AbstractNode *as) const {
     // check equality of every returned value
     bool sameReturnValues = std::equal(thisRetExp.begin(), thisRetExp.end(),
                                        otherRetExp.begin(), otherRetExp.end(),
-                                       [](AbstractExpr *first, AbstractExpr *second) {
+                                       [](AbstractExpression *first, AbstractExpression *second) {
                                          return first->isEqual(second);
                                        });
     return sameReturnValues;
   }
   return false;
 }
-void Return::addReturnExpr(AbstractExpr *returnExpr) {
+void Return::addReturnExpr(AbstractExpression *returnExpr) {
   children.push_back(returnExpr);
   returnExpr->setParent(this);
 }

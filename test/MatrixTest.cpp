@@ -415,7 +415,7 @@ TEST_F(MatrixTestFixture, rotateMatrixIncludingArithmeticExpr_expectedNoDimensio
 TEST_F(MatrixTestFixture, rotateMatrixIncludingAbstractExpr_expectedNoDimensionCheck) {  /* NOLINT */
   EXPECT_NO_THROW(new Rotate(
       new LiteralInt(
-          new Matrix<AbstractExpr *>(
+          new Matrix<AbstractExpression *>(
               {{new ArithmeticExpr(new Variable("a"), ArithmeticOp::ADDITION, new Variable("b"))}})),
       new LiteralInt(5)));
 }
@@ -465,13 +465,13 @@ TEST_F(MatrixTestFixture, detectMalformedNestedMatrix) {  /* NOLINT */
   // Test to check whether detection of matrix elements with dimension != (1,1) works.
   // The following would create a matrix like:
   //  [true false [x y]]
-  auto nestedExpr = new LiteralBool(new Matrix<AbstractExpr *>({{new Variable("x"), new Variable("y")}}));
-  EXPECT_THROW(Matrix<AbstractExpr *> abstractExprM({{new LiteralBool(true), new LiteralBool(false), nestedExpr}}),
+  auto nestedExpr = new LiteralBool(new Matrix<AbstractExpression *>({{new Variable("x"), new Variable("y")}}));
+  EXPECT_THROW(Matrix<AbstractExpression *> abstractExprM({{new LiteralBool(true), new LiteralBool(false), nestedExpr}}),
                std::logic_error);
 }
 
 TEST_F(MatrixTestFixture, detectMalformedDimension_AbstractExprMatrix) {  /* NOLINT */
-  EXPECT_THROW(Matrix<AbstractExpr *> abstractExprM(
+  EXPECT_THROW(Matrix<AbstractExpression *> abstractExprM(
                    {
                      { new LiteralBool(true), new LiteralBool(false), new LiteralBool(true) },
                      { new LiteralBool(false), new LiteralBool(true) }

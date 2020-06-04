@@ -31,7 +31,7 @@ class CompileTimeExpressionSimplifierFixture : public ::testing::Test {
 
   CompileTimeExpressionSimplifierFixture() = default;
 
-  AbstractExpr *getVariableValueByUniqueName(const std::string &varIdentifier) {
+  AbstractExpression *getVariableValueByUniqueName(const std::string &varIdentifier) {
     // NOTE: This method does not work if there are multiple variables with the same variable identifier but in
     // different scopes. In that case the method always returns the value of the variable in the outermost scope.
     for (auto &[scopedVariable, varValue] : ctes.variableValues.getMap()) {
@@ -1906,7 +1906,7 @@ TEST_F(CompileTimeExpressionSimplifierFixture, getMatrixElementSimpleBool) { /* 
   ctes.visit(ast);
 
   auto expectedReturnExpr = new LiteralBool(
-      new Matrix<AbstractExpr *>({{new LiteralBool(true), new LiteralBool(false), new LiteralBool(true)}}));
+      new Matrix<AbstractExpression *>({{new LiteralBool(true), new LiteralBool(false), new LiteralBool(true)}}));
   auto returnStatement = ast.getRootNode()->castTo<Function>()->getBodyStatements().back()->castTo<Return>();
   EXPECT_TRUE(returnStatement->getReturnExpressions().front()->isEqual(expectedReturnExpr));
 }
@@ -1929,7 +1929,7 @@ TEST_F(CompileTimeExpressionSimplifierFixture, partiallySimplifiableMatrix) { /*
   // perform the compile-time expression simplification
   ctes.visit(ast);
 
-  auto mx = new Matrix<AbstractExpr *>({{new Variable("y"), new LiteralBool(true), new LiteralBool(false)}});
+  auto mx = new Matrix<AbstractExpression *>({{new Variable("y"), new LiteralBool(true), new LiteralBool(false)}});
   auto expectedReturnExpr = new LiteralBool(mx);
   auto returnStatement = ast.getRootNode()->castTo<Function>()->getBodyStatements().back()->castTo<Return>();
   EXPECT_TRUE(returnStatement->getReturnExpressions().front()->isEqual(expectedReturnExpr));
@@ -2203,7 +2203,7 @@ TEST_F(CompileTimeExpressionSimplifierFixture, partialforLoopUnrolling) { /* NOL
           {new Variable("sum"),
            new MatrixElementRef(createVariableM(), new Variable("i"), new LiteralInt(0))})));
   auto child = new For(cleanupLoopInitializer,
-                       cleanupLoopCondition->castTo<AbstractExpr>(),
+                       cleanupLoopCondition->castTo<AbstractExpression>(),
                        cleanupLoopUpdater->castTo<AbstractStatement>(),
                        cleanupLoopBodyStatements);
   newBlock->addStatement(child);
@@ -2258,8 +2258,8 @@ TEST_F(CompileTimeExpressionSimplifierFixture, fullForLoopUnrolling) { /* NOLINT
   expectedFunction->addStatement(new VarDecl("img2", new Datatype(Types::INT), new LiteralInt()));
 
   // a helper to generate img[imgSize*(x-i)+y+j] terms
-  auto createImgIdx = [](int i, int j) -> AbstractExpr * {
-    auto buildTermI = [](int i) -> AbstractExpr * {
+  auto createImgIdx = [](int i, int j) -> AbstractExpression * {
+    auto buildTermI = [](int i) -> AbstractExpression * {
       if (i==0) {
         return new Variable("x");
       } else {
@@ -2267,7 +2267,7 @@ TEST_F(CompileTimeExpressionSimplifierFixture, fullForLoopUnrolling) { /* NOLINT
       }
     };
 
-    auto buildTermJ = [&](int j) -> AbstractExpr * {
+    auto buildTermJ = [&](int j) -> AbstractExpression * {
       if (j==0) {
         return new OperatorExpr(new Operator(ADDITION),
                                 {new OperatorExpr(new Operator(MULTIPLICATION),
@@ -2354,7 +2354,7 @@ TEST_F(CompileTimeExpressionSimplifierFixture, getMatrixSizeOfAbstractMatrix) { 
   auto expectedFunction = new Function("getNumElementsPerDimension");
   expectedFunction->addParameter(new FunctionParameter(new Datatype(Types::INT), new Variable("factor")));
   expectedFunction->addStatement(new Return(
-      new LiteralInt(new Matrix<AbstractExpr *>({{new LiteralInt(1), new LiteralInt(5), new LiteralInt(0)}}))));
+      new LiteralInt(new Matrix<AbstractExpression *>({{new LiteralInt(1), new LiteralInt(5), new LiteralInt(0)}}))));
 
   // get the body of the AST on that the CompileTimeExpressionSimplifier was applied on
   auto simplifiedAst = ast.getRootNode()->castTo<Function>()->getBody();
@@ -2399,7 +2399,7 @@ TEST_F(CompileTimeExpressionSimplifierFixture, nestedFullLoopUnrolling_matrixAss
 
   auto expectedFunction = new Function("extendMatrixAddingElements");
   expectedFunction->addStatement(new Return(new LiteralInt(
-      new Matrix<AbstractExpr *>({{new LiteralInt(0), new LiteralInt(0), new LiteralInt(0)},
+      new Matrix<AbstractExpression *>({{new LiteralInt(0), new LiteralInt(0), new LiteralInt(0)},
                                   {new LiteralInt(0), new LiteralInt(1), new LiteralInt(2)},
                                   {new LiteralInt(0), new LiteralInt(2), new LiteralInt(4)}}))));
 
@@ -2430,7 +2430,7 @@ TEST_F(CompileTimeExpressionSimplifierFixture, matrixAssignmIncludingPushBack) {
 
   auto expectedFunction = new Function("extendMatrixAddingElements");
   expectedFunction->addStatement(
-      new Return(new LiteralInt(new Matrix<AbstractExpr *>({{new LiteralInt(0),
+      new Return(new LiteralInt(new Matrix<AbstractExpression *>({{new LiteralInt(0),
                                                              new LiteralInt(1),
                                                              new LiteralInt(4)}}))));
   auto expectedAst = Ast(expectedFunction);
@@ -2488,7 +2488,7 @@ TEST_F(CompileTimeExpressionSimplifierFixture, matrixAssignmentKnownThenUnknown)
   // This assignment may look weird but is expected because matrix M lacks an initialization and as such is
   // default-initialized as Matrix<AbstractExpr*>, hence we need to store integers as LiteralInts
   expectedFunc->addStatement(new VarAssignm("M",
-                                            new LiteralInt(new Matrix<AbstractExpr *>({{new LiteralInt((21))}}))));
+                                            new LiteralInt(new Matrix<AbstractExpression *>({{new LiteralInt((21))}}))));
   expectedFunc->addStatement(new MatrixAssignm(
       new MatrixElementRef(new Variable("M"), new LiteralInt(0), new Variable("k")), new LiteralInt(4)));
   expectedFunc->addStatement(new Return(new Variable("M")));
@@ -2507,7 +2507,7 @@ TEST_F(CompileTimeExpressionSimplifierFixture, fullAssignmentToMatrix) { /* NOLI
 
   auto expectedFunc = new Function("computeMatrix");
   expectedFunc->addStatement(new Return(new LiteralInt(
-      new Matrix<AbstractExpr *>({{new LiteralInt(11), new LiteralInt(1), new LiteralInt(1)},
+      new Matrix<AbstractExpression *>({{new LiteralInt(11), new LiteralInt(1), new LiteralInt(1)},
                                   {new LiteralInt(3), new LiteralInt(2), new LiteralInt(2)}}))));
 
   // get the body of the AST on that the CompileTimeExpressionSimplifier was applied on
@@ -2564,8 +2564,8 @@ TEST_F(CompileTimeExpressionSimplifierFixture, fourNestedLoopsLaplacianSharpenin
                                                                                                               int>(1024))))));
 
   // a helper to generate img[imgSize*(x-i)+y+j] terms
-  auto createImgIdx = [](int i, int j) -> AbstractExpr * {
-    auto buildTermI = [](int i) -> AbstractExpr * {
+  auto createImgIdx = [](int i, int j) -> AbstractExpression * {
+    auto buildTermI = [](int i) -> AbstractExpression * {
       if (i==0) {
         return new Variable("x");
       } else {
@@ -2573,7 +2573,7 @@ TEST_F(CompileTimeExpressionSimplifierFixture, fourNestedLoopsLaplacianSharpenin
       }
     };
 
-    auto buildTermJ = [&](int j) -> AbstractExpr * {
+    auto buildTermJ = [&](int j) -> AbstractExpression * {
       if (j==0) {
         return new OperatorExpr(new Operator(ADDITION),
                                 {new OperatorExpr(new Operator(MULTIPLICATION),

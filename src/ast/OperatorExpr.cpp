@@ -11,11 +11,11 @@ OperatorExpr::OperatorExpr(Operator *op) {
   setAttributes(op, {});
 }
 
-OperatorExpr::OperatorExpr(Operator *op, std::vector<AbstractExpr *> operands) {
+OperatorExpr::OperatorExpr(Operator *op, std::vector<AbstractExpression *> operands) {
   setAttributes(op, std::move(operands));
 }
 
-OperatorExpr::OperatorExpr(AbstractExpr *lhsOperand, Operator *op, AbstractExpr *rhsOperand) {
+OperatorExpr::OperatorExpr(AbstractExpression *lhsOperand, Operator *op, AbstractExpression *rhsOperand) {
   setAttributes(op, {lhsOperand, rhsOperand});
 }
 
@@ -27,10 +27,10 @@ OperatorExpr *OperatorExpr::clone() const {
   // clone operator (child0)
   auto clonedOperator = getOperator()->clone();
   // clone all operands (child1...childN)
-  std::vector<AbstractExpr *> clonedAes;
+  std::vector<AbstractExpression *> clonedAes;
   std::transform(++children.begin(), children.end(), std::back_inserter(clonedAes),
-                 [](AbstractNode *node) -> AbstractExpr * {
-                   return node->clone()->castTo<AbstractExpr>();
+                 [](AbstractNode *node) -> AbstractExpression * {
+                   return node->clone()->castTo<AbstractExpression>();
                  });
   auto clonedOperatorExpr = new OperatorExpr(clonedOperator, clonedAes);
   return clonedOperatorExpr;
@@ -44,15 +44,15 @@ std::string OperatorExpr::getNodeType() const {
   return std::string("OperatorExpr");
 }
 
-void OperatorExpr::addOperand(AbstractExpr *operand) {
+void OperatorExpr::addOperand(AbstractExpression *operand) {
   auto newOperator = getOperator();
-  std::vector<AbstractExpr *> newOperands = getOperands();
+  std::vector<AbstractExpression *> newOperands = getOperands();
   newOperands.push_back(operand);
   // use the setAttributes method that evaluates operands while adding them
   setAttributes(newOperator, newOperands);
 }
 
-void OperatorExpr::addOperands(std::vector<AbstractExpr *> operands) {
+void OperatorExpr::addOperands(std::vector<AbstractExpression *> operands) {
   for (auto &o : operands) {
     addOperand(o);
   }
@@ -67,7 +67,7 @@ void OperatorExpr::setOperator(Operator *op) {
 
 OperatorExpr::OperatorExpr() = default;
 
-void OperatorExpr::setAttributes(Operator *newOperator, std::vector<AbstractExpr *> newOperands) {
+void OperatorExpr::setAttributes(Operator *newOperator, std::vector<AbstractExpression *> newOperands) {
   // remove any existing children (i.e., operator and operands)
   removeChildren();
   // add the operator
@@ -93,7 +93,7 @@ void OperatorExpr::setAttributes(Operator *newOperator, std::vector<AbstractExpr
   // operands before adding them
   if (newOperands.size() >= 2 && (getOperator()->isCommutative() || getOperator()->isLeftAssociative())) {
     // a vector of the operands to be finally added to this OperatorExpr
-    std::vector<const AbstractExpr *> simplifiedAbstractExprs;
+    std::vector<const AbstractExpression *> simplifiedAbstractExprs;
     // a vector containing those operands that can be aggregated (AbstractLiterals)
     std::vector<const AbstractLiteral *> tempAggregator;
 
@@ -168,7 +168,7 @@ void OperatorExpr::setAttributes(Operator *newOperator, std::vector<AbstractExpr
       }
     } // end of: else if (getOperator()->isLeftAssociative())
     // add the aggregated/simplified operands
-    std::vector<AbstractExpr *> abstractExprsVec;
+    std::vector<AbstractExpression *> abstractExprsVec;
     // clone the operands to match non-const-ness requirements
     for (auto &e: simplifiedAbstractExprs) {
       abstractExprsVec.emplace_back(e->clone());
@@ -182,7 +182,7 @@ void OperatorExpr::setAttributes(Operator *newOperator, std::vector<AbstractExpr
     }
   } else if (newOperands.size()==2) {
     // add the operands without any prior aggregation
-    std::vector<AbstractExpr *> abstractExprsVec(newOperands.begin(), newOperands.end());
+    std::vector<AbstractExpression *> abstractExprsVec(newOperands.begin(), newOperands.end());
     // clone the operands to match non-const-ness requirements
     for (auto &e: newOperands) {
       abstractExprsVec.emplace_back(e->clone());
@@ -192,7 +192,7 @@ void OperatorExpr::setAttributes(Operator *newOperator, std::vector<AbstractExpr
     throw std::logic_error("Operator expression with 1 or 0 operands is not valid.");
   } else {
     // add the operands without any prior aggregation
-    std::vector<AbstractExpr *> abstractExprsVec(newOperands.begin(), newOperands.end());
+    std::vector<AbstractExpression *> abstractExprsVec(newOperands.begin(), newOperands.end());
     // clone the operands to match non-const-ness requirements
     for (auto &e: newOperands) {
       abstractExprsVec.emplace_back(e->clone());
@@ -220,7 +220,7 @@ bool OperatorExpr::isUnaryExpr() const {
   return getOperator()->isUnaryOp();
 }
 
-bool OperatorExpr::isEqual(AbstractExpr *other) {
+bool OperatorExpr::isEqual(AbstractExpression *other) {
   if (auto expr = dynamic_cast<OperatorExpr *>(other)) {
     if (this->getChildren().size()!=other->getChildren().size()) return false;
     if (!this->getOperator()->equals(expr->getOperator()->getOperatorSymbol())) return false;
@@ -232,22 +232,22 @@ bool OperatorExpr::isEqual(AbstractExpr *other) {
   return false;
 }
 
-std::vector<AbstractExpr *> OperatorExpr::getOperands() const {
+std::vector<AbstractExpression *> OperatorExpr::getOperands() const {
   return operands;
 }
 
-AbstractExpr *OperatorExpr::getRight() const {
+AbstractExpression *OperatorExpr::getRight() const {
   if (getOperands().size() > 2) {
     throw std::logic_error("OperatorExpr::getRight() only supported for expressions with two operands!");
   }
-  return dynamic_cast<AbstractExpr *>(children.at(2));
+  return dynamic_cast<AbstractExpression *>(children.at(2));
 }
 
-AbstractExpr *OperatorExpr::getLeft() const {
+AbstractExpression *OperatorExpr::getLeft() const {
   if (getOperands().size() > 2) {
     throw std::logic_error("OperatorExpr::getLeft() only supported for expressions with two operands!");
   }
-  return dynamic_cast<AbstractExpr *>(children.at(1));
+  return dynamic_cast<AbstractExpression *>(children.at(1));
 }
 
 void OperatorExpr::replaceChild(AbstractNode *originalChild, AbstractNode *newChildToBeAdded) {
@@ -289,7 +289,7 @@ std::vector<Variable *> OperatorExpr::getVariables() {
   return result;
 }
 
-void OperatorExpr::removeOperand(AbstractExpr *operand) {
+void OperatorExpr::removeOperand(AbstractExpression *operand) {
   auto it = std::find(children.begin(), children.end(), operand);
   if (it!=children.end()) {
     (*it)->takeFromParent();

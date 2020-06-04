@@ -109,12 +109,12 @@ TEST(NodeUtilsTest, createMultDepthBalancedTreeFromInputs_simpleTestArithmetical
   std::unordered_map<std::string, int> multiplicativeDepths;
 
   // create some nodes and assign a multiplicative depth to variables
-  AbstractExpr *literalInt5 = new LiteralInt(5);  // implicit: depth 0
-  AbstractExpr *literalInt9 = new LiteralInt(9);  // implicit: depth 0
-  AbstractExpr *literalInt21 = new LiteralInt(21);
-  AbstractExpr *variableX = new Variable("x");
+  AbstractExpression *literalInt5 = new LiteralInt(5);  // implicit: depth 0
+  AbstractExpression *literalInt9 = new LiteralInt(9);  // implicit: depth 0
+  AbstractExpression *literalInt21 = new LiteralInt(21);
+  AbstractExpression *variableX = new Variable("x");
   multiplicativeDepths[variableX->getUniqueNodeId()] = 8;
-  AbstractExpr *variableY = new Variable("y");
+  AbstractExpression *variableY = new Variable("y");
   multiplicativeDepths[variableY->getUniqueNodeId()] = 2;
 
   // create the multiplicative depth-balanced tree
@@ -139,15 +139,15 @@ TEST(NodeUtilsTest, createMultDepthBalancedTreeFromInputs_complexTest) {  /* NOL
   std::unordered_map<std::string, int> multiplicativeDepths;
 
   // create some nodes and assign a multiplicative depth to variables
-  AbstractExpr *literalInt5 = new LiteralInt(5);  // implicit: depth 0
-  AbstractExpr *literalInt9 = new LiteralInt(9);  // implicit: depth 0
-  AbstractExpr *variableW = new Variable("w");
+  AbstractExpression *literalInt5 = new LiteralInt(5);  // implicit: depth 0
+  AbstractExpression *literalInt9 = new LiteralInt(9);  // implicit: depth 0
+  AbstractExpression *variableW = new Variable("w");
   multiplicativeDepths[variableW->getUniqueNodeId()] = 0;
-  AbstractExpr *variableX = new Variable("x");
+  AbstractExpression *variableX = new Variable("x");
   multiplicativeDepths[variableX->getUniqueNodeId()] = 8;
-  AbstractExpr *variableY = new Variable("y");
+  AbstractExpression *variableY = new Variable("y");
   multiplicativeDepths[variableY->getUniqueNodeId()] = 2;
-  AbstractExpr *variableZ = new Variable("z");
+  AbstractExpression *variableZ = new Variable("z");
   multiplicativeDepths[variableZ->getUniqueNodeId()] = 12;
 
   // create the multiplicative depth-balanced tree (intentionally, insert in random order)
@@ -174,12 +174,12 @@ TEST(NodeUtilsTest, createMultDepthBalancedTreeFromInputs_simpleTestLogicalExpr)
   std::unordered_map<std::string, int> multiplicativeDepths;
 
   // create some nodes and assign a multiplicative depth to variables
-  AbstractExpr *literalInt5 = new LiteralBool(true);  // implicit: depth 0
-  AbstractExpr *literalInt9 = new LiteralBool(false);  // implicit: depth 0
-  AbstractExpr *literalInt21 = new LiteralBool(false);
-  AbstractExpr *variableX = new Variable("x");
+  AbstractExpression *literalInt5 = new LiteralBool(true);  // implicit: depth 0
+  AbstractExpression *literalInt9 = new LiteralBool(false);  // implicit: depth 0
+  AbstractExpression *literalInt21 = new LiteralBool(false);
+  AbstractExpression *variableX = new Variable("x");
   multiplicativeDepths[variableX->getUniqueNodeId()] = 8;
-  AbstractExpr *variableY = new Variable("y");
+  AbstractExpression *variableY = new Variable("y");
   multiplicativeDepths[variableY->getUniqueNodeId()] = 2;
 
   auto const opSymb(LogCompOp::LOGICAL_AND);

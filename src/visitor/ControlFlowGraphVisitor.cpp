@@ -286,7 +286,7 @@ void ControlFlowGraphVisitor::visit(While &elem) {
 
 // === Expressions ===================================
 
-void ControlFlowGraphVisitor::handleOperatorExpr(AbstractExpr &ae) {
+void ControlFlowGraphVisitor::handleOperatorExpr(AbstractExpression &ae) {
   if (handleExpressionsAsStatements) {
     auto gNode = appendStatementToCfg(ae);
     handleExpressionsAsStatements = false;

@@ -2,7 +2,7 @@
 #include "ast_opt/ast/While.h"
 #include "ast_opt/ast/LiteralBool.h"
 
-While::While(AbstractExpr *condition, AbstractStatement *body) {
+While::While(AbstractExpression *condition, AbstractStatement *body) {
   setAttributes(condition, body);
 }
 
@@ -18,8 +18,8 @@ void While::accept(Visitor &v) {
   v.visit(*this);
 }
 
-AbstractExpr *While::getCondition() const {
-  return dynamic_cast<AbstractExpr *>(children.at(0));
+AbstractExpression *While::getCondition() const {
+  return dynamic_cast<AbstractExpression *>(children.at(0));
 }
 
 AbstractStatement *While::getBody() const {
@@ -34,7 +34,7 @@ While *While::clone() const {
   return new While(getCondition()->clone(), getBody()->clone());
 }
 
-void While::setAttributes(AbstractExpr *loopCondition, AbstractStatement *loopBody) {
+void While::setAttributes(AbstractExpression *loopCondition, AbstractStatement *loopBody) {
   removeChildren();
   children = {loopCondition, loopBody};
   for (auto &c: children) {

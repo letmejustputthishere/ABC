@@ -22,19 +22,19 @@ std::vector<AbstractNode *> rewriteMultiInputGateToBinaryGatesChain(std::vector<
 
   // handle first "special" gate -> takes two inputs as specified in inputNodes
   auto it = std::begin(inputNodes);
-  auto recentLexp = new LogicalExpr((*it++)->castTo<AbstractExpr>(), gateType, (*it++)->castTo<AbstractExpr>());
+  auto recentLexp = new LogicalExpr((*it++)->castTo<AbstractExpression>(), gateType, (*it++)->castTo<AbstractExpression>());
   outputNodes.push_back(recentLexp);
 
   // handle all other gates -> are connected with each other
   for (auto end = std::end(inputNodes); it!=end; ++it) {
-    auto newLexp = new LogicalExpr(recentLexp, gateType, (*it)->castTo<AbstractExpr>());
+    auto newLexp = new LogicalExpr(recentLexp, gateType, (*it)->castTo<AbstractExpression>());
     outputNodes.push_back(newLexp);
     recentLexp = newLexp;
   }
   return outputNodes;
 }
 
-AbstractNode *createMultDepthBalancedTreeFromInputs(std::vector<AbstractExpr *> inputs,
+AbstractNode *createMultDepthBalancedTreeFromInputs(std::vector<AbstractExpression *> inputs,
                                                     OpSymbolVariant operatorType,
                                                     std::unordered_map<std::string,
                                                                        int> multiplicativeDepths) {
@@ -47,16 +47,16 @@ AbstractNode *createMultDepthBalancedTreeFromInputs(std::vector<AbstractExpr *> 
 
   // sort the inputs based on the calculated depths in increasing order (we want to connect inputs that already have a
   // large multiplicative depth to be placed as high as possible in the tree to not increase depth much more)
-  auto getMultiplicativeDepth = [&multiplicativeDepths](AbstractExpr *aexp) -> int {
+  auto getMultiplicativeDepth = [&multiplicativeDepths](AbstractExpression *aexp) -> int {
     auto nodeId = aexp->getUniqueNodeId();
     return (multiplicativeDepths.count(nodeId) > 0) ? multiplicativeDepths.at(nodeId) : 0;
   };
-  std::sort(inputs.begin(), inputs.end(), [&](AbstractExpr *exprOne, AbstractExpr *exprTwo) {
+  std::sort(inputs.begin(), inputs.end(), [&](AbstractExpression *exprOne, AbstractExpression *exprTwo) {
     return getMultiplicativeDepth(exprOne) > getMultiplicativeDepth(exprTwo);
   });
 
   // a helper utility to create a new expression
-  auto createNewExpr = [&operatorType](AbstractExpr *lhsOperand, AbstractExpr *rhsOperand) -> AbstractExpr * {
+  auto createNewExpr = [&operatorType](AbstractExpression *lhsOperand, AbstractExpression *rhsOperand) -> AbstractExpression * {
     if (std::holds_alternative<ArithmeticOp>(operatorType)) {
       return new ArithmeticExpr(lhsOperand, std::get<ArithmeticOp>(operatorType), rhsOperand);
     } else if (std::holds_alternative<LogCompOp>(operatorType)) {
@@ -67,7 +67,7 @@ AbstractNode *createMultDepthBalancedTreeFromInputs(std::vector<AbstractExpr *> 
   };
 
   do {
-    std::vector<AbstractExpr *> createdExpressions;
+    std::vector<AbstractExpression *> createdExpressions;
     // connect every two inputs using a new binary expression and enqueue this new binary expression
     while (!inputs.empty() && inputs.size() >= 2) {
       auto lhsOperand = inputs.back();
@@ -88,7 +88,7 @@ AbstractNode *createMultDepthBalancedTreeFromInputs(std::vector<AbstractExpr *> 
   return inputs.front();
 }
 
-AbstractNode *createMultDepthBalancedTreeFromInputs(std::vector<AbstractExpr *> inputs,
+AbstractNode *createMultDepthBalancedTreeFromInputs(std::vector<AbstractExpression *> inputs,
                                                     std::variant<ArithmeticOp,
                                                                  LogCompOp,
                                                                  UnaryOp> operatorType) {

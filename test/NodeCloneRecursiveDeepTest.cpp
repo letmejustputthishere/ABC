@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "ast_opt/ast/AbstractExpr.h"
+#include "ast_opt/ast/AbstractExpression.h"
 #include "ast_opt/ast/AbstractStatement.h"
 #include "ast_opt/ast/ArithmeticExpr.h"
 #include "ast_opt/ast/Block.h"
@@ -243,8 +243,8 @@ TEST_F(NodeCloneTestFixture, cloneRecursiveDeep_CallExternal) {  /* NOLINT */
 
   // test if all fields belonging to Node class were copied
   assertNodeAttributes(
-      static_cast<AbstractExpr *>(callExternal),
-      static_cast<AbstractExpr *>(clonedCallExternal));
+      static_cast<AbstractExpression *>(callExternal),
+      static_cast<AbstractExpression *>(clonedCallExternal));
 
   // test if changing the original FunctionParameter vector also modifies the copy
   fp->setAttributes(new Datatype(Types::FLOAT), new Variable("input"));

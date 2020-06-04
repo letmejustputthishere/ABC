@@ -75,7 +75,7 @@ void RuntimeVisitor::visit(MatrixElementRef &elem) {
 
   // a helper utility that either returns the value of an already existing LiteralInt (in AST) or performs evaluation
   // and then retrieves the value of the evaluation result (LiteralInt)
-  auto determineIndexValue = [&](AbstractExpr *expr) {
+  auto determineIndexValue = [&](AbstractExpression *expr) {
     // if index is a literal: simply return its value
     if (auto rowIdxLiteral = dynamic_cast<LiteralInt *>(expr)) return rowIdxLiteral->getValue();
     // if row index is not a literal: evaluate expression

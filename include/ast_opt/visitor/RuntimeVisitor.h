@@ -53,7 +53,7 @@ struct MatrixElementAccess {
 
 struct VarValuesEntry {
   Ciphertext *ctxt;
-  AbstractExpr *expr;
+  AbstractExpression *expr;
   VarValuesEntry() : ctxt(nullptr), expr(nullptr) {}
 
   VarValuesEntry &operator=(const VarValuesEntry &other) {
@@ -62,7 +62,7 @@ struct VarValuesEntry {
     return *this;
   }
 
-  VarValuesEntry(Ciphertext *ctxt, AbstractExpr *expr) : ctxt(ctxt), expr(expr) {}
+  VarValuesEntry(Ciphertext *ctxt, AbstractExpression *expr) : ctxt(ctxt), expr(expr) {}
   explicit VarValuesEntry(Ciphertext *ctxt) : ctxt(ctxt), expr(nullptr) {}
 };
 

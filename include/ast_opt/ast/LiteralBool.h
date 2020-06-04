@@ -14,7 +14,7 @@ class LiteralBool : public AbstractLiteral {
  public:
   explicit LiteralBool(AbstractMatrix *am);
 
-  explicit LiteralBool(Matrix<AbstractExpr *> *am);
+  explicit LiteralBool(Matrix<AbstractExpression *> *am);
 
   explicit LiteralBool(bool value);
 
@@ -50,7 +50,7 @@ class LiteralBool : public AbstractLiteral {
 
   void print(std::ostream &str) const override;
 
-  bool isEqual(AbstractExpr *other) override;
+  bool isEqual(AbstractExpression *other) override;
 
   bool isNull() override;
 

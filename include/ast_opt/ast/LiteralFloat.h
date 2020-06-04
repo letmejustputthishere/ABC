@@ -15,7 +15,7 @@ class LiteralFloat : public AbstractLiteral {
  public:
   explicit LiteralFloat(AbstractMatrix *am);
 
-  explicit LiteralFloat(Matrix<AbstractExpr *> *am);
+  explicit LiteralFloat(Matrix<AbstractExpression *> *am);
 
   explicit LiteralFloat(float value);
 
@@ -51,7 +51,7 @@ class LiteralFloat : public AbstractLiteral {
 
   void print(std::ostream &str) const override;
 
-  bool isEqual(AbstractExpr *other) override;
+  bool isEqual(AbstractExpression *other) override;
 
   bool isNull() override;
 

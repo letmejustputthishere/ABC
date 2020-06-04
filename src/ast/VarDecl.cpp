@@ -21,11 +21,11 @@ VarDecl::VarDecl(const std::string &, void *) {
                               "Use VarDecl(std::string, Types, AbstractExpr*) or one of the other constructors.");
 }
 
-VarDecl::VarDecl(std::string name, Datatype *datatype, AbstractExpr *initializer) {
+VarDecl::VarDecl(std::string name, Datatype *datatype, AbstractExpression *initializer) {
   setAttributes(std::move(name), datatype, initializer);
 }
 
-VarDecl::VarDecl(std::string name, Types datatype, AbstractExpr *initializer) {
+VarDecl::VarDecl(std::string name, Types datatype, AbstractExpression *initializer) {
   setAttributes(std::move(name), new Datatype(datatype), initializer);
 }
 
@@ -54,7 +54,7 @@ VarDecl::VarDecl(std::string name, bool valueAssignedTo) {
 VarDecl::VarDecl(std::string name, const char *valueAssignedTo)
     : VarDecl(std::move(name), std::string(valueAssignedTo)) {}
 
-void VarDecl::setAttributes(std::string varIdentifier, Datatype *varDatatype, AbstractExpr *varValue) {
+void VarDecl::setAttributes(std::string varIdentifier, Datatype *varDatatype, AbstractExpression *varValue) {
   // handle primitive attributes
   this->identifier = std::move(varIdentifier);
   // handle attributes that are itself nodes
@@ -81,11 +81,11 @@ Datatype *VarDecl::getDatatype() const {
   return children.at(0)->castTo<Datatype>();
 }
 
-AbstractExpr *VarDecl::getInitializer() const {
+AbstractExpression *VarDecl::getInitializer() const {
   auto initializer = children.at(1);
   if (initializer==nullptr)
     return nullptr;
-  return initializer->castTo<AbstractExpr>();
+  return initializer->castTo<AbstractExpression>();
 }
 
 AbstractBinaryExpr *VarDecl::contains(AbstractBinaryExpr *aexpTemplate, ArithmeticExpr *excludedSubtree) {

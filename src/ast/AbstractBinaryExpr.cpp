@@ -3,23 +3,23 @@
 #include "ast_opt/ast/ArithmeticExpr.h"
 #include "ast_opt/ast/LogicalExpr.h"
 
-void AbstractBinaryExpr::setAttributes(AbstractExpr *leftOperand, Operator *operatore, AbstractExpr *rightOperand) {
+void AbstractBinaryExpr::setAttributes(AbstractExpression *leftOperand, Operator *operatore, AbstractExpression *rightOperand) {
   removeChildren();
   setLeft(leftOperand);
   setOperator(operatore);
   setRight(rightOperand);
 }
 
-AbstractExpr *AbstractBinaryExpr::getLeft() const {
-  return dynamic_cast<AbstractExpr * >(children[0]);
+AbstractExpression *AbstractBinaryExpr::getLeft() const {
+  return dynamic_cast<AbstractExpression * >(children[0]);
 }
 
 Operator *AbstractBinaryExpr::getOperator() const {
   return dynamic_cast<Operator *>(children[1]);
 }
 
-AbstractExpr *AbstractBinaryExpr::getRight() const {
-  return dynamic_cast<AbstractExpr * >(children[2]);
+AbstractExpression *AbstractBinaryExpr::getRight() const {
+  return dynamic_cast<AbstractExpression * >(children[2]);
 }
 
 int AbstractBinaryExpr::getMaxNumberChildren() {
@@ -51,7 +51,7 @@ std::vector<Variable *> AbstractBinaryExpr::getVariables() {
   return leftVec;
 }
 
-bool AbstractBinaryExpr::isEqual(AbstractExpr *other) {
+bool AbstractBinaryExpr::isEqual(AbstractExpression *other) {
   if (auto otherLexp = dynamic_cast<AbstractBinaryExpr *>(other)) {
     auto sameLeft = this->getLeft()->isEqual(otherLexp->getLeft());
     auto sameRight = this->getRight()->isEqual(otherLexp->getRight());
@@ -65,7 +65,7 @@ bool AbstractBinaryExpr::contains(Variable *var) {
   return (getLeft()->contains(var) || getRight()->contains(var));
 }
 
-int AbstractBinaryExpr::countByTemplate(AbstractExpr *abstractExpr) {
+int AbstractBinaryExpr::countByTemplate(AbstractExpression *abstractExpr) {
   if (auto expr = dynamic_cast<AbstractBinaryExpr *>(abstractExpr)) {
     // check if current AbstractBinaryExpr fulfills requirements of template abstractExpr
     // also check left and right operands which can contain nested arithmetic expressions
@@ -77,7 +77,7 @@ int AbstractBinaryExpr::countByTemplate(AbstractExpr *abstractExpr) {
   }
 }
 
-AbstractBinaryExpr *AbstractBinaryExpr::contains(AbstractBinaryExpr *aexpTemplate, AbstractExpr *excludedSubtree) {
+AbstractBinaryExpr *AbstractBinaryExpr::contains(AbstractBinaryExpr *aexpTemplate, AbstractExpression *excludedSubtree) {
   if (excludedSubtree!=nullptr && this==excludedSubtree) {
     return nullptr;
   } else {

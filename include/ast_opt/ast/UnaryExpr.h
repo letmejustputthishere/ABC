@@ -2,12 +2,12 @@
 #define AST_OPTIMIZER_INCLUDE_AST_OPT_AST_UNARYEXPR_H_
 
 #include <string>
-#include "AbstractExpr.h"
+#include "AbstractExpression.h"
 #include "Operator.h"
 
-class UnaryExpr : public AbstractExpr {
+class UnaryExpr : public AbstractExpression {
  public:
-  UnaryExpr(UnaryOp op, AbstractExpr *right);
+  UnaryExpr(UnaryOp op, AbstractExpression *right);
 
   UnaryExpr *clone() const override;
 
@@ -19,17 +19,17 @@ class UnaryExpr : public AbstractExpr {
 
   void setOperator(Operator* newOperator);
 
-  [[nodiscard]] AbstractExpr *getRight() const;
+  [[nodiscard]] AbstractExpression *getRight() const;
 
   [[nodiscard]] std::string getNodeType() const override;
 
   ~UnaryExpr() override;
 
-  void setAttributes(UnaryOp op, AbstractExpr *expr);
+  void setAttributes(UnaryOp op, AbstractExpression *expr);
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  bool isEqual(AbstractExpr *other) override;
+  bool isEqual(AbstractExpression *other) override;
 
   std::vector<std::string> getVariableIdentifiers() override;
 

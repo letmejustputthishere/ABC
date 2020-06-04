@@ -1,5 +1,5 @@
 #include "ast_opt/ast/GetMatrixSize.h"
-#include "ast_opt/ast/AbstractExpr.h"
+#include "ast_opt/ast/AbstractExpression.h"
 #include "ast_opt/ast/LiteralInt.h"
 
 json GetMatrixSize::toJson() const {
@@ -10,7 +10,7 @@ json GetMatrixSize::toJson() const {
   return j;
 }
 
-bool GetMatrixSize::isEqual(AbstractExpr *other) {
+bool GetMatrixSize::isEqual(AbstractExpression *other) {
   if (auto otherGetMatrixSize = dynamic_cast<GetMatrixSize *>(other)) {
     return getMatrixOperand()->isEqual(otherGetMatrixSize->getMatrixOperand())
         && getDimensionParameter()->isEqual(otherGetMatrixSize->getDimensionParameter());
@@ -38,7 +38,7 @@ GetMatrixSize *GetMatrixSize::clone() const {
   return new GetMatrixSize(getMatrixOperand()->clone(), getDimensionParameter()->clone());
 }
 
-GetMatrixSize::GetMatrixSize(AbstractExpr *matrix, AbstractExpr *requestedDimension) {
+GetMatrixSize::GetMatrixSize(AbstractExpression *matrix, AbstractExpression *requestedDimension) {
   removeChildren();
   children = {matrix, requestedDimension};
   for (auto &c: children) {
@@ -63,12 +63,12 @@ std::vector<Variable *> GetMatrixSize::getVariables() {
   return results;
 }
 
-AbstractExpr *GetMatrixSize::getMatrixOperand() const {
-  return dynamic_cast<AbstractExpr *>(children.at(0));
+AbstractExpression *GetMatrixSize::getMatrixOperand() const {
+  return dynamic_cast<AbstractExpression *>(children.at(0));
 }
 
-AbstractExpr *GetMatrixSize::getDimensionParameter() const {
-  return dynamic_cast<AbstractExpr *>(children.at(1));
+AbstractExpression *GetMatrixSize::getDimensionParameter() const {
+  return dynamic_cast<AbstractExpression *>(children.at(1));
 }
 
 GetMatrixSize::~GetMatrixSize() = default;

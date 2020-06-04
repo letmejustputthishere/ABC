@@ -159,7 +159,7 @@ class ControlFlowGraphVisitor : public Visitor {
   /// Sets variableValues
   void forceVariableValues(const VariableValuesMap& map);
 
-  void handleOperatorExpr(AbstractExpr &ae);
+  void handleOperatorExpr(AbstractExpression &ae);
 };
 
 #endif //AST_OPTIMIZER_INCLUDE_AST_OPT_VISITOR_CONTROLFLOWGRAPHVISITOR_H_

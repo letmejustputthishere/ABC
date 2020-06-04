@@ -2,7 +2,7 @@
 #include "ast_opt/visitor/PrintVisitor.h"
 #include "ast_opt/ast/Ast.h"
 #include "ast_opt/ast/AbstractNode.h"
-#include "ast_opt/ast/AbstractExpr.h"
+#include "ast_opt/ast/AbstractExpression.h"
 #include "ast_opt/ast/AbstractStatement.h"
 #include "ast_opt/ast/ArithmeticExpr.h"
 #include "ast_opt/ast/Block.h"
@@ -42,7 +42,7 @@ void Visitor::visit(AbstractNode &elem) {
   }
 }
 
-void Visitor::visit(AbstractExpr &elem) {
+void Visitor::visit(AbstractExpression &elem) {
   auto children = elem.getChildren();
   for (auto &c : children) {
     c->accept(*this);
@@ -133,7 +133,7 @@ void Visitor::visit(If &elem) {
 void Visitor::visit(LiteralBool &elem) {
   // If this is not a matrix containing primitives, like Matrix<int>, Matrix<float>, etc. then this must be a
   // Matrix<AbstractExpr*> which requires visiting its elements.
-  if (dynamic_cast<Matrix<AbstractExpr *> *>(elem.getMatrix())!=nullptr) {
+  if (dynamic_cast<Matrix<AbstractExpression *> *>(elem.getMatrix())!=nullptr) {
     elem.getMatrix()->accept(*this);
   }
 }
@@ -141,7 +141,7 @@ void Visitor::visit(LiteralBool &elem) {
 void Visitor::visit(LiteralInt &elem) {
   // If this is not a matrix containing primitives, like Matrix<int>, Matrix<float>, etc. then this must be a
   // Matrix<AbstractExpr*> which requires visiting its elements.
-  if (dynamic_cast<Matrix<AbstractExpr *> *>(elem.getMatrix())!=nullptr) {
+  if (dynamic_cast<Matrix<AbstractExpression *> *>(elem.getMatrix())!=nullptr) {
     elem.getMatrix()->accept(*this);
   }
 }
@@ -149,7 +149,7 @@ void Visitor::visit(LiteralInt &elem) {
 void Visitor::visit(LiteralString &elem) {
   // If this is not a matrix containing primitives, like Matrix<int>, Matrix<float>, etc. then this should be a
   // Matrix<AbstractExpr*> which requires visiting its elements.
-  if (dynamic_cast<Matrix<AbstractExpr *> *>(elem.getMatrix())!=nullptr) {
+  if (dynamic_cast<Matrix<AbstractExpression *> *>(elem.getMatrix())!=nullptr) {
     elem.getMatrix()->accept(*this);
   }
 }
@@ -157,7 +157,7 @@ void Visitor::visit(LiteralString &elem) {
 void Visitor::visit(LiteralFloat &elem) {
   // If this is not a matrix containing primitives, like Matrix<int>, Matrix<float>, etc. then this should be a
   // Matrix<AbstractExpr*> which requires visiting its elements.
-  if (dynamic_cast<Matrix<AbstractExpr *> *>(elem.getMatrix())!=nullptr) {
+  if (dynamic_cast<Matrix<AbstractExpression *> *>(elem.getMatrix())!=nullptr) {
     elem.getMatrix()->accept(*this);
   }
 }
@@ -296,7 +296,7 @@ void Visitor::visit(MatrixElementRef &elem) {
 
 void Visitor::visit(AbstractMatrix &elem) {
   // If this is a Matrix<AbstractExpr*>, we need to call accept(Visitor) on each of its elements.
-  if (dynamic_cast<Matrix<AbstractExpr *> * > (&elem)) {
+  if (dynamic_cast<Matrix<AbstractExpression *> * > (&elem)) {
     for (int i = 0; i < elem.getDimensions().numRows; ++i) {
       for (int j = 0; j < elem.getDimensions().numColumns; ++j) {
         // special action required for PrintVisitor only

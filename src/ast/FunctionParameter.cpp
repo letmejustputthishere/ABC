@@ -33,15 +33,15 @@ std::string FunctionParameter::getNodeType() const {
   return "FunctionParameter";
 }
 
-AbstractExpr *FunctionParameter::getValue() const {
-  return dynamic_cast<AbstractExpr * >(children.at(1));
+AbstractExpression *FunctionParameter::getValue() const {
+  return dynamic_cast<AbstractExpression * >(children.at(1));
 }
 
-FunctionParameter::FunctionParameter(Datatype *datatype, AbstractExpr *value) {
+FunctionParameter::FunctionParameter(Datatype *datatype, AbstractExpression *value) {
   setAttributes(datatype, value);
 }
 
-FunctionParameter::FunctionParameter(const std::string &datatypeEnumString, AbstractExpr *value) {
+FunctionParameter::FunctionParameter(const std::string &datatypeEnumString, AbstractExpression *value) {
   setAttributes(new Datatype(datatypeEnumString), value);
 }
 
@@ -63,7 +63,7 @@ int FunctionParameter::getMaxNumberChildren() {
   return 2;
 }
 
-void FunctionParameter::setAttributes(Datatype *datatype, AbstractExpr *value) {
+void FunctionParameter::setAttributes(Datatype *datatype, AbstractExpression *value) {
   removeChildren();
   this->datatype = datatype;
   if (datatype) datatype->setParent(this);

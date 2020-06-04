@@ -2,7 +2,7 @@
 #include "ast_opt/ast/ArithmeticExpr.h"
 #include "ast_opt/ast/Variable.h"
 
-ArithmeticExpr::ArithmeticExpr(AbstractExpr *left, ArithmeticOp op, AbstractExpr *right) {
+ArithmeticExpr::ArithmeticExpr(AbstractExpression *left, ArithmeticOp op, AbstractExpression *right) {
   setAttributes(left, new Operator(op), right);
 }
 
@@ -33,7 +33,7 @@ std::string ArithmeticExpr::toString(bool printChildren) const {
   return AbstractNode::toStringHelper(printChildren, {});
 }
 
-void ArithmeticExpr::setLeft(AbstractExpr *newLeft) {
+void ArithmeticExpr::setLeft(AbstractExpression *newLeft) {
   //TODO: Remove old
   left = newLeft;
   if (newLeft) newLeft->setParent(this);
@@ -45,7 +45,7 @@ void ArithmeticExpr::setOperator(Operator *newOperator) {
   if (newOperator) newOperator->setParent(this);
 
 }
-void ArithmeticExpr::setRight(AbstractExpr *newRight) {
+void ArithmeticExpr::setRight(AbstractExpression *newRight) {
   //TODO: Remove old
   right = newRight;
   if (newRight) newRight->setParent(this);
@@ -62,12 +62,12 @@ void ArithmeticExpr::removeChildren() {
   setOperator(nullptr);
   setRight(nullptr);
 }
-AbstractExpr *ArithmeticExpr::getLeft() const {
+AbstractExpression *ArithmeticExpr::getLeft() const {
   return left;
 }
 Operator *ArithmeticExpr::getOperator() const {
   return op;
 }
-AbstractExpr *ArithmeticExpr::getRight() const {
+AbstractExpression *ArithmeticExpr::getRight() const {
   return right;
 }

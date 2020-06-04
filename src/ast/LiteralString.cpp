@@ -4,7 +4,7 @@
 #include "ast_opt/ast/Matrix.h"
 #include "ast_opt/utilities/RandNumGen.h"
 
-LiteralString::LiteralString(Matrix<AbstractExpr *> *am) : AbstractLiteral(am) {}
+LiteralString::LiteralString(Matrix<AbstractExpression *> *am) : AbstractLiteral(am) {}
 
 LiteralString::LiteralString(AbstractMatrix *pMatrix) : AbstractLiteral(pMatrix) {}
 
@@ -12,7 +12,7 @@ LiteralString::LiteralString(Matrix<std::string> *inputMatrix) : AbstractLiteral
 
 LiteralString::LiteralString(std::string value) : AbstractLiteral(new Matrix(std::move(value))) {}
 
-LiteralString::LiteralString() : AbstractLiteral(new Matrix<AbstractExpr *>()) {}
+LiteralString::LiteralString() : AbstractLiteral(new Matrix<AbstractExpression *>()) {}
 
 json LiteralString::toJson() const {
   json j;
@@ -72,7 +72,7 @@ LiteralString *LiteralString::clone() const {
   return new LiteralString(matrix->clone());
 }
 
-bool LiteralString::isEqual(AbstractExpr *other) {
+bool LiteralString::isEqual(AbstractExpression *other) {
   auto otherLiteralString = dynamic_cast<LiteralString *>(other);
   return otherLiteralString!=nullptr && *this==*otherLiteralString;
 }

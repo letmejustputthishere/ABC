@@ -1,17 +1,17 @@
 #include <iostream>
 #include "ast_opt/ast/LiteralFloat.h"
 #include "ast_opt/ast/Datatype.h"
-#include "ast_opt/ast/AbstractExpr.h"
+#include "ast_opt/ast/AbstractExpression.h"
 #include "ast_opt/ast/Matrix.h"
 #include "ast_opt/utilities/RandNumGen.h"
 
-LiteralFloat::LiteralFloat(Matrix<AbstractExpr *> *am) : AbstractLiteral(am) {}
+LiteralFloat::LiteralFloat(Matrix<AbstractExpression *> *am) : AbstractLiteral(am) {}
 
 LiteralFloat::LiteralFloat(AbstractMatrix *am) : AbstractLiteral(am) {}
 
 LiteralFloat::LiteralFloat(float value) : AbstractLiteral(new Matrix(value)) {}
 
-LiteralFloat::LiteralFloat() : AbstractLiteral(new Matrix<AbstractExpr *>()) {}
+LiteralFloat::LiteralFloat() : AbstractLiteral(new Matrix<AbstractExpression *>()) {}
 
 LiteralFloat::LiteralFloat(Matrix<float> *inputMatrix) : AbstractLiteral(inputMatrix) {}
 
@@ -73,7 +73,7 @@ LiteralFloat *LiteralFloat::clone() const {
   return new LiteralFloat(matrix->clone());
 }
 
-bool LiteralFloat::isEqual(AbstractExpr *other) {
+bool LiteralFloat::isEqual(AbstractExpression *other) {
   auto otherLiteralFloat = dynamic_cast<LiteralFloat *>(other);
   return otherLiteralFloat!=nullptr && *this==*otherLiteralFloat;
 }

@@ -44,7 +44,7 @@ void CompileTimeExpressionSimplifier::visit(AbstractNode &elem) {
   Visitor::visit(elem);
 }
 
-void CompileTimeExpressionSimplifier::visit(AbstractExpr &elem) {
+void CompileTimeExpressionSimplifier::visit(AbstractExpression &elem) {
   Visitor::visit(elem);
 }
 
@@ -330,7 +330,7 @@ void CompileTimeExpressionSimplifier::visit(VarDecl &elem) {
   Visitor::visit(elem);
 
   // determine the variable's value
-  AbstractExpr *variableValue;
+  AbstractExpression *variableValue;
   auto variableInitializer = elem.getInitializer();
   if (variableInitializer==nullptr) {
     // Default initialization
@@ -365,7 +365,7 @@ void CompileTimeExpressionSimplifier::visit(ArithmeticExpr &elem) {
   if (elem.hasParent()) {
     auto op = elem.getOperator();
     op->removeFromParent();
-    std::vector<AbstractExpr *> operands{elem.getLeft(), elem.getRight()};
+    std::vector<AbstractExpression *> operands{elem.getLeft(), elem.getRight()};
     elem.getLeft()->takeFromParent();
     elem.getRight()->takeFromParent();
     auto operatorExpr = new OperatorExpr(op, operands);
@@ -382,7 +382,7 @@ void CompileTimeExpressionSimplifier::visit(LogicalExpr &elem) {
   if (elem.hasParent()) {
     auto op = elem.getOperator();
     op->removeFromParent();
-    std::vector<AbstractExpr *> operands{elem.getLeft(), elem.getRight()};
+    std::vector<AbstractExpression *> operands{elem.getLeft(), elem.getRight()};
     elem.getLeft()->takeFromParent();
     elem.getRight()->takeFromParent();
     auto operatorExpr = new OperatorExpr(op, operands);
@@ -407,7 +407,7 @@ void CompileTimeExpressionSimplifier::visit(UnaryExpr &elem) {
     // if this UnaryExpr cannot be evaluated, replace the UnaryExpr by an OperatorExpr
     auto op = elem.getOperator();
     op->removeFromParent();
-    std::vector<AbstractExpr *> operands{elem.getRight()};
+    std::vector<AbstractExpression *> operands{elem.getRight()};
     elem.getRight()->takeFromParent();
     auto operatorExpr = new OperatorExpr(op, operands);
     elem.getParent()->replaceChild(&elem, operatorExpr);
@@ -435,7 +435,7 @@ void CompileTimeExpressionSimplifier::visit(OperatorExpr &elem) {
   //       ┌───┬─▼─┬───┐
   //       │ + │ e │ f │
   //       └───┴───┴───┘
-  std::vector<AbstractExpr *> newOperands;
+  std::vector<AbstractExpression *> newOperands;
   auto operatorAndOperands = elem.getChildren();
   // start by operatorAndOperands.begin() + 1 to skip the first child (operator)
   for (auto it = operatorAndOperands.begin() + 1; it!=operatorAndOperands.end(); ++it) {
@@ -448,7 +448,7 @@ void CompileTimeExpressionSimplifier::visit(OperatorExpr &elem) {
       // this OperatorExpr
       for (auto &operand : operandsToBeAdded) {
         operand->takeFromParent();
-        newOperands.push_back(operand->castTo<AbstractExpr>());
+        newOperands.push_back(operand->castTo<AbstractExpression>());
       }
       // mark the obsolete OperatorExpr child for deletion
       elem.replaceChild(*it, nullptr);
@@ -457,7 +457,7 @@ void CompileTimeExpressionSimplifier::visit(OperatorExpr &elem) {
       // if this operand is not an OperatorExpr, we also need to remove it from this OperatorExpr because re-adding it
       // as operand would otherwise lead to having two times the same parent
       (*it)->takeFromParent();
-      newOperands.push_back((*it)->castTo<AbstractExpr>());
+      newOperands.push_back((*it)->castTo<AbstractExpression>());
     }
   }
   // replaced the operands by the merged list of operands also including those operands that were not an OperatorExpr
@@ -557,7 +557,7 @@ void CompileTimeExpressionSimplifier::visit(Call &elem) {
       // generate a map consisting of "variableIdentifier : variableValue" entries where variableIdentifier is the name
       // of the variable within the called function and variableValue the value (literal or variable) that is passed as
       // value for that identifier as part of the function call
-      std::unordered_map<std::string, AbstractExpr *> varReplacementMap;
+      std::unordered_map<std::string, AbstractExpression *> varReplacementMap;
       for (int i = 0; i < parameterValues.size(); ++i) {
         auto variable = expectedFunctionParameters[i]->getValue()->castTo<Variable>();
         auto entry = std::make_pair(variable->getIdentifier(), parameterValues[i]->getValue());
@@ -704,7 +704,7 @@ void CompileTimeExpressionSimplifier::visit(If &elem) {
       // check if the variable was changed in the Else-branch
       // if there is no Else-branch, elseBranchModifiedCurrentVariable stays False
       bool elseBranchModifiedCurrentVariable = false;
-      AbstractExpr *elseBranchValue = nullptr;
+      AbstractExpression *elseBranchValue = nullptr;
       //Check elseBranch directly longer works because the else branch might have self-eliminated
       if (hadElseBranch) {
         elseBranchValue = variableValues.getVariableValue(variableIdentifier).getValue();
@@ -716,7 +716,7 @@ void CompileTimeExpressionSimplifier::visit(If &elem) {
       // both branches. It does, however, drop new variables (i.e., variable declarations) that happened in one of the
       // branches. Those variables are anyway out of scope when leaving the branch, so there's no need to store their
       // value in variableValues map.
-      AbstractExpr *newValue;
+      AbstractExpression *newValue;
       if (thenBranchModifiedCurrentVariable && elseBranchModifiedCurrentVariable) {
         newValue = generateIfDependentValue(elem.getCondition(), thenBranchValue, elseBranchValue);
       } else if (thenBranchModifiedCurrentVariable) {
@@ -1183,7 +1183,7 @@ std::vector<AbstractLiteral *> CompileTimeExpressionSimplifier::evaluateNodeRecu
   return clonedres;
 }
 
-AbstractExpr *CompileTimeExpressionSimplifier::getKnownValue(AbstractNode *node) {
+AbstractExpression *CompileTimeExpressionSimplifier::getKnownValue(AbstractNode *node) {
   // if node is a Literal: return the node itself
   if (auto nodeAsLiteral = dynamic_cast<AbstractLiteral *>(node)) {
     return nodeAsLiteral;
@@ -1214,13 +1214,13 @@ std::unordered_map<std::string, AbstractLiteral *> CompileTimeExpressionSimplifi
   return variableMap;
 }
 
-AbstractExpr *CompileTimeExpressionSimplifier::generateIfDependentValue(
-    AbstractExpr *condition, AbstractExpr *trueValue, AbstractExpr *falseValue) {
+AbstractExpression *CompileTimeExpressionSimplifier::generateIfDependentValue(
+    AbstractExpression *condition, AbstractExpression *trueValue, AbstractExpression *falseValue) {
   // We need to handle the case where trueValue or/and falseValue are null because in that case the dependent
   // statement can be simplified significantly by removing one/both operands of the arithmetic expression.
 
   // determine whether one or both of the provided expressions (trueValue, falseValue) are null
-  auto exprIsNull = [](AbstractExpr *expr) {
+  auto exprIsNull = [](AbstractExpression *expr) {
     if (expr==nullptr) return true;
     auto castedExpr = dynamic_cast<AbstractLiteral *>(expr);
     return castedExpr!=nullptr && castedExpr->isNull();
@@ -1304,8 +1304,8 @@ void CompileTimeExpressionSimplifier::appendVectorToMatrix(const std::string &va
 void CompileTimeExpressionSimplifier::setMatrixVariableValue(const std::string &variableIdentifier,
                                                              int row,
                                                              int column,
-                                                             AbstractExpr *matrixElementValue) {
-  AbstractExpr *valueToStore = nullptr;
+                                                             AbstractExpression *matrixElementValue) {
+  AbstractExpression *valueToStore = nullptr;
   if (matrixElementValue!=nullptr) {
     // clone the given value and detach it from its parent
     valueToStore = matrixElementValue->clone();

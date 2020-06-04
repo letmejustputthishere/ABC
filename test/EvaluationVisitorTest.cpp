@@ -343,7 +343,7 @@ TEST(EvaluationVisitorTests, astMatrixAssignmAndGetMatrixSize) { /* NOLINT */
   Ast ast;
   AstTestingGenerator::generateAst(55, ast);
   auto result = dynamic_cast<const LiteralInt *>(ast.evaluateAst({}, false).front());
-  ASSERT_EQ(*result, *new LiteralInt(new Matrix<AbstractExpr *>(
+  ASSERT_EQ(*result, *new LiteralInt(new Matrix<AbstractExpression *>(
       {{new LiteralInt(0), new LiteralInt(0), new LiteralInt(0)},
        {new LiteralInt(0), new LiteralInt(1), new LiteralInt(2)},
        {new LiteralInt(0), new LiteralInt(2), new LiteralInt(4)}})));
@@ -357,7 +357,7 @@ TEST(EvaluationVisitorTests, astMatrixAssignmentUnknownThenKnown) { /* NOLINT */
       {"a", new LiteralInt(19)}
   };
   auto result = dynamic_cast<const LiteralInt *>(ast.evaluateAst(params, false).front());
-  auto expectedResult = new LiteralInt(new Matrix<AbstractExpr *>({{new LiteralInt(40)},
+  auto expectedResult = new LiteralInt(new Matrix<AbstractExpression *>({{new LiteralInt(40)},
                                                                    {nullptr},
                                                                    {new LiteralInt(4)}}));
   ASSERT_EQ(*result, *expectedResult);
@@ -370,7 +370,7 @@ TEST(EvaluationVisitorTests, astMatrixAssignmentKnownThenUnknown) { /* NOLINT */
       {"k", new LiteralInt(5)}
   };
   auto result = dynamic_cast<const LiteralInt *>(ast.evaluateAst(params, false).front());
-  auto expectedResult = new LiteralInt(new Matrix<AbstractExpr *>({{new LiteralInt(21),
+  auto expectedResult = new LiteralInt(new Matrix<AbstractExpression *>({{new LiteralInt(21),
                                                                     nullptr,
                                                                     nullptr,
                                                                     nullptr,

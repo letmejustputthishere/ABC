@@ -941,7 +941,7 @@ void AstTestingGenerator::genAstRewritingMultiInputY(Ast &ast) {
 }
 
 void AstTestingGenerator::genAstRewritingTwoDepth2ConesButSingleVNode(Ast &ast) {
-  AbstractExpr *aCone = new LogicalExpr(  // level 1
+  AbstractExpression *aCone = new LogicalExpr(  // level 1
       new LogicalExpr(
 
           new LogicalExpr(  // level 3
@@ -1276,7 +1276,7 @@ void AstTestingGenerator::genAstCombineMatricesInt(Ast &ast) {
       new Variable("B"),
       new LiteralInt(0),
       new LiteralInt(2));
-  auto pMatrix = new Matrix<AbstractExpr *>({{ret0, ret1, ret2}});
+  auto pMatrix = new Matrix<AbstractExpression *>({{ret0, ret1, ret2}});
   func->addStatement(new Return(new LiteralInt(pMatrix)));
   ast.setRootNode(func);
 }
@@ -1299,7 +1299,7 @@ void AstTestingGenerator::genAstCombineMatricesFloat(Ast &ast) {
   auto ret0 = new MatrixElementRef(new Variable("M"), 0, 1);
   auto ret1 = new MatrixElementRef(new Variable("B"), 0, 0);
   auto ret2 = new MatrixElementRef(new Variable("B"), 0, 2);
-  auto pMatrix = new Matrix<AbstractExpr *>({{ret0, ret1, ret2}});
+  auto pMatrix = new Matrix<AbstractExpression *>({{ret0, ret1, ret2}});
   func->addStatement(new Return(new LiteralFloat(pMatrix)));
   ast.setRootNode(func);
 }
@@ -1322,7 +1322,7 @@ void AstTestingGenerator::genAstCombineMatricesBool(Ast &ast) {
   auto ret0 = new MatrixElementRef(new Variable("M"), 0, 1);
   auto ret1 = new MatrixElementRef(new Variable("B"), 0, 0);
   auto ret2 = new MatrixElementRef(new Variable("B"), 0, 2);
-  auto pMatrix = new Matrix<AbstractExpr *>({{ret0, ret1, ret2}});
+  auto pMatrix = new Matrix<AbstractExpression *>({{ret0, ret1, ret2}});
   func->addStatement(new Return(new LiteralBool(pMatrix)));
   ast.setRootNode(func);
 }
@@ -1345,7 +1345,7 @@ void AstTestingGenerator::genAstCombineMatricesString(Ast &ast) {
   auto ret0 = new MatrixElementRef(new Variable("M"), 0, 1);
   auto ret1 = new MatrixElementRef(new Variable("B"), 0, 0);
   auto ret2 = new MatrixElementRef(new Variable("B"), 0, 2);
-  auto pMatrix = new Matrix<AbstractExpr *>({{ret0, ret1, ret2}});
+  auto pMatrix = new Matrix<AbstractExpression *>({{ret0, ret1, ret2}});
   func->addStatement(new Return(new LiteralString(pMatrix)));
   ast.setRootNode(func);
 }
@@ -1363,7 +1363,7 @@ void AstTestingGenerator::genAstCrossProduct(Ast &ast) {
   func->addStatement(new VarDecl("B", new Datatype(Types::INT), new LiteralInt(new Matrix<int>({{19, 21, 38}}))));
   auto M = [](int row, int column) { return new MatrixElementRef(new Variable("M"), row, column); };
   auto B = [](int row, int column) { return new MatrixElementRef(new Variable("B"), row, column); };
-  auto pMatrix = new Matrix<AbstractExpr *>(
+  auto pMatrix = new Matrix<AbstractExpression *>(
       {   // first row vector
           {new ArithmeticExpr(
               new ArithmeticExpr(M(0, 1), ArithmeticOp::MULTIPLICATION, B(0, 2)),
@@ -1408,13 +1408,13 @@ void AstTestingGenerator::genAstFlipMatrixElements(Ast &ast) {
 
   auto decl = new VarDecl("M", new Datatype(Types::BOOL),
                           new LiteralBool(
-                              new Matrix<AbstractExpr *>({{new LiteralBool(true), new Variable("y"),
+                              new Matrix<AbstractExpression *>({{new LiteralBool(true), new Variable("y"),
                                                            new LiteralBool(false)}})));
   func->addStatement(decl);
   auto ret0 = new MatrixElementRef(new Variable("M"), 0, 1);
   auto ret1 = new MatrixElementRef(new Variable("M"), 0, 0);
   auto ret2 = new MatrixElementRef(new Variable("M"), 0, 2);
-  auto pMatrix = new Matrix<AbstractExpr *>({{ret0, ret1, ret2}});
+  auto pMatrix = new Matrix<AbstractExpression *>({{ret0, ret1, ret2}});
   func->addStatement(new Return(new LiteralBool(pMatrix)));
   ast.setRootNode(func);
 }
@@ -1798,11 +1798,11 @@ void AstTestingGenerator::genAstGetMatrixSizeOfAbstractMatrix(Ast &ast) {
   function->addStatement(new VarDecl("val", new Datatype(Types::INT), new LiteralInt(567)));
 
   // Matrix<int> M = [ 3*factor 1*factor val*factor 5*factor 19 ];
-  auto timesFactor = [](AbstractExpr *ae) -> AbstractExpr * {
+  auto timesFactor = [](AbstractExpression *ae) -> AbstractExpression * {
     return new ArithmeticExpr(ae, MULTIPLICATION, new Variable("factor"));
   };
   function->addStatement(new VarDecl("v", new Datatype(Types::INT),
-                                     new LiteralInt(new Matrix<AbstractExpr *>({{timesFactor(new LiteralInt(3)),
+                                     new LiteralInt(new Matrix<AbstractExpression *>({{timesFactor(new LiteralInt(3)),
                                                                                  timesFactor(
                                                                                      new LiteralInt(1)),
                                                                                  timesFactor(
@@ -1813,7 +1813,7 @@ void AstTestingGenerator::genAstGetMatrixSizeOfAbstractMatrix(Ast &ast) {
 
   // return [m.dimSize(0), m.dimSize(1), m.dimSize(2)] // expected: [1 5 0] as it is a 1x5 matrix/vector
   function->addStatement(new Return(
-      new LiteralInt(new Matrix<AbstractExpr *>({{new GetMatrixSize(new Variable("v"), new LiteralInt(0)),
+      new LiteralInt(new Matrix<AbstractExpression *>({{new GetMatrixSize(new Variable("v"), new LiteralInt(0)),
                                                   new GetMatrixSize(new Variable("v"), new LiteralInt(1)),
                                                   new GetMatrixSize(new Variable("v"),
                                                                     new LiteralInt(2))}}))));
@@ -1975,7 +1975,7 @@ void AstTestingGenerator::genAstFullAssignmentToMatrix(Ast &ast) {
                                                                  {3, 3, 0}}))));
   func->addStatement(new MatrixAssignm(new MatrixElementRef(new Variable("M"), 0, 0), new LiteralInt(11)));
   func->addStatement(new VarAssignm("M", new LiteralInt(
-      new Matrix<AbstractExpr *>(
+      new Matrix<AbstractExpression *>(
           {{new MatrixElementRef(new Variable("M"), 0, 0), new LiteralInt(1), new LiteralInt(1)},
            {new MatrixElementRef(new Variable("M"), 1, 0), new LiteralInt(2), new LiteralInt(2)}}))));
   func->addStatement(new Return(new Variable("M")));

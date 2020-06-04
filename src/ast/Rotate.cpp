@@ -1,17 +1,17 @@
 #include "ast_opt/ast/Rotate.h"
 
-Rotate::Rotate(AbstractExpr *vector, AbstractExpr *rotationFactor) {
+Rotate::Rotate(AbstractExpression *vector, AbstractExpression *rotationFactor) {
   setAttributes(vector, rotationFactor);
 }
 
-Rotate::Rotate(AbstractExpr *vector, int rotationFactor) {
+Rotate::Rotate(AbstractExpression *vector, int rotationFactor) {
   setAttributes(vector, new LiteralInt(rotationFactor));
 }
 
 Rotate::Rotate() = default;
 
-AbstractExpr *Rotate::getRotationFactor() const {
-  return dynamic_cast<AbstractExpr *>(children.at(1));
+AbstractExpression *Rotate::getRotationFactor() const {
+  return dynamic_cast<AbstractExpression *>(children.at(1));
 }
 
 int Rotate::getMaxNumberChildren() {
@@ -30,8 +30,8 @@ std::string Rotate::toString(bool printChildren) const {
   return AbstractNode::toStringHelper(printChildren, {});
 }
 
-AbstractExpr *Rotate::getOperand() const {
-  return dynamic_cast<AbstractExpr *>(children.at(0));
+AbstractExpression *Rotate::getOperand() const {
+  return dynamic_cast<AbstractExpression *>(children.at(0));
 }
 
 std::string Rotate::getNodeType() const {
@@ -46,7 +46,7 @@ Rotate *Rotate::clone() const {
   return new Rotate(getOperand()->clone(), getRotationFactor()->clone());
 }
 
-void Rotate::setAttributes(AbstractExpr *pExpr, AbstractExpr *rotationFactor) {
+void Rotate::setAttributes(AbstractExpression *pExpr, AbstractExpression *rotationFactor) {
   // Rotation requires either an AbstractLiteral that is a 1-dimensional row or column vector, or a Variable in which
   // case it is not possible at compile-time to determine whether the variable satisfies the former requirement. Must
   // be checked while evaluating the AST.
@@ -62,7 +62,7 @@ void Rotate::setAttributes(AbstractExpr *pExpr, AbstractExpr *rotationFactor) {
   }
 }
 
-bool Rotate::isOneDimensionalVector(AbstractExpr *operand) {
+bool Rotate::isOneDimensionalVector(AbstractExpression *operand) {
   if (auto literal = dynamic_cast<AbstractLiteral *>(operand)) {
     auto dim = literal->getMatrix()->getDimensions();
     return dim.equals(1, -1) || dim.equals(-1, 1);
@@ -86,7 +86,7 @@ std::vector<Variable *> Rotate::getVariables() {
   return results;
 }
 
-bool Rotate::isEqual(AbstractExpr *other) {
+bool Rotate::isEqual(AbstractExpression *other) {
   if (auto otherAsRotate = dynamic_cast<Rotate *>(other)) {
     return getOperand()->isEqual(otherAsRotate->getOperand())
         && getRotationFactor()->isEqual(otherAsRotate->getRotationFactor());

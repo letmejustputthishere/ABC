@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 class AbstractNode;
-class AbstractExpr;
+class AbstractExpression;
 class AbstractStatement;
 class Ast;
 class ArithmeticExpr;
@@ -48,7 +48,7 @@ class Visitor {
  public:
   virtual void visit(AbstractNode &elem);
 
-  virtual void visit(AbstractExpr &elem);
+  virtual void visit(AbstractExpression &elem);
 
   virtual void visit(AbstractStatement &elem);
 

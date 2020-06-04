@@ -7,8 +7,8 @@ class OperatorExprFixture : public ::testing::Test {
  protected:
   Operator *opAddition;
   Operator *opMultiplication;
-  AbstractExpr *literalTwo;
-  AbstractExpr *literalThree;
+  AbstractExpression *literalTwo;
+  AbstractExpression *literalThree;
 
   OperatorExprFixture() {
     // operators

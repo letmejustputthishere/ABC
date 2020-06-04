@@ -14,7 +14,7 @@ class LiteralInt : public AbstractLiteral {
  public:
   explicit LiteralInt(AbstractMatrix *am);
 
-  explicit LiteralInt(Matrix<AbstractExpr *> *am);
+  explicit LiteralInt(Matrix<AbstractExpression *> *am);
 
   explicit LiteralInt(Matrix<int> *inputMatrix);
 
@@ -50,7 +50,7 @@ class LiteralInt : public AbstractLiteral {
 
   void print(std::ostream &str) const override;
 
-  bool isEqual(AbstractExpr *other) override;
+  bool isEqual(AbstractExpression *other) override;
 
   bool isNull() override;
 

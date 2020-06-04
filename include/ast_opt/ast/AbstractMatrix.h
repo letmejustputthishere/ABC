@@ -13,7 +13,7 @@
 class Dimension;
 class AbstractLiteral;
 class Operator;
-class AbstractExpr;
+class AbstractExpression;
 
 template<typename T>
 class Matrix;
@@ -80,13 +80,13 @@ class AbstractMatrix {
   /// \param row The row number of the element to be returned as a pointer.
   /// \param column The column number of the element to be returned as a pointer.
   /// \return An AbstractExpr pointer pointing to the value of the element at position (row, column).
-  virtual AbstractExpr *getElementAt(int row, int column) const = 0;
+  virtual AbstractExpression *getElementAt(int row, int column) const = 0;
 
   /// Sets a new value to the matrix element at the position indicated by (row, column) parameters.
   /// \param row The row index of the element where the given value should be written to.
   /// \param column The column index of the element where the given value should be written to.
   /// \param value The value to write to the given matrix position.
-  virtual void setElementAt(int row, int column, AbstractExpr *value) = 0;
+  virtual void setElementAt(int row, int column, AbstractExpression *value) = 0;
 
   /// Returns True if this AbstractMatrix is of template type AbstractExpr*, i.e., a Matrix<AbstractExpr*>.
   /// \return True if this is a Matrix<AbstractExpr*>, otherwise False.

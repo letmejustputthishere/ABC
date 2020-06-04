@@ -9,12 +9,12 @@
 
 TEST(NodeTest, testUniqueNodeId_Call) {
   auto callNode = new Call(new Function("computeX"));
-  ASSERT_EQ(callNode->AbstractExpr::getUniqueNodeId(), callNode->getUniqueNodeId());
+  ASSERT_EQ(callNode->AbstractExpression::getUniqueNodeId(), callNode->getUniqueNodeId());
 }
 
 TEST(NodeTest, testUniqueNodeId_CallExternal__UnfixedTest) {
   auto callExtNode = new CallExternal("genSecretKeys");
-  ASSERT_EQ(callExtNode->AbstractExpr::getUniqueNodeId(), callExtNode->getUniqueNodeId());
+  ASSERT_EQ(callExtNode->AbstractExpression::getUniqueNodeId(), callExtNode->getUniqueNodeId());
 }
 
 

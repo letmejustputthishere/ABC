@@ -1,7 +1,7 @@
 #include <utility>
 #include "ast_opt/visitor/EvaluationVisitor.h"
 #include "ast_opt/ast/AbstractNode.h"
-#include "ast_opt/ast/AbstractExpr.h"
+#include "ast_opt/ast/AbstractExpression.h"
 #include "ast_opt/ast/AbstractStatement.h"
 #include "ast_opt/ast/ArithmeticExpr.h"
 #include "ast_opt/ast/Block.h"
@@ -37,7 +37,7 @@ void EvaluationVisitor::visit(AbstractNode &elem) {
   results.push(std::vector<const AbstractLiteral *>());
 }
 
-void EvaluationVisitor::visit(AbstractExpr &elem) {
+void EvaluationVisitor::visit(AbstractExpression &elem) {
   Visitor::visit(elem);
 }
 

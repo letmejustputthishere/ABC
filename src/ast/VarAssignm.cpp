@@ -10,7 +10,7 @@ json VarAssignm::toJson() const {
   return j;
 }
 
-VarAssignm::VarAssignm(std::string identifier, AbstractExpr *value) : identifier(std::move(identifier)) {
+VarAssignm::VarAssignm(std::string identifier, AbstractExpression *value) : identifier(std::move(identifier)) {
   setAttribute(value);
 }
 
@@ -22,8 +22,8 @@ const std::string &VarAssignm::getIdentifier() const {
   return identifier;
 }
 
-AbstractExpr *VarAssignm::getValue() const {
-  return dynamic_cast<AbstractExpr *>(children.at(0));
+AbstractExpression *VarAssignm::getValue() const {
+  return dynamic_cast<AbstractExpression *>(children.at(0));
 }
 
 std::string VarAssignm::getNodeType() const {
@@ -50,7 +50,7 @@ int VarAssignm::getMaxNumberChildren() {
   return 1;
 }
 
-void VarAssignm::setAttribute(AbstractExpr *assignmentValue) {
+void VarAssignm::setAttribute(AbstractExpression *assignmentValue) {
   removeChildren();
   children = {assignmentValue};
   for (auto &c: children) {

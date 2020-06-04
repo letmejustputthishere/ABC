@@ -26,10 +26,10 @@ LogicalExpr *LogicalExpr::clone() const {
 std::string LogicalExpr::toString(bool printChildren) const {
   return AbstractNode::toStringHelper(printChildren, {});
 }
-AbstractExpr *LogicalExpr::getLeft() const {
+AbstractExpression *LogicalExpr::getLeft() const {
   return left;
 }
-void LogicalExpr::setLeft(AbstractExpr *newleft) {
+void LogicalExpr::setLeft(AbstractExpression *newleft) {
   left = newleft;
   if (left) left->setParent(this);
 }
@@ -37,7 +37,7 @@ void LogicalExpr::setOperator(Operator *newOperator) {
   op = newOperator;
   if (op) op->setParent(this);
 }
-void LogicalExpr::setRight(AbstractExpr *newRight) {
+void LogicalExpr::setRight(AbstractExpression *newRight) {
   right = newRight;
   if (right) right->setParent(this);
 }
@@ -55,6 +55,6 @@ void LogicalExpr::removeChildren() {
 Operator *LogicalExpr::getOperator() const {
   return op;
 }
-AbstractExpr *LogicalExpr::getRight() const {
+AbstractExpression *LogicalExpr::getRight() const {
   return right;
 }

@@ -3,14 +3,14 @@
 
 #include <string>
 #include "AbstractStatement.h"
-#include "AbstractExpr.h"
+#include "AbstractExpression.h"
 
 class VarAssignm : public AbstractStatement {
  private:
   std::string identifier;
 
  public:
-  VarAssignm(std::string identifier, AbstractExpr *value);
+  VarAssignm(std::string identifier, AbstractExpression *value);
 
   ~VarAssignm() override;
 
@@ -22,7 +22,7 @@ class VarAssignm : public AbstractStatement {
 
   [[nodiscard]] const std::string &getIdentifier() const;
 
-  [[nodiscard]] AbstractExpr *getValue() const;
+  [[nodiscard]] AbstractExpression *getValue() const;
 
   [[nodiscard]] std::string getNodeType() const override;
 
@@ -34,7 +34,7 @@ class VarAssignm : public AbstractStatement {
 
   int getMaxNumberChildren() override;
 
-  void setAttribute(AbstractExpr *assignmentValue);
+  void setAttribute(AbstractExpression *assignmentValue);
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
   std::vector<AbstractNode *> getChildren() override;

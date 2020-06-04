@@ -7,7 +7,9 @@
 #include <string>
 #include <typeinfo>
 #include <nlohmann/json.hpp>
-#include "ast_opt/visitor/Visitor.h"
+
+/// forward declaration of Visitor class from ast_opt/visitor/Visitor.h
+class Visitor;
 
 /// Forward Iterator that redirects all calls to a (polymorphic) BaseIteratorImpl iterator
 template<typename T> class NodeIterator;

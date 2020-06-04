@@ -132,7 +132,7 @@ class CompileTimeExpressionSimplifier : public Visitor {
   /** @defgroup visit Methods implementing the logic of the visitor for each node type.
   *  @{
   */
-  void visit(AbstractExpr &elem) override;
+  void visit(AbstractExpression &elem) override;
 
   void visit(AbstractNode &elem) override;
 
@@ -216,7 +216,7 @@ class CompileTimeExpressionSimplifier : public Visitor {
   /// \throws std::invalid_argument exception if the node does not have a known value. Must be checked before using the
   ///         hasKnownValue method.
   /// \return The node's value as AbstractExpr.
-  AbstractExpr *getKnownValue(AbstractNode *node);
+  AbstractExpression *getKnownValue(AbstractNode *node);
 
   /// Evaluates a subtree, i.e., a node and all of its children by using the EvaluationVisitor.
   /// \param node The subtree's root node to be evaluated.
@@ -245,8 +245,8 @@ class CompileTimeExpressionSimplifier : public Visitor {
   /// \param trueValue The value to be used for the case that the condition evaluates to True.
   /// \param falseValue The value to be used for the case that the condition evaluates to False.
   /// \return An arithmetic expression of the form condition*trueValue + (1-b)*falseValue.
-  static AbstractExpr *generateIfDependentValue(
-      AbstractExpr *condition, AbstractExpr *trueValue, AbstractExpr *falseValue);
+  static AbstractExpression *generateIfDependentValue(
+      AbstractExpression *condition, AbstractExpression *trueValue, AbstractExpression *falseValue);
 
 
   /// Checks whether the given node is queued for deletion. Deletion will be carried out at the end of the traversal.
@@ -314,7 +314,7 @@ class CompileTimeExpressionSimplifier : public Visitor {
   void setMatrixVariableValue(const std::string &variableIdentifier,
                               int row,
                               int column,
-                              AbstractExpr *matrixElementValue);
+                              AbstractExpression *matrixElementValue);
 
   /// Appends a row/column to a matrix or overwrites an existing row/column. This implements variable assignments of
   /// the form M[idx] = vec; where vec is either a row vector, e.g., [4 2 1] or a column vector, e.g., [4; 2; 1].

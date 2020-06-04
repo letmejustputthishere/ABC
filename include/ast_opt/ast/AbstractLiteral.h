@@ -6,14 +6,14 @@
 #include <unordered_map>
 #include <string>
 #include <vector>
-#include "AbstractExpr.h"
+#include "AbstractExpression.h"
 #include "Datatype.h"
 #include "ast_opt/ast/AbstractMatrix.h"
 
 class RandLiteralGen;
 
 
-class AbstractLiteral : public AbstractExpr {
+class AbstractLiteral : public AbstractExpression {
  protected:
   /// Stores the values of this Literal subtype. For example, for LiteralInt It can be a Matrix<int> but can also be a
   /// Matrix<AbstractExpr*> in the case that this matrix contains unevaluated expression, e.g., MatrixElementRef.

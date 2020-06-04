@@ -2,7 +2,7 @@
 #define AST_OPTIMIZER_INCLUDE_AST_OPT_AST_IF_H_
 
 #include "AbstractStatement.h"
-#include "AbstractExpr.h"
+#include "AbstractExpression.h"
 #include <string>
 
 // Designed to be called only with T = (const) AbstractNode
@@ -53,26 +53,26 @@ class IfIteratorImpl : public BaseIteratorImpl<T> {
 
 class If : public AbstractStatement {
  private:
-  std::unique_ptr<AbstractExpr> condition = nullptr;
+  std::unique_ptr<AbstractExpression> condition = nullptr;
   std::unique_ptr<Block> thenBranch = nullptr;
   std::unique_ptr<Block> elseBranch = nullptr;
  public:
   ~If() override;
 
-  If(std::unique_ptr<AbstractExpr>&& condition, std::unique_ptr<AbstractStatement>&& thenBranch, std::unique_ptr<
+  If(std::unique_ptr<AbstractExpression>&& condition, std::unique_ptr<AbstractStatement>&& thenBranch, std::unique_ptr<
       AbstractStatement>&& elseBranch = nullptr);
 
   std::unique_ptr<If> clone() const;
 
   std::unique_ptr<AbstractNode> clone() const override;
 
-  [[nodiscard]] const AbstractExpr * getCondition() const;
+  [[nodiscard]] const AbstractExpression * getCondition() const;
 
   [[nodiscard]] const Block * getThenBranch() const;
 
   [[nodiscard]] const Block * getElseBranch() const;
 
-  void setCondition(std::unique_ptr<AbstractExpr> &&newCondition);
+  void setCondition(std::unique_ptr<AbstractExpression> &&newCondition);
 
   void setThenBranch(std::unique_ptr<Block> &&newThenBranch);
 

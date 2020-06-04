@@ -2,13 +2,13 @@
 #include "ast_opt/ast/LiteralBool.h"
 #include "ast_opt/ast/Matrix.h"
 
-LiteralBool::LiteralBool(Matrix<AbstractExpr *> *am) : AbstractLiteral(am) {}
+LiteralBool::LiteralBool(Matrix<AbstractExpression *> *am) : AbstractLiteral(am) {}
 
 LiteralBool::LiteralBool(AbstractMatrix *am) : AbstractLiteral(am) {}
 
 LiteralBool::LiteralBool(bool value) : AbstractLiteral(new Matrix(value)) {}
 
-LiteralBool::LiteralBool() : AbstractLiteral(new Matrix<AbstractExpr *>()) {}
+LiteralBool::LiteralBool() : AbstractLiteral(new Matrix<AbstractExpression *>()) {}
 
 LiteralBool::LiteralBool(Matrix<bool> *inputMatrix) : AbstractLiteral(inputMatrix) {}
 
@@ -70,7 +70,7 @@ LiteralBool *LiteralBool::clone() const {
   return new LiteralBool(matrix->clone());
 }
 
-bool LiteralBool::isEqual(AbstractExpr *other) {
+bool LiteralBool::isEqual(AbstractExpression *other) {
   auto otherLiteralBool = dynamic_cast<LiteralBool *>(other);
   return otherLiteralBool!=nullptr && *this==*otherLiteralBool;
 }

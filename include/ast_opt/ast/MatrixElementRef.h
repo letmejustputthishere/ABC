@@ -6,15 +6,15 @@
 #include <string>
 #include <unordered_map>
 
-class MatrixElementRef : public AbstractExpr {
+class MatrixElementRef : public AbstractExpression {
  public:
-  MatrixElementRef(AbstractExpr *mustEvaluateToAbstractLiteral, AbstractExpr *rowIndex, AbstractExpr *columnIndex);
+  MatrixElementRef(AbstractExpression *mustEvaluateToAbstractLiteral, AbstractExpression *rowIndex, AbstractExpression *columnIndex);
 
-  MatrixElementRef(AbstractExpr *mustEvaluateToAbstractLiteral, AbstractExpr *rowIndex);
+  MatrixElementRef(AbstractExpression *mustEvaluateToAbstractLiteral, AbstractExpression *rowIndex);
 
-  MatrixElementRef(AbstractExpr *mustEvaluateToAbstractLiteral, int rowIndex, int columnIndex);
+  MatrixElementRef(AbstractExpression *mustEvaluateToAbstractLiteral, int rowIndex, int columnIndex);
 
-  MatrixElementRef(AbstractExpr *mustEvaluateToAbstractLiteral, int rowIndex);
+  MatrixElementRef(AbstractExpression *mustEvaluateToAbstractLiteral, int rowIndex);
 
   [[nodiscard]] std::string getNodeType() const override;
 
@@ -30,19 +30,19 @@ class MatrixElementRef : public AbstractExpr {
 
   bool contains(Variable *var) override;
 
-  bool isEqual(AbstractExpr *other) override;
+  bool isEqual(AbstractExpression *other) override;
 
   int getMaxNumberChildren() override;
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  [[nodiscard]] AbstractExpr *getOperand() const;
+  [[nodiscard]] AbstractExpression *getOperand() const;
 
-  [[nodiscard]] AbstractExpr *getRowIndex() const;
+  [[nodiscard]] AbstractExpression *getRowIndex() const;
 
-  [[nodiscard]] AbstractExpr *getColumnIndex() const;
+  [[nodiscard]] AbstractExpression *getColumnIndex() const;
 
-  void setAttributes(AbstractExpr *elementContainingMatrix, AbstractExpr *rowIndex, AbstractExpr *columnIndex);
+  void setAttributes(AbstractExpression *elementContainingMatrix, AbstractExpression *rowIndex, AbstractExpression *columnIndex);
   std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
   std::vector<const AbstractNode *> getChildren() const override;

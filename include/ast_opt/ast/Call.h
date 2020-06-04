@@ -3,11 +3,11 @@
 
 #include <string>
 #include <vector>
-#include "AbstractExpr.h"
+#include "AbstractExpression.h"
 #include "FunctionParameter.h"
 #include "AbstractStatement.h"
 
-class Call : public AbstractExpr {
+class Call : public AbstractExpression {
  private:
   ParameterList * arguments;
   Function* func;
@@ -37,7 +37,7 @@ class Call : public AbstractExpr {
   std::vector<std::string> getVariableIdentifiers() override;
 
   std::vector<Variable *> getVariables() override;
-  AbstractBinaryExpr *contains(AbstractBinaryExpr *aexpTemplate, AbstractExpr *excludedSubtree) override;
+  AbstractBinaryExpr *contains(AbstractBinaryExpr *aexpTemplate, AbstractExpression *excludedSubtree) override;
   std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
   std::vector<const AbstractNode *> getChildren() const override;

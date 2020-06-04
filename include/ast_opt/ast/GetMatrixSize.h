@@ -1,7 +1,7 @@
 #ifndef AST_OPTIMIZER_INCLUDE_AST_OPT_AST_GETMATRIXSIZE_H_
 #define AST_OPTIMIZER_INCLUDE_AST_OPT_AST_GETMATRIXSIZE_H_
 
-#include "AbstractExpr.h"
+#include "AbstractExpression.h"
 #include <string>
 
 /**
@@ -16,15 +16,15 @@
  * generating the FHE code (e.g., WOOL) must handle the method's implementation by replacing the function's call by its
  * return value (i.e., the requested matrix dimension).
  */
-class GetMatrixSize : public AbstractExpr {
+class GetMatrixSize : public AbstractExpression {
  public:
-  GetMatrixSize(AbstractExpr *matrix, AbstractExpr *requestedDimension);
+  GetMatrixSize(AbstractExpression *matrix, AbstractExpression *requestedDimension);
 
   ~GetMatrixSize() override;
 
   [[nodiscard]] json toJson() const override;
 
-  bool isEqual(AbstractExpr *other) override;
+  bool isEqual(AbstractExpression *other) override;
 
   [[nodiscard]] std::string getNodeType() const override;
 
@@ -36,9 +36,9 @@ class GetMatrixSize : public AbstractExpr {
 
   GetMatrixSize *clone() const override;
 
-  [[nodiscard]] AbstractExpr *getMatrixOperand() const;
+  [[nodiscard]] AbstractExpression *getMatrixOperand() const;
 
-  [[nodiscard]] AbstractExpr *getDimensionParameter() const;
+  [[nodiscard]] AbstractExpression *getDimensionParameter() const;
 
   std::vector<std::string> getVariableIdentifiers() override;
 

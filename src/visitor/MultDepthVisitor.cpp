@@ -133,7 +133,7 @@ void MultDepthVisitor::visit(Ast &elem) {
 
 void MultDepthVisitor::analyzeMultiplicativeDepth(const std::string &varIdentifier,
                                                   AbstractStatement *stmt,
-                                                  AbstractExpr *initializer) {
+                                                  AbstractExpression *initializer) {
   // if VarDecl contains ArithmeticExpr or contains LogicalExpr
   std::string initializerNodeType = initializer->getNodeType();
   if (initializerNodeType==ArithmeticExpr().getNodeType() || initializerNodeType==LogicalExpr().getNodeType()) {

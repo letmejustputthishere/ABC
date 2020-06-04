@@ -2,7 +2,7 @@
 #define AST_OPTIMIZER_INCLUDE_AST_OPT_MOCKUP_CLASSES_CIPHERTEXT_H_
 
 #include <vector>
-#include <ast_opt/ast/AbstractExpr.h>
+#include <ast_opt/ast/AbstractExpression.h>
 
 #ifdef HAVE_SEAL_BFV
 #include <seal/seal.h>

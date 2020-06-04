@@ -1,20 +1,20 @@
 #ifndef AST_OPTIMIZER_INCLUDE_AST_OPT_AST_OPERATOREXPR_H_
 #define AST_OPTIMIZER_INCLUDE_AST_OPT_AST_OPERATOREXPR_H_
 
-#include "AbstractExpr.h"
+#include "AbstractExpression.h"
 #include <string>
 #include <vector>
 
-class OperatorExpr : public AbstractExpr {
+class OperatorExpr : public AbstractExpression {
  private:
   Operator* op;
-  std::vector<AbstractExpr*> operands;
+  std::vector<AbstractExpression*> operands;
  public:
   OperatorExpr();
 
   explicit OperatorExpr(Operator *op);
 
-  OperatorExpr(Operator *op, std::vector<AbstractExpr *> operands);
+  OperatorExpr(Operator *op, std::vector<AbstractExpression *> operands);
 
   OperatorExpr *clone() const override;
 
@@ -28,25 +28,25 @@ class OperatorExpr : public AbstractExpr {
 
   void setOperator(Operator *op);
 
-  void addOperand(AbstractExpr *operand);
+  void addOperand(AbstractExpression *operand);
 
-  void addOperands(std::vector<AbstractExpr *> operands);
+  void addOperands(std::vector<AbstractExpression *> operands);
 
-  void removeOperand(AbstractExpr * operand);
+  void removeOperand(AbstractExpression * operand);
 
   [[nodiscard]] Operator *getOperator() const;
 
-  [[nodiscard]] std::vector<AbstractExpr *> getOperands() const;
+  [[nodiscard]] std::vector<AbstractExpression *> getOperands() const;
 
   // Methods for backwards compatibility to AbstractBinaryExpr
 
-  [[nodiscard]] AbstractExpr *getRight() const;
+  [[nodiscard]] AbstractExpression *getRight() const;
 
-  [[nodiscard]] AbstractExpr *getLeft() const;
+  [[nodiscard]] AbstractExpression *getLeft() const;
 
 
 
-  void setAttributes(Operator *newOperator, std::vector<AbstractExpr *> newOperands);
+  void setAttributes(Operator *newOperator, std::vector<AbstractExpression *> newOperands);
 
   [[nodiscard]] bool isLogicalExpr() const;
 
@@ -54,9 +54,9 @@ class OperatorExpr : public AbstractExpr {
 
   [[nodiscard]] bool isUnaryExpr() const;
 
-  OperatorExpr(AbstractExpr *lhsOperand, Operator *op, AbstractExpr *rhsOperand);
+  OperatorExpr(AbstractExpression *lhsOperand, Operator *op, AbstractExpression *rhsOperand);
 
-  bool isEqual(AbstractExpr *other) override;
+  bool isEqual(AbstractExpression *other) override;
 
   void replaceChild(AbstractNode *originalChild, AbstractNode *newChildToBeAdded) override;
 

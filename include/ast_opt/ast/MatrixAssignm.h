@@ -7,11 +7,11 @@
 
 class MatrixAssignm : public AbstractStatement {
  public:
-  MatrixAssignm(MatrixElementRef *assignmentTarget, AbstractExpr *value);
+  MatrixAssignm(MatrixElementRef *assignmentTarget, AbstractExpression *value);
 
   ~MatrixAssignm() override;
 
-  void setAttributes(AbstractExpr *assignmTarget, AbstractExpr *value);
+  void setAttributes(AbstractExpression *assignmTarget, AbstractExpression *value);
 
   [[nodiscard]] std::string getNodeType() const override;
 
@@ -31,7 +31,7 @@ class MatrixAssignm : public AbstractStatement {
 
   [[nodiscard]] MatrixElementRef *getAssignmTarget() const;
 
-  [[nodiscard]] AbstractExpr *getValue() const;
+  [[nodiscard]] AbstractExpression *getValue() const;
 
   [[nodiscard]] std::string getAssignmTargetString() const;
   std::vector<AbstractNode *> getChildren() override;

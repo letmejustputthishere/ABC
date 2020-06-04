@@ -1,5 +1,5 @@
 #include "ast_opt/ast/For.h"
-#include "ast_opt/ast/AbstractExpr.h"
+#include "ast_opt/ast/AbstractExpression.h"
 #include "ast_opt/ast/Block.h"
 
 std::string For::getNodeType() const {
@@ -11,7 +11,7 @@ void For::accept(Visitor &v) {
 }
 
 For::For(AbstractStatement *initializer,
-         AbstractExpr *condition,
+         AbstractExpression *condition,
          AbstractStatement *update,
          AbstractStatement *statementToBeExecuted) {
   setAttributes(initializer, condition, update, statementToBeExecuted);
@@ -21,8 +21,8 @@ Block *For::getInitializer() const {
   return dynamic_cast<Block *>(children.at(0));
 }
 
-AbstractExpr *For::getCondition() const {
-  return dynamic_cast<AbstractExpr *>(children.at(1));
+AbstractExpression *For::getCondition() const {
+  return dynamic_cast<AbstractExpression *>(children.at(1));
 }
 
 Block *For::getUpdate() const {
@@ -34,7 +34,7 @@ Block *For::getBody() const {
 }
 
 void For::setAttributes(AbstractStatement *initializer,
-                        AbstractExpr *condition,
+                        AbstractExpression *condition,
                         AbstractStatement *update,
                         AbstractStatement *body) {
   removeChildren();

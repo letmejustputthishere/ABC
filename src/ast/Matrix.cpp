@@ -6,7 +6,7 @@ void throwUnknownOperatorException() {
 }
 
 template<>
-bool Matrix<AbstractExpr *>::operator==(const Matrix &rhs) const {
+bool Matrix<AbstractExpression *>::operator==(const Matrix &rhs) const {
   if (dim!=rhs.dim) return false;
 
   for (int i = 0; i < values.size(); ++i) {
@@ -234,37 +234,37 @@ bool Matrix<std::string>::isScalar() const {
 // - Matrix<AbstractExpr*>
 
 template<>
-AbstractExpr *Matrix<int>::getElementAt(int row, int column) const {
+AbstractExpression *Matrix<int>::getElementAt(int row, int column) const {
   boundCheckMatrixAccess(row, column);
   return new LiteralInt(values[row][column]);
 }
 
 template<>
-AbstractExpr *Matrix<float>::getElementAt(int row, int column) const {
+AbstractExpression *Matrix<float>::getElementAt(int row, int column) const {
   boundCheckMatrixAccess(row, column);
   return new LiteralFloat(values[row][column]);
 }
 
 template<>
-AbstractExpr *Matrix<bool>::getElementAt(int row, int column) const {
+AbstractExpression *Matrix<bool>::getElementAt(int row, int column) const {
   boundCheckMatrixAccess(row, column);
   return new LiteralBool(values[row][column]);
 }
 
 template<>
-AbstractExpr *Matrix<double>::getElementAt(int row, int column) const {
+AbstractExpression *Matrix<double>::getElementAt(int row, int column) const {
   boundCheckMatrixAccess(row, column);
   return new LiteralFloat(values[row][column]);
 }
 
 template<>
-AbstractExpr *Matrix<std::string>::getElementAt(int row, int column) const {
+AbstractExpression *Matrix<std::string>::getElementAt(int row, int column) const {
   boundCheckMatrixAccess(row, column);
   return new LiteralString(values[row][column]);
 }
 
 template<>
-AbstractExpr *Matrix<AbstractExpr *>::getElementAt(int row, int column) const {
+AbstractExpression *Matrix<AbstractExpression *>::getElementAt(int row, int column) const {
   boundCheckMatrixAccess(row, column);
   return values[row][column];
 }
@@ -273,8 +273,8 @@ AbstractExpr *Matrix<AbstractExpr *>::getElementAt(int row, int column) const {
 // - Matrix<AbstractExpr*>
 
 template<>
-Matrix<AbstractExpr *>::Matrix(std::initializer_list<std::vector<AbstractExpr *>> init_list)  /* NOLINT intentionally not explicit */{
-  std::vector<std::vector<AbstractExpr*>> v;
+Matrix<AbstractExpression *>::Matrix(std::initializer_list<std::vector<AbstractExpression *>> init_list)  /* NOLINT intentionally not explicit */{
+  std::vector<std::vector<AbstractExpression*>> v;
   for (auto it = init_list.begin(); it!=init_list.end(); ++it) {
     v.push_back(*it);
   }
@@ -307,7 +307,7 @@ Matrix<AbstractExpr *>::Matrix(std::initializer_list<std::vector<AbstractExpr *>
 }
 
 template<>
-Matrix<AbstractExpr *>::Matrix(std::vector<std::vector<AbstractExpr *>> inputMatrix)  /* NOLINT intentionally not explicit */
+Matrix<AbstractExpression *>::Matrix(std::vector<std::vector<AbstractExpression *>> inputMatrix)  /* NOLINT intentionally not explicit */
     : values(std::move(inputMatrix)), dim(Dimension(values.size(), values.size()==0 ? 0 : values.at(0).size())) {
   // In a Matrix<AbstractExpr*> it is needed that we use the parent-child relationship by attaching each of the matrix
   // elements as a child to the Matrix object. This is needed, for example, in the CompileTimeExpressionSimplifier where
@@ -344,7 +344,7 @@ Matrix<AbstractExpr *>::Matrix(std::vector<std::vector<AbstractExpr *>> inputMat
 // - Matrix<std::string>
 
 template<>
-[[nodiscard]] json Matrix<AbstractExpr *>::toJson() const {
+[[nodiscard]] json Matrix<AbstractExpression *>::toJson() const {
   json jsonOutput = json::array();
   for (const auto &matrixRow : values) {
     json jsonMatrixRow = json::array();
@@ -427,22 +427,22 @@ json Matrix<std::string>::toJson() const {
 // - Matrix<AbstractExpr*>
 
 template<>
-Matrix<AbstractExpr *> *Matrix<AbstractExpr *>::clone() const {
-  std::vector<std::vector<AbstractExpr *>> clonedMatrix(dim.numRows, std::vector<AbstractExpr *>(dim.numColumns));
+Matrix<AbstractExpression *> *Matrix<AbstractExpression *>::clone() const {
+  std::vector<std::vector<AbstractExpression *>> clonedMatrix(dim.numRows, std::vector<AbstractExpression *>(dim.numColumns));
   // we need to clone each AbstractExpr contained in this matrix
   for (int i = 0; i < values.size(); ++i) {
     for (int j = 0; j < values[i].size(); ++j) {
       clonedMatrix[i][j] = values[i][j]->clone();
     }
   }
-  return new Matrix<AbstractExpr *>(clonedMatrix);
+  return new Matrix<AbstractExpression *>(clonedMatrix);
 }
 
 // ===== addElementToStringStream ==========
 // - Matrix<AbstractExpr*>
 
 template<>
-void Matrix<AbstractExpr *>::addElementToStringStream(AbstractExpr *elem, std::stringstream &s) {
+void Matrix<AbstractExpression *>::addElementToStringStream(AbstractExpression *elem, std::stringstream &s) {
   // Although wrongly indicated by CLion, this method is actually used, see Matrix<T>::toString().
   s << *elem;
 }
@@ -456,14 +456,14 @@ void Matrix<AbstractExpr *>::addElementToStringStream(AbstractExpr *elem, std::s
 
 
 template<>
-void Matrix<AbstractExpr *>::setElementAt(int row, int column, AbstractExpr *element) {
+void Matrix<AbstractExpression *>::setElementAt(int row, int column, AbstractExpression *element) {
   checkBoundsAndResizeMatrix(row, column);
   values[row][column] = element;
   setDimension(Dimension(values.size(), values.at(0).size()));
 }
 
 template<>
-void Matrix<int>::setElementAt(int row, int column, AbstractExpr *element) {
+void Matrix<int>::setElementAt(int row, int column, AbstractExpression *element) {
   if (auto elementAsLiteral = dynamic_cast<LiteralInt *>(element)) {
     checkBoundsAndResizeMatrix(row, column);
     values[row][column] = elementAsLiteral->getValue();
@@ -474,7 +474,7 @@ void Matrix<int>::setElementAt(int row, int column, AbstractExpr *element) {
 }
 
 template<>
-void Matrix<float>::setElementAt(int row, int column, AbstractExpr *element) {
+void Matrix<float>::setElementAt(int row, int column, AbstractExpression *element) {
   if (auto elementAsLiteral = dynamic_cast<LiteralFloat *>(element)) {
     checkBoundsAndResizeMatrix(row, column);
     values[row][column] = elementAsLiteral->getValue();
@@ -485,7 +485,7 @@ void Matrix<float>::setElementAt(int row, int column, AbstractExpr *element) {
 }
 
 template<>
-void Matrix<bool>::setElementAt(int row, int column, AbstractExpr *element) {
+void Matrix<bool>::setElementAt(int row, int column, AbstractExpression *element) {
   if (auto elementAsLiteral = dynamic_cast<LiteralBool *>(element)) {
     checkBoundsAndResizeMatrix(row, column);
     values[row][column] = elementAsLiteral->getValue();
@@ -496,7 +496,7 @@ void Matrix<bool>::setElementAt(int row, int column, AbstractExpr *element) {
 }
 
 template<>
-void Matrix<std::string>::setElementAt(int row, int column, AbstractExpr *element) {
+void Matrix<std::string>::setElementAt(int row, int column, AbstractExpression *element) {
   if (auto elementAsLiteral = dynamic_cast<LiteralString *>(element)) {
     checkBoundsAndResizeMatrix(row, column);
     values[row][column] = elementAsLiteral->getValue();
@@ -510,11 +510,11 @@ void Matrix<std::string>::setElementAt(int row, int column, AbstractExpr *elemen
 // - Matrix<AbstractExpr*>
 
 template<>
-void Matrix<AbstractExpr *>::replaceChild(AbstractNode *originalChild, AbstractNode *newChildToBeAdded) {
+void Matrix<AbstractExpression *>::replaceChild(AbstractNode *originalChild, AbstractNode *newChildToBeAdded) {
   for (int i = 0; i < values.size(); ++i) {
     for (int j = 0; j < values[i].size(); ++j) {
       if (values[i][j]==originalChild) {
-        setElementAt(i, j, dynamic_cast<AbstractExpr *>(newChildToBeAdded));
+        setElementAt(i, j, dynamic_cast<AbstractExpression *>(newChildToBeAdded));
         break;
       }
     }
@@ -526,6 +526,6 @@ void Matrix<AbstractExpr *>::replaceChild(AbstractNode *originalChild, AbstractN
 // - Matrix<AbstractExpr*>
 
 template<>
-bool Matrix<AbstractExpr *>::containsAbstractExprs() {
+bool Matrix<AbstractExpression *>::containsAbstractExprs() {
   return true;
 }

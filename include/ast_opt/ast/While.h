@@ -2,12 +2,12 @@
 #define AST_OPTIMIZER_INCLUDE_AST_OPT_AST_WHILE_H_
 
 #include "AbstractStatement.h"
-#include "AbstractExpr.h"
+#include "AbstractExpression.h"
 #include <string>
 
 class While : public AbstractStatement {
  public:
-  While(AbstractExpr *condition, AbstractStatement *body);
+  While(AbstractExpression *condition, AbstractStatement *body);
 
   While *clone() const override;
 
@@ -15,13 +15,13 @@ class While : public AbstractStatement {
 
   void accept(Visitor &v) override;
 
-  [[nodiscard]] AbstractExpr *getCondition() const;
+  [[nodiscard]] AbstractExpression *getCondition() const;
 
   [[nodiscard]] AbstractStatement *getBody() const;
 
   [[nodiscard]] std::string getNodeType() const override;
 
-  void setAttributes(AbstractExpr *loopCondition, AbstractStatement *loopBody);
+  void setAttributes(AbstractExpression *loopCondition, AbstractStatement *loopBody);
 
   int getMaxNumberChildren() override;
   std::vector<AbstractNode *> getChildren() override;

@@ -2,7 +2,7 @@
 #define AST_OPTIMIZER_INCLUDE_AST_OPT_AST_LOGICALEXPR_H_
 
 #include "Operator.h"
-#include "AbstractExpr.h"
+#include "AbstractExpression.h"
 #include "AbstractLiteral.h"
 #include "LiteralInt.h"
 #include "LiteralBool.h"
@@ -13,9 +13,9 @@
 
 class LogicalExpr : public AbstractBinaryExpr {
  private:
-  AbstractExpr *left;
+  AbstractExpression *left;
   Operator *op;
-  AbstractExpr *right;
+  AbstractExpression *right;
  public:
   LogicalExpr();
 
@@ -23,12 +23,12 @@ class LogicalExpr : public AbstractBinaryExpr {
 
   template<typename T1, typename T2>
   LogicalExpr(T1 left, LogCompOp op, T2 right) {
-    setAttributes(AbstractExpr::createParam(left), new Operator(op), AbstractExpr::createParam(right));
+    setAttributes(AbstractExpression::createParam(left), new Operator(op), AbstractExpression::createParam(right));
   }
 
   template<typename T1, typename T2>
   LogicalExpr(T1 left, Operator *op, T2 right) {
-    setAttributes(AbstractExpr::createParam(left), op, AbstractExpr::createParam(right));
+    setAttributes(AbstractExpression::createParam(left), op, AbstractExpression::createParam(right));
   }
 
   LogicalExpr *clone() const override;
@@ -39,14 +39,14 @@ class LogicalExpr : public AbstractBinaryExpr {
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  AbstractExpr *getLeft() const override;
-  void setLeft(AbstractExpr *newleft) override;
+  AbstractExpression *getLeft() const override;
+  void setLeft(AbstractExpression *newleft) override;
   void setOperator(Operator *newOperator) override;
-  void setRight(AbstractExpr *newRight) override;
+  void setRight(AbstractExpression *newRight) override;
   std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
   Operator *getOperator() const override;
-  AbstractExpr *getRight() const override;
+  AbstractExpression *getRight() const override;
   std::vector<const AbstractNode *> getChildren() const override;
 };
 

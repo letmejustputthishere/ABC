@@ -42,7 +42,7 @@ class EvaluationVisitor : public Visitor {
 
   EvaluationVisitor();
 
-  void visit(AbstractExpr &elem) override;
+  void visit(AbstractExpression &elem) override;
 
   void visit(AbstractNode &elem) override;
 

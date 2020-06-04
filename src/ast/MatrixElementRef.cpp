@@ -1,21 +1,21 @@
 #include "ast_opt/ast/MatrixElementRef.h"
 #include "ast_opt/ast/Variable.h"
 
-MatrixElementRef::MatrixElementRef(AbstractExpr *mustEvaluateToAbstractLiteral,
+MatrixElementRef::MatrixElementRef(AbstractExpression *mustEvaluateToAbstractLiteral,
                                    int rowIndex,
                                    int columnIndex) {
   setAttributes(mustEvaluateToAbstractLiteral, new LiteralInt(rowIndex), new LiteralInt(columnIndex));
 }
 
-MatrixElementRef::MatrixElementRef(AbstractExpr *mustEvaluateToAbstractLiteral,
-                                   AbstractExpr *rowIndex,
-                                   AbstractExpr *columnIndex) {
+MatrixElementRef::MatrixElementRef(AbstractExpression *mustEvaluateToAbstractLiteral,
+                                   AbstractExpression *rowIndex,
+                                   AbstractExpression *columnIndex) {
   setAttributes(mustEvaluateToAbstractLiteral, rowIndex, columnIndex);
 }
 
-void MatrixElementRef::setAttributes(AbstractExpr *elementContainingMatrix,
-                                     AbstractExpr *rowIndex,
-                                     AbstractExpr *columnIndex) {
+void MatrixElementRef::setAttributes(AbstractExpression *elementContainingMatrix,
+                                     AbstractExpression *rowIndex,
+                                     AbstractExpression *columnIndex) {
   removeChildren();
   children = {elementContainingMatrix, rowIndex, columnIndex};
   for(auto &c: children) {
@@ -23,11 +23,11 @@ void MatrixElementRef::setAttributes(AbstractExpr *elementContainingMatrix,
   }
 }
 
-MatrixElementRef::MatrixElementRef(AbstractExpr *mustEvaluateToAbstractLiteral, AbstractExpr *rowIndex) {
+MatrixElementRef::MatrixElementRef(AbstractExpression *mustEvaluateToAbstractLiteral, AbstractExpression *rowIndex) {
   setAttributes(mustEvaluateToAbstractLiteral, rowIndex, nullptr);
 }
 
-MatrixElementRef::MatrixElementRef(AbstractExpr *mustEvaluateToAbstractLiteral, int rowIndex) {
+MatrixElementRef::MatrixElementRef(AbstractExpression *mustEvaluateToAbstractLiteral, int rowIndex) {
   setAttributes(mustEvaluateToAbstractLiteral, new LiteralInt(rowIndex), nullptr);
 }
 
@@ -56,16 +56,16 @@ json MatrixElementRef::toJson() const {
   return j;
 }
 
-AbstractExpr *MatrixElementRef::getOperand() const {
-  return dynamic_cast<AbstractExpr *>(children.at(0));
+AbstractExpression *MatrixElementRef::getOperand() const {
+  return dynamic_cast<AbstractExpression *>(children.at(0));
 }
 
-AbstractExpr *MatrixElementRef::getRowIndex() const {
-  return dynamic_cast<AbstractExpr *>(children.at(1));
+AbstractExpression *MatrixElementRef::getRowIndex() const {
+  return dynamic_cast<AbstractExpression *>(children.at(1));
 }
 
-AbstractExpr *MatrixElementRef::getColumnIndex() const {
-  return dynamic_cast<AbstractExpr *>(children.at(2));
+AbstractExpression *MatrixElementRef::getColumnIndex() const {
+  return dynamic_cast<AbstractExpression *>(children.at(2));
 }
 
 std::vector<std::string> MatrixElementRef::getVariableIdentifiers() {
@@ -111,7 +111,7 @@ bool MatrixElementRef::contains(Variable *var) {
   return std::count(vars.begin(), vars.end(), var->getIdentifier()) > 0;
 }
 
-bool MatrixElementRef::isEqual(AbstractExpr *other) {
+bool MatrixElementRef::isEqual(AbstractExpression *other) {
   if (auto otherAsGME = dynamic_cast<MatrixElementRef *>(other)) {
     return getOperand()->isEqual(otherAsGME->getOperand())
         && getRowIndex()->isEqual(otherAsGME->getRowIndex())

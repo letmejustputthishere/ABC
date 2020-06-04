@@ -107,7 +107,7 @@ void VariableValuesMap::addDeclaredVariable(ScopedVariable scopedVariable, Varia
   }
 }
 
-AbstractExpr *VariableValuesMap::getVariableValueDeclaredInThisOrOuterScope(std::string variableName, Scope *curScope) {
+AbstractExpression *VariableValuesMap::getVariableValueDeclaredInThisOrOuterScope(std::string variableName, Scope *curScope) {
   auto sv = variableValues.find(getVariableEntryDeclaredInThisOrOuterScope(variableName, curScope));
   if (sv==variableValues.end()) {
     throw std::invalid_argument("Variable " + variableName + " does not exist in this scope.");

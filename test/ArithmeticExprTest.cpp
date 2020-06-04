@@ -2,7 +2,7 @@
 #include "ast_opt/ast/ArithmeticExpr.h"
 #include "gtest/gtest.h"
 
-int getLiteralIntValue(AbstractExpr *aaexpr) {
+int getLiteralIntValue(AbstractExpression *aaexpr) {
   return dynamic_cast<LiteralInt *>(aaexpr)->getValue();
 }
 

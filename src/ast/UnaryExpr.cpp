@@ -8,7 +8,7 @@ json UnaryExpr::toJson() const {
   return j;
 }
 
-UnaryExpr::UnaryExpr(UnaryOp op, AbstractExpr *right) {
+UnaryExpr::UnaryExpr(UnaryOp op, AbstractExpression *right) {
   setAttributes(op, right);
 }
 
@@ -20,8 +20,8 @@ Operator *UnaryExpr::getOperator() const {
   return dynamic_cast<Operator *>(children.at(0));
 }
 
-AbstractExpr *UnaryExpr::getRight() const {
-  return dynamic_cast<AbstractExpr *>(children.at(1));
+AbstractExpression *UnaryExpr::getRight() const {
+  return dynamic_cast<AbstractExpression *>(children.at(1));
 }
 
 std::string UnaryExpr::getNodeType() const {
@@ -36,7 +36,7 @@ int UnaryExpr::getMaxNumberChildren() {
   return 2;
 }
 
-void UnaryExpr::setAttributes(UnaryOp op, AbstractExpr *expr) {
+void UnaryExpr::setAttributes(UnaryOp op, AbstractExpression *expr) {
   removeChildren();
   auto nodesToBeAdded = std::vector<AbstractNode *>({new Operator(op), expr});
   children = nodesToBeAdded;
@@ -55,7 +55,7 @@ UnaryExpr *UnaryExpr::clone() const {
   }
 }
 
-bool UnaryExpr::isEqual(AbstractExpr *other) {
+bool UnaryExpr::isEqual(AbstractExpression *other) {
   if (auto otherAsUExp = dynamic_cast<UnaryExpr *>(other)) {
     auto sameOperator = this->getOperator()->equals(otherAsUExp->getOperator()->getOperatorSymbol());
     auto sameValue = this->getRight()->isEqual(otherAsUExp->getRight());

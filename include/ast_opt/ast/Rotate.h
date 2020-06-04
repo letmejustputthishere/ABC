@@ -2,7 +2,7 @@
 #define AST_OPTIMIZER_INCLUDE_AST_OPT_AST_ROTATE_H_
 
 #include <string>
-#include "AbstractExpr.h"
+#include "AbstractExpression.h"
 #include "AbstractLiteral.h"
 #include "LiteralBool.h"
 #include "LiteralString.h"
@@ -10,15 +10,15 @@
 #include "LiteralInt.h"
 #include "Variable.h"
 
-class Rotate : public AbstractExpr {
+class Rotate : public AbstractExpression {
  public:
   Rotate();
 
-  Rotate(AbstractExpr *vector, AbstractExpr *rotationFactor);
+  Rotate(AbstractExpression *vector, AbstractExpression *rotationFactor);
 
-  Rotate(AbstractExpr *vector, int rotationFactor);
+  Rotate(AbstractExpression *vector, int rotationFactor);
 
-  [[nodiscard]] AbstractExpr *getRotationFactor() const;
+  [[nodiscard]] AbstractExpression *getRotationFactor() const;
 
   int getMaxNumberChildren() override;
 
@@ -26,7 +26,7 @@ class Rotate : public AbstractExpr {
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
 
-  [[nodiscard]] AbstractExpr *getOperand() const;
+  [[nodiscard]] AbstractExpression *getOperand() const;
 
   [[nodiscard]] std::string getNodeType() const override;
 
@@ -34,15 +34,15 @@ class Rotate : public AbstractExpr {
 
   Rotate *clone() const override;
 
-  void setAttributes(AbstractExpr *pExpr, AbstractExpr *rotationFactor);
+  void setAttributes(AbstractExpression *pExpr, AbstractExpression *rotationFactor);
 
-  static bool isOneDimensionalVector(AbstractExpr *operand);
+  static bool isOneDimensionalVector(AbstractExpression *operand);
 
   std::vector<std::string> getVariableIdentifiers() override;
 
   std::vector<Variable *> getVariables() override;
   
-  bool isEqual(AbstractExpr *other) override;
+  bool isEqual(AbstractExpression *other) override;
   std::vector<AbstractNode *> getChildren() override;
   void removeChildren() override;
   std::vector<const AbstractNode *> getChildren() const override;

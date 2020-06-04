@@ -13,7 +13,7 @@ class LiteralString : public AbstractLiteral {
  public:
   explicit LiteralString(AbstractMatrix *pMatrix);
 
-  explicit LiteralString(Matrix<AbstractExpr *> *am);
+  explicit LiteralString(Matrix<AbstractExpression *> *am);
 
   explicit LiteralString(Matrix<std::string> *inputMatrix);
 
@@ -49,7 +49,7 @@ class LiteralString : public AbstractLiteral {
 
   bool supportsDatatype(const Datatype &datatype) const override;
 
-  bool isEqual(AbstractExpr *other) override;
+  bool isEqual(AbstractExpression *other) override;
 
   bool isNull() override;
 

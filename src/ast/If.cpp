@@ -4,7 +4,7 @@
 
 If::~If() = default;
 
-If::If(std::unique_ptr<AbstractExpr> &&condition, std::unique_ptr<AbstractStatement> &&thenBranch, std::unique_ptr<
+If::If(std::unique_ptr<AbstractExpression> &&condition, std::unique_ptr<AbstractStatement> &&thenBranch, std::unique_ptr<
     AbstractStatement> &&elseBranch) {
 
 }
@@ -15,8 +15,8 @@ If *If::clone() const {
                 getElseBranch()->clone());
 }
 
-const AbstractExpr * If::getCondition() const {
-  return children.at(0)->castTo<AbstractExpr>();
+const AbstractExpression * If::getCondition() const {
+  return children.at(0)->castTo<AbstractExpression>();
 }
 
 const Block * If::getThenBranch() const {
@@ -27,7 +27,7 @@ const Block * If::getElseBranch() const {
   return children.at(2) ? children.at(2)->castTo<Block>() : nullptr;
 }
 
-void If::setCondition(std::unique_ptr<AbstractExpr> &&newCondition) {
+void If::setCondition(std::unique_ptr<AbstractExpression> &&newCondition) {
   newCondition->setParent(this);
   condition = std::move(newCondition);
 }

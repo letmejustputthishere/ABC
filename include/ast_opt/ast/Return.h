@@ -4,17 +4,17 @@
 #include <string>
 #include <vector>
 #include "AbstractStatement.h"
-#include "AbstractExpr.h"
+#include "AbstractExpression.h"
 
 class Return : public AbstractStatement {
  private:
-  std::vector<AbstractExpr*> returnExpressions;
+  std::vector<AbstractExpression*> returnExpressions;
  public:
   Return();
 
-  explicit Return(AbstractExpr *returnValue);
+  explicit Return(AbstractExpression *returnValue);
 
-  explicit Return(std::vector<AbstractExpr *> returnValues);
+  explicit Return(std::vector<AbstractExpression *> returnValues);
 
   [[nodiscard]] json toJson() const override;
 
@@ -24,13 +24,13 @@ class Return : public AbstractStatement {
 
   ~Return() override;
 
-  [[nodiscard]] std::vector<AbstractExpr *> getReturnExpressions() const;
+  [[nodiscard]] std::vector<AbstractExpression *> getReturnExpressions() const;
 
   Return *clone() const override;
 
-  void setAttributes(std::vector<AbstractExpr *> returnExpr);
+  void setAttributes(std::vector<AbstractExpression *> returnExpr);
 
-  void addReturnExpr(AbstractExpr* returnExpr);
+  void addReturnExpr(AbstractExpression* returnExpr);
 
   [[nodiscard]] std::string toString(bool printChildren) const override;
   bool isEqual(const AbstractNode *as) const override;
