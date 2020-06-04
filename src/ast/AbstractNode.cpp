@@ -3,130 +3,60 @@
 #include <set>
 #include "ast_opt/ast/AbstractNode.h"
 
-using json = nlohmann::json;
-
-int AbstractNode::nodeIdCounter = 0;
-
-std::string AbstractNode::generateUniqueNodeId() const {
-  if (assignedNodeId==-1) {
-    throw std::logic_error("Could not find any reserved ID for node. "
-                           "Node constructor needs to reserve ID for node (see empty constructor).");
-  }
-
-  // build and return the node ID string
-  std::stringstream ss;
-  ss << getNodeType() << "_" << assignedNodeId;
-  return ss.str();
+///////////////////////////// GENERAL ////////////////////////////////
+std::unique_ptr<AbstractNode> AbstractNode::clone() const {
+  return std::unique_ptr<AbstractNode>(clone_impl());
 }
 
-AbstractNode::AbstractNode() {
-  // save the ID reserved for this node but do not build the unique node ID yet as this virtual method must not be
-  // called within the constructor
-  assignedNodeId = getAndIncrementNodeId();
+bool AbstractNode::operator==(const AbstractNode &other) const noexcept {
+  return this==&other;
 }
 
-std::string AbstractNode::getUniqueNodeId() const {
-  // if there is no ID defined yet, create and assign an ID
-  if (uniqueNodeId.empty()) this->uniqueNodeId = this->generateUniqueNodeId();
-  // otherwise just return the previously generated ID
-  return uniqueNodeId;
+bool AbstractNode::operator!=(const AbstractNode &other) const noexcept {
+  return !(*this==other);
 }
 
-int AbstractNode::getAndIncrementNodeId() {
-  return nodeIdCounter++;
-}
+/////////////////////////////// DAG  /////////////////////////////////
 
-void AbstractNode::resetNodeIdCounter() {
-  AbstractNode::nodeIdCounter = 0;
-}
-
-std::vector<const AbstractNode *> AbstractNode::getChildrenNonNull() const {
-  std::vector<const AbstractNode *> childrenFiltered;
-  auto children = getChildren();
-  if (children.empty()) return childrenFiltered;
-  std::copy_if(children.begin(), children.end(), std::back_inserter(childrenFiltered),
-               [](const AbstractNode *n) { return n!=nullptr; });
-  return childrenFiltered;
-}
-
-std::vector<AbstractNode *> AbstractNode::getChildrenNonNull() {
-  std::vector<AbstractNode *> childrenFiltered;
-  auto children = getChildren();
-  if (children.empty()) return childrenFiltered;
-  std::copy_if(children.begin(), children.end(), std::back_inserter(childrenFiltered),
-               [](AbstractNode *n) { return n!=nullptr; });
-  return childrenFiltered;
-}
-
-int AbstractNode::countChildrenNonNull() const {
-  return std::count_if(getChildren().begin(), getChildren().end(), [](const AbstractNode *n) { return n!=nullptr; });
-}
-
-int AbstractNode::getMaxNumberChildren() {
-  return 0;
-}
-
-void AbstractNode::replaceChild(AbstractNode *originalChild, AbstractNode *newChild) {
-  //TODO: Make this more efficient
-  auto children = getChildren();
-  auto pos = std::find(children.begin(), children.end(), originalChild);
-  if (pos==children.end()) {
-    throw std::runtime_error("Could not execute AbstractNode::replaceChildren because the node to be replaced could "
-                             "not be found in the children vector!");
-  }
-  children[std::distance(children.begin(), pos)] = newChild;
-
-  // remove edge: originalChild -> currentNode
-  originalChild->removeFromParent();
-
-  // add edges: newChildToBeAdded -> currentNode but before detach any existing parents from this child node
-  if (newChild!=nullptr) {
-    newChild->removeFromParent();
-    newChild->setParent(this);
-  }
-};
-
-bool AbstractNode::hasParent(AbstractNode *parentNode) {
-  return getParent()==parentNode;
-}
-
-bool AbstractNode::hasParent() const {
-  return getParent()!=nullptr;
-}
-
-AbstractNode *AbstractNode::getParent() {
-  return parent;
-}
-
-const AbstractNode *AbstractNode::getParent() const {
-  return parent;
-}
-
-void AbstractNode::setParent(AbstractNode *newParent) {
+void AbstractNode::setParent(AbstractNode &newParent) {
   if (parent) {
     throw std::logic_error("Cannot overwrite parent.");
   } else {
-    parent = newParent;
+    parent = &newParent;
   }
 }
+bool AbstractNode::hasParent() const {
+  return parent!=nullptr;
+}
 
-void AbstractNode::removeFromParent() {
-  if (!parent) {
-    throw std::logic_error("Cannot remove node from parent, since node does not have a parent!");
+AbstractNode &AbstractNode::getParent() {
+  if (hasParent()) {
+    return *parent;
   } else {
-    throw std::runtime_error("NOT IMPLEMENTED");
+    throw std::runtime_error("Node has no parent.");
   }
 }
 
-void to_json(json &j, const AbstractNode &n) {
-  j = n.toJson();
+const AbstractNode &AbstractNode::getParent() const {
+  if (hasParent()) {
+    return *parent;
+  } else {
+    throw std::runtime_error("Node has no parent.");
+  }
 }
 
-json AbstractNode::toJson() const {
-  return json({"type", "AbstractNode"});
+////////////////////////////// OUTPUT ///////////////////////////////
+
+std::string AbstractNode::toString(bool printChildren) const {
+  return toStringHelper(printChildren, {});
 }
 
-std::string AbstractNode::generateOutputString(bool printChildren, std::vector<std::string> attributes) const {
+std::ostream &operator<<(std::ostream &os, const AbstractNode &node) {
+  os << node.toString(true);
+  return os;
+}
+
+std::string AbstractNode::toStringHelper(bool printChildren, std::vector<std::string> attributes) const {
   std::string indentationCharacter("\t");
   std::stringstream ss;
   // -- example output --
@@ -144,76 +74,43 @@ std::string AbstractNode::generateOutputString(bool printChildren, std::vector<s
     }
     ss << ")";
   }
-  if (printChildren && countChildrenNonNull() > 0) ss << ":";
+  if (printChildren && countChildren() > 0) ss << ":";
   ss << std::endl;
   if (printChildren) {
-    for (auto &child : getChildrenNonNull()) ss << indentationCharacter << child->toString(printChildren);
+    for (auto &it : *this) ss << indentationCharacter << it.toString(printChildren);
   }
   return ss.str();
 }
 
-void AbstractNode::setUniqueNodeId(const std::string &newUniqueNodeId) {
-  uniqueNodeId = newUniqueNodeId;
-}
+////////////////////////////// NODE ID ////////////////////////////////
 
-std::vector<AbstractNode *> AbstractNode::getAncestors() {
-  // use a set to avoid duplicates as there may be common ancestors between this node and any of the node's parents
-  std::set<AbstractNode *> result;
-  std::queue<AbstractNode *> processQueue{{this}};
-  while (!processQueue.empty()) {
-    auto curNode = processQueue.front();
-    processQueue.pop();
-    auto nextNode = curNode->getParent();
-    result.insert(nextNode);
-    processQueue.push(nextNode);
+int AbstractNode::nodeIdCounter = 0;
 
+std::string AbstractNode::generateUniqueNodeId() const {
+  if (assignedNodeId==-1) {
+    throw std::logic_error("Could not find any reserved ID for node. "
+                           "Node constructor needs to reserve ID for node (see empty constructor).");
   }
-  return std::vector<AbstractNode *>(result.begin(), result.end());
+
+  // build and return the node ID string
+  std::stringstream ss;
+  ss << getNodeType() << "_" << assignedNodeId;
+  return ss.str();
 }
 
-std::vector<AbstractNode *> AbstractNode::getDescendants() {
-  // use a set to avoid duplicates as there may be common descendants between this node and any of the node's children
-  std::set<AbstractNode *> result;
-  std::queue<AbstractNode *> processQueue{{this}};
-  while (!processQueue.empty()) {
-    auto curNode = processQueue.front();
-    processQueue.pop();
-    for (auto &node : curNode->getChildren()) {
-      if (node) {
-        result.insert(node);
-        processQueue.push(node);
-      }
-    }
-  }
-  return std::vector<AbstractNode *>(result.begin(), result.end());
+int AbstractNode::getAndIncrementNodeId() {
+  return nodeIdCounter++;
 }
 
-std::vector<const AbstractNode *> AbstractNode::getDescendants() const {
-  // use a set to avoid duplicates as there may be common descendants between this node and any of the node's children
-  std::set<const AbstractNode *> result;
-  std::queue<const AbstractNode *> processQueue{{this}};
-  while (!processQueue.empty()) {
-    auto curNode = processQueue.front();
-    processQueue.pop();
-    for (auto &node : curNode->getChildren()) {
-      if (node) {
-        result.insert(node);
-        processQueue.push(node);
-      }
-    }
-  }
-  return std::vector<const AbstractNode *>(result.begin(), result.end());
+AbstractNode::AbstractNode() {
+  // save the ID reserved for this node but do not build the unique node ID yet as this virtual method must not be
+  // called within the constructor
+  assignedNodeId = getAndIncrementNodeId();
 }
 
-AbstractNode::~AbstractNode() = default;
-
-std::string AbstractNode::toString(bool) const {
-  throw std::runtime_error("toString not implemented for class " + getNodeType() + ".");
-}
-
-bool AbstractNode::isEqual(const AbstractNode *as) const{
-  throw std::runtime_error("Unimplemented AbstractStatement::isEqual.");
-}
-bool AbstractNode::operator==(const AbstractNode &other) const {
-  return this->isEqual(&other);
+std::string AbstractNode::getUniqueNodeId() const {
+  // if there is no ID defined yet, create and assign an ID
+  if (uniqueNodeId.empty()) this->uniqueNodeId = this->generateUniqueNodeId();
+  // otherwise just return the previously generated ID
+  return uniqueNodeId;
 }
