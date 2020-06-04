@@ -87,9 +87,27 @@ class NodeIterator {
 
 };
 
+/// AbstractNode defines the common interface for all nodes.
+///
+/// DIRECTED GRAPH:
+/// Nodes form a directed graph, with one end of each edge being the parent and the other being the child.
+/// Nodes have exactly one pointer to their parent. If null, we say the node does not have a parent.
+/// Nodes might have an arbitrary number of children, including none.
+/// Some derived classes have a fixed number of children, while this changes dynamically for others.
+/// Interaction with children should primarily happen via derived classes' specific getter/setter methods.
+/// However, it is also possible to iterate over the children of any node with a NodeIterator
+/// The order of the children is up to the derived class. Note that some children in the sequence might be null.
+///
+/// LIFECYCLE MANAGEMENT:
+/// A node owns its children and its children are deleted when the node itself is deleted.
+/// Derived classes MUST implement this behavior, for example by using std::unique_ptr<>
+/// Note that the parent is a raw pointer, however the above semantics should exclude dangling parent pointers.
+/// Deleting a node will invalidate all iterators over this node and its children.
+///
 class AbstractNode {
  private:
   /// Stores the parent nodes of the current node.
+  /// TODO: Enforce invariant this->parent->hasChild(this) == true ?
   AbstractNode *parent = nullptr;
 
  public:
