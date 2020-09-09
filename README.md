@@ -238,7 +238,7 @@ The following tools are required to get this project running:
 - doxygen to build the documentation files (html)
     - tested with v1.8.16
 
-The easiest way to use this library is to import the project into [CLion](https://www.jetbrains.com/clion/) which automatically loads the containing cmake build files and adds the respective targets. Development was carried out on macO (10.15.2), although the project should be running on Windows or Linux machines too.
+The easiest way to use this library is to import the project into [CLion](https://www.jetbrains.com/clion/) which automatically loads the containing cmake build files and adds the respective targets. Development was carried out on macOS (10.15.2), although the project should be running on Windows or Linux machines too.
 
 Examples showing how to use this library can be found in the directory [examples](examples).
 
